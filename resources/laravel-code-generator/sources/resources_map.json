@@ -1,0 +1,38 @@
+[
+    {
+        "model-name": "ProductBrand",
+        "resource-file": "product_brands.json"
+    },
+    {
+        "model-name": "ProductCategory",
+        "resource-file": "product_categories.json"
+    },
+    {
+        "model-name": "Country",
+        "resource-file": "countries.json"
+    },
+    {
+        "model-name": "Division",
+        "resource-file": "divisions.json"
+    },
+    {
+        "model-name": "District",
+        "resource-file": "districts.json"
+    },
+    {
+        "model-name": "Upazila",
+        "resource-file": "upazilas.json"
+    },
+    {
+        "model-name": "Union",
+        "resource-file": "unions.json"
+    },
+    {
+        "model-name": "Product",
+        "resource-file": "products.json"
+    },
+    {
+        "model-name": "Post",
+        "resource-file": "posts.json"
+    }
+]
