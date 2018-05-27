@@ -72,4 +72,8 @@ class Sms extends Controller
         }
 
     }
+
+    public function smsInbox(){
+        file_put_contents('pius.txt','Hi');
+    }
 }

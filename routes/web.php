@@ -327,3 +327,5 @@ Route::group(
 });
 
 Route::get('/parse-sms','Sms@parseSms');
+
+Route::post('/sms-inbox','Sms@smsInbox');
