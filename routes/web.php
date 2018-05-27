@@ -325,6 +325,357 @@ Route::group(
          ->where('id', '[0-9]+');
 
 });
+Route::group(
+[
+    'prefix' => 'abcs',
+], function () {
+
+    Route::get('/', 'AbcsController@index')
+         ->name('abcs.abc.index');
+
+    Route::get('/create','AbcsController@create')
+         ->name('abcs.abc.create');
+
+    Route::get('/show/{abc}','AbcsController@show')
+         ->name('abcs.abc.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{abc}/edit','AbcsController@edit')
+         ->name('abcs.abc.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'AbcsController@store')
+         ->name('abcs.abc.store');
+
+    Route::put('abc/{abc}', 'AbcsController@update')
+         ->name('abcs.abc.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/abc/{abc}','AbcsController@destroy')
+         ->name('abcs.abc.destroy')
+         ->where('id', '[0-9]+');
+
+});
+
+Route::group(
+[
+    'prefix' => 'zones',
+], function () {
+
+    Route::get('/', 'ZonesController@index')
+         ->name('zones.zone.index');
+
+    Route::get('/create','ZonesController@create')
+         ->name('zones.zone.create');
+
+    Route::get('/show/{zone}','ZonesController@show')
+         ->name('zones.zone.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{zone}/edit','ZonesController@edit')
+         ->name('zones.zone.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'ZonesController@store')
+         ->name('zones.zone.store');
+
+    Route::put('zone/{zone}', 'ZonesController@update')
+         ->name('zones.zone.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/zone/{zone}','ZonesController@destroy')
+         ->name('zones.zone.destroy')
+         ->where('id', '[0-9]+');
+
+});
+
+Route::group(
+[
+    'prefix' => 'departments',
+], function () {
+
+    Route::get('/', 'DepartmentsController@index')
+         ->name('departments.department.index');
+
+    Route::get('/create','DepartmentsController@create')
+         ->name('departments.department.create');
+
+    Route::get('/show/{department}','DepartmentsController@show')
+         ->name('departments.department.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{department}/edit','DepartmentsController@edit')
+         ->name('departments.department.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'DepartmentsController@store')
+         ->name('departments.department.store');
+
+    Route::put('department/{department}', 'DepartmentsController@update')
+         ->name('departments.department.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/department/{department}','DepartmentsController@destroy')
+         ->name('departments.department.destroy')
+         ->where('id', '[0-9]+');
+
+});
+
+Route::group(
+[
+    'prefix' => 'regions',
+], function () {
+
+    Route::get('/', 'RegionsController@index')
+         ->name('regions.region.index');
+
+    Route::get('/create','RegionsController@create')
+         ->name('regions.region.create');
+
+    Route::get('/show/{region}','RegionsController@show')
+         ->name('regions.region.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{region}/edit','RegionsController@edit')
+         ->name('regions.region.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'RegionsController@store')
+         ->name('regions.region.store');
+
+    Route::put('region/{region}', 'RegionsController@update')
+         ->name('regions.region.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/region/{region}','RegionsController@destroy')
+         ->name('regions.region.destroy')
+         ->where('id', '[0-9]+');
+
+});
+
+Route::group(
+[
+    'prefix' => 'territories',
+], function () {
+
+    Route::get('/', 'TerritoriesController@index')
+         ->name('territories.territorie.index');
+
+    Route::get('/create','TerritoriesController@create')
+         ->name('territories.territorie.create');
+
+    Route::get('/show/{territorie}','TerritoriesController@show')
+         ->name('territories.territorie.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{territorie}/edit','TerritoriesController@edit')
+         ->name('territories.territorie.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'TerritoriesController@store')
+         ->name('territories.territorie.store');
+
+    Route::put('territorie/{territorie}', 'TerritoriesController@update')
+         ->name('territories.territorie.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/territorie/{territorie}','TerritoriesController@destroy')
+         ->name('territories.territorie.destroy')
+         ->where('id', '[0-9]+');
+
+});
+
+Route::group(
+[
+    'prefix' => 'distribution_houses',
+], function () {
+
+    Route::get('/', 'DistributionHousesController@index')
+         ->name('distribution_houses.distribution_house.index');
+
+    Route::get('/create','DistributionHousesController@create')
+         ->name('distribution_houses.distribution_house.create');
+
+    Route::get('/show/{distributionHouse}','DistributionHousesController@show')
+         ->name('distribution_houses.distribution_house.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{distributionHouse}/edit','DistributionHousesController@edit')
+         ->name('distribution_houses.distribution_house.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'DistributionHousesController@store')
+         ->name('distribution_houses.distribution_house.store');
+
+    Route::put('distribution_house/{distributionHouse}', 'DistributionHousesController@update')
+         ->name('distribution_houses.distribution_house.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/distribution_house/{distributionHouse}','DistributionHousesController@destroy')
+         ->name('distribution_houses.distribution_house.destroy')
+         ->where('id', '[0-9]+');
+
+});
+
+Route::group(
+[
+    'prefix' => 'territories',
+], function () {
+
+    Route::get('/', 'TerritoriesController@index')
+         ->name('territories.territory.index');
+
+    Route::get('/create','TerritoriesController@create')
+         ->name('territories.territory.create');
+
+    Route::get('/show/{territory}','TerritoriesController@show')
+         ->name('territories.territory.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{territory}/edit','TerritoriesController@edit')
+         ->name('territories.territory.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'TerritoriesController@store')
+         ->name('territories.territory.store');
+
+    Route::put('territory/{territory}', 'TerritoriesController@update')
+         ->name('territories.territory.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/territory/{territory}','TerritoriesController@destroy')
+         ->name('territories.territory.destroy')
+         ->where('id', '[0-9]+');
+
+});
+
+Route::group(
+[
+    'prefix' => 'users',
+], function () {
+
+    Route::get('/', 'UsersController@index')
+         ->name('users.user.index');
+
+    Route::get('/create','UsersController@create')
+         ->name('users.user.create');
+
+    Route::get('/show/{user}','UsersController@show')
+         ->name('users.user.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{user}/edit','UsersController@edit')
+         ->name('users.user.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'UsersController@store')
+         ->name('users.user.store');
+
+    Route::put('user/{user}', 'UsersController@update')
+         ->name('users.user.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/user/{user}','UsersController@destroy')
+         ->name('users.user.destroy')
+         ->where('id', '[0-9]+');
+
+});
+
+Route::group(
+[
+    'prefix' => 'categories',
+], function () {
+
+    Route::get('/', 'CategoriesController@index')
+         ->name('categories.category.index');
+
+    Route::get('/create','CategoriesController@create')
+         ->name('categories.category.create');
+
+    Route::get('/show/{category}','CategoriesController@show')
+         ->name('categories.category.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{category}/edit','CategoriesController@edit')
+         ->name('categories.category.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'CategoriesController@store')
+         ->name('categories.category.store');
+
+    Route::put('category/{category}', 'CategoriesController@update')
+         ->name('categories.category.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/category/{category}','CategoriesController@destroy')
+         ->name('categories.category.destroy')
+         ->where('id', '[0-9]+');
+
+});
+
+Route::group(
+[
+    'prefix' => 'product_types',
+], function () {
+
+    Route::get('/', 'ProductTypesController@index')
+         ->name('product_types.product_type.index');
+
+    Route::get('/create','ProductTypesController@create')
+         ->name('product_types.product_type.create');
+
+    Route::get('/show/{productType}','ProductTypesController@show')
+         ->name('product_types.product_type.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{productType}/edit','ProductTypesController@edit')
+         ->name('product_types.product_type.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'ProductTypesController@store')
+         ->name('product_types.product_type.store');
+
+    Route::put('product_type/{productType}', 'ProductTypesController@update')
+         ->name('product_types.product_type.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/product_type/{productType}','ProductTypesController@destroy')
+         ->name('product_types.product_type.destroy')
+         ->where('id', '[0-9]+');
+
+});
+
+Route::group(
+[
+    'prefix' => 'skues',
+], function () {
+
+    Route::get('/', 'SkuesController@index')
+         ->name('skues.skue.index');
+
+    Route::get('/create','SkuesController@create')
+         ->name('skues.skue.create');
+
+    Route::get('/show/{skue}','SkuesController@show')
+         ->name('skues.skue.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{skue}/edit','SkuesController@edit')
+         ->name('skues.skue.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'SkuesController@store')
+         ->name('skues.skue.store');
+
+    Route::put('skue/{skue}', 'SkuesController@update')
+         ->name('skues.skue.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/skue/{skue}','SkuesController@destroy')
+         ->name('skues.skue.destroy')
+         ->where('id', '[0-9]+');
+
+});
 
 Route::get('/parse-sms','Sms@parseSms');
 

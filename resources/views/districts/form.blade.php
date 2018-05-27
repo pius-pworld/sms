@@ -2,24 +2,8 @@
 <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
     <label for="name" class="col-md-2 control-label">Name</label>
     <div class="col-md-10">
-        <input class="form-control" name="name" type="text" id="name" value="{{ old('name', optional($district)->name) }}" minlength="1" maxlength="255" placeholder="Enter name here...">
+        <input class="form-control" name="name" type="text" id="name" value="{{ old('name', optional($district)->name) }}" maxlength="255" placeholder="Enter name here...">
         {!! $errors->first('name', '<p class="help-block">:message</p>') !!}
-    </div>
-</div>
-
-<div class="form-group {{ $errors->has('countries_id') ? 'has-error' : '' }}">
-    <label for="countries_id" class="col-md-2 control-label">Countries</label>
-    <div class="col-md-10">
-        <select class="form-control" id="countries_id" name="countries_id">
-        	    <option value="" style="display: none;" {{ old('countries_id', optional($district)->countries_id ?: '') == '' ? 'selected' : '' }} disabled selected>Enter countries here...</option>
-        	@foreach ($countries as $key => $country)
-			    <option value="{{ $key }}" {{ old('countries_id', optional($district)->countries_id) == $key ? 'selected' : '' }}>
-			    	{{ $country }}
-			    </option>
-			@endforeach
-        </select>
-        
-        {!! $errors->first('countries_id', '<p class="help-block">:message</p>') !!}
     </div>
 </div>
 
@@ -42,7 +26,7 @@
 <div class="form-group {{ $errors->has('description') ? 'has-error' : '' }}">
     <label for="description" class="col-md-2 control-label">Description</label>
     <div class="col-md-10">
-        <textarea class="form-control" name="description" cols="50" rows="10" id="description" minlength="1" maxlength="1000">{{ old('description', optional($district)->description) }}</textarea>
+        <input class="form-control" name="description" type="text" id="description" value="{{ old('description', optional($district)->description) }}" maxlength="1000">
         {!! $errors->first('description', '<p class="help-block">:message</p>') !!}
     </div>
 </div>
@@ -90,6 +74,22 @@
         </div>
 
         {!! $errors->first('is_active', '<p class="help-block">:message</p>') !!}
+    </div>
+</div>
+
+<div class="form-group {{ $errors->has('countries_id') ? 'has-error' : '' }}">
+    <label for="countries_id" class="col-md-2 control-label">Countries</label>
+    <div class="col-md-10">
+        <select class="form-control" id="countries_id" name="countries_id">
+        	    <option value="" style="display: none;" {{ old('countries_id', optional($district)->countries_id ?: '') == '' ? 'selected' : '' }} disabled selected>Enter countries here...</option>
+        	@foreach ($countries as $key => $country)
+			    <option value="{{ $key }}" {{ old('countries_id', optional($district)->countries_id) == $key ? 'selected' : '' }}>
+			    	{{ $country }}
+			    </option>
+			@endforeach
+        </select>
+        
+        {!! $errors->first('countries_id', '<p class="help-block">:message</p>') !!}
     </div>
 </div>
 

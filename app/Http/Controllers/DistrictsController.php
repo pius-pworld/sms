@@ -21,7 +21,7 @@ class DistrictsController extends Controller
      */
     public function index()
     {
-        $districts = District::with('country','division','creator','updater')->paginate(25);
+        $districts = District::with('division')->paginate(25);
 
         return view('districts.index', compact('districts'));
     }
@@ -33,12 +33,12 @@ class DistrictsController extends Controller
      */
     public function create()
     {
-        $countries = Country::pluck('name','id')->all();
-$divisions = Division::pluck('name','id')->all();
+        $divisions = Division::pluck('name','id')->all();
 $creators = User::pluck('name','id')->all();
 $updaters = User::pluck('name','id')->all();
+$countries = Country::pluck('name','id')->all();
         
-        return view('districts.create', compact('countries','divisions','creators','updaters'));
+        return view('districts.create', compact('divisions','creators','updaters','countries'));
     }
 
     /**
@@ -75,7 +75,7 @@ $updaters = User::pluck('name','id')->all();
      */
     public function show($id)
     {
-        $district = District::with('country','division','creator','updater')->findOrFail($id);
+        $district = District::with('division','creator','updater','country')->findOrFail($id);
 
         return view('districts.show', compact('district'));
     }
@@ -90,12 +90,12 @@ $updaters = User::pluck('name','id')->all();
     public function edit($id)
     {
         $district = District::findOrFail($id);
-        $countries = Country::pluck('name','id')->all();
-$divisions = Division::pluck('name','id')->all();
+        $divisions = Division::pluck('name','id')->all();
 $creators = User::pluck('name','id')->all();
 $updaters = User::pluck('name','id')->all();
+$countries = Country::pluck('name','id')->all();
 
-        return view('districts.edit', compact('district','countries','divisions','creators','updaters'));
+        return view('districts.edit', compact('district','divisions','creators','updaters','countries'));
     }
 
     /**
@@ -158,22 +158,19 @@ $updaters = User::pluck('name','id')->all();
     protected function getData(Request $request)
     {
         $rules = [
-            'name' => 'string|min:1|max:255|nullable',
-            'countries_id' => 'numeric|min:0|max:4294967295|nullable',
+            'name' => 'nullable|string|min:0|max:255',
             'divisions_id' => 'nullable',
-            'description' => 'string|min:1|max:1000|nullable',
+            'description' => 'nullable|string|min:0|max:1000',
             'created_by' => 'nullable',
             'updated_by' => 'nullable',
-            'is_active' => 'boolean|nullable',
+            'is_active' => 'nullable|boolean',
+            'countries_id' => 'nullable|numeric|min:0|max:4294967295',
      
         ];
-
         
         $data = $request->validate($rules);
 
-
         $data['is_active'] = $request->has('is_active');
-
 
         return $data;
     }

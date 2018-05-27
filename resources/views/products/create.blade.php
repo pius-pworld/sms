@@ -28,7 +28,7 @@
                 </ul>
             @endif
 
-            <form method="POST" action="{{ route('products.product.store') }}" accept-charset="UTF-8" id="create_product_form" name="create_product_form" class="form-horizontal">
+            <form method="POST" action="{{ route('products.product.store') }}" accept-charset="UTF-8" id="create_product_form" name="create_product_form" class="form-horizontal" enctype="multipart/form-data">
             {{ csrf_field() }}
             @include ('products.form', [
                                         'product' => null,

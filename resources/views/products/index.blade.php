@@ -48,13 +48,11 @@
                 <table id="example2" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                                                    <th>Name</th>
-                            <th>Product Brands</th>
-                            <th>Product Categories</th>
-                            <th>Image</th>
-                            <th>Created By</th>
-                            <th>Updated By</th>
-                            <th>Is Active</th>
+                                                    <th>Product Types</th>
+                            <th>Categories</th>
+                            <th>Brand Name</th>
+                            <th>Product Name</th>
+                            <th>Segment</th>
 
                         <th></th>
                         </tr>
@@ -62,13 +60,11 @@
                     <tbody>
                     @foreach($products as $product)
                         <tr>
-                                                        <td>{{ $product->name }}</td>
-                            <td>{{ optional($product->productBrand)->name }}</td>
-                            <td>{{ optional($product->productCategory)->name }}</td>
-                            <td>{{ $product->image }}</td>
-                            <td>{{ optional($product->creator)->name }}</td>
-                            <td>{{ optional($product->updater)->name }}</td>
-                            <td>{{ ($product->is_active) ? 'Yes' : 'No' }}</td>
+                                                        <td>{{ optional($product->productType)->category_name }}</td>
+                            <td>{{ optional($product->category)->category_name }}</td>
+                            <td>{{ $product->brand_name }}</td>
+                            <td>{{ $product->product_name }}</td>
+                            <td>{{ $product->segment }}</td>
 
                             <td>
 

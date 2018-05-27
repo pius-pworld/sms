@@ -49,11 +49,7 @@
                     <thead>
                         <tr>
                                                     <th>Name</th>
-                            <th>Countries</th>
                             <th>Divisions</th>
-                            <th>Created By</th>
-                            <th>Updated By</th>
-                            <th>Is Active</th>
 
                         <th></th>
                         </tr>
@@ -62,11 +58,7 @@
                     @foreach($districts as $district)
                         <tr>
                                                         <td>{{ $district->name }}</td>
-                            <td>{{ optional($district->country)->name }}</td>
                             <td>{{ optional($district->division)->name }}</td>
-                            <td>{{ optional($district->creator)->name }}</td>
-                            <td>{{ optional($district->updater)->name }}</td>
-                            <td>{{ ($district->is_active) ? 'Yes' : 'No' }}</td>
 
                             <td>
 

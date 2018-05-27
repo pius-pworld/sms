@@ -7,7 +7,7 @@
         <div class="panel-heading clearfix">
 
             <div class="pull-left">
-                <h4 class="mt-5 mb-5">{{ !empty($product->name) ? $product->name : 'Product' }}</h4>
+                <h4 class="mt-5 mb-5">{{ !empty($title) ? $title : 'Product' }}</h4>
             </div>
             <div class="btn-group btn-group-sm pull-right" role="group">
 
@@ -32,7 +32,7 @@
                 </ul>
             @endif
 
-            <form method="POST" action="{{ route('products.product.update', $product->id) }}" id="edit_product_form" name="edit_product_form" accept-charset="UTF-8" class="form-horizontal">
+            <form method="POST" action="{{ route('products.product.update', $product->id) }}" id="edit_product_form" name="edit_product_form" accept-charset="UTF-8" class="form-horizontal" enctype="multipart/form-data">
             {{ csrf_field() }}
             <input name="_method" type="hidden" value="PUT">
             @include ('products.form', [

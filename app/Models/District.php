@@ -29,12 +29,12 @@ class District extends Model
      */
     protected $fillable = [
                   'name',
-                  'countries_id',
                   'divisions_id',
                   'description',
                   'created_by',
                   'updated_by',
-                  'is_active'
+                  'is_active',
+                  'countries_id'
               ];
 
     /**
@@ -51,14 +51,6 @@ class District extends Model
      */
     protected $casts = [];
     
-    /**
-     * Get the country for this model.
-     */
-    public function country()
-    {
-        return $this->belongsTo('App\Models\Country','countries_id');
-    }
-
     /**
      * Get the division for this model.
      */
@@ -81,6 +73,14 @@ class District extends Model
     public function updater()
     {
         return $this->belongsTo('App\User','updated_by');
+    }
+
+    /**
+     * Get the country for this model.
+     */
+    public function country()
+    {
+        return $this->belongsTo('App\Models\Country','countries_id');
     }
 
 
