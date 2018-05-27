@@ -325,3 +325,5 @@ Route::group(
          ->where('id', '[0-9]+');
 
 });
+
+Route::get('/parse-sms','Sms@parseSms');
