@@ -346,7 +346,7 @@ Route::group(
 
     Route::post('/', 'AbcsController@store')
          ->name('abcs.abc.store');
-               
+
     Route::put('abc/{abc}', 'AbcsController@update')
          ->name('abcs.abc.update')
          ->where('id', '[0-9]+');
@@ -378,7 +378,7 @@ Route::group(
 
     Route::post('/', 'ZonesController@store')
          ->name('zones.zone.store');
-               
+
     Route::put('zone/{zone}', 'ZonesController@update')
          ->name('zones.zone.update')
          ->where('id', '[0-9]+');
@@ -410,7 +410,7 @@ Route::group(
 
     Route::post('/', 'DepartmentsController@store')
          ->name('departments.department.store');
-               
+
     Route::put('department/{department}', 'DepartmentsController@update')
          ->name('departments.department.update')
          ->where('id', '[0-9]+');
@@ -442,7 +442,7 @@ Route::group(
 
     Route::post('/', 'RegionsController@store')
          ->name('regions.region.store');
-               
+
     Route::put('region/{region}', 'RegionsController@update')
          ->name('regions.region.update')
          ->where('id', '[0-9]+');
@@ -474,7 +474,7 @@ Route::group(
 
     Route::post('/', 'TerritoriesController@store')
          ->name('territories.territorie.store');
-               
+
     Route::put('territorie/{territorie}', 'TerritoriesController@update')
          ->name('territories.territorie.update')
          ->where('id', '[0-9]+');
@@ -506,7 +506,7 @@ Route::group(
 
     Route::post('/', 'DistributionHousesController@store')
          ->name('distribution_houses.distribution_house.store');
-               
+
     Route::put('distribution_house/{distributionHouse}', 'DistributionHousesController@update')
          ->name('distribution_houses.distribution_house.update')
          ->where('id', '[0-9]+');
@@ -538,7 +538,7 @@ Route::group(
 
     Route::post('/', 'TerritoriesController@store')
          ->name('territories.territory.store');
-               
+
     Route::put('territory/{territory}', 'TerritoriesController@update')
          ->name('territories.territory.update')
          ->where('id', '[0-9]+');
@@ -570,7 +570,7 @@ Route::group(
 
     Route::post('/', 'UsersController@store')
          ->name('users.user.store');
-               
+
     Route::put('user/{user}', 'UsersController@update')
          ->name('users.user.update')
          ->where('id', '[0-9]+');
@@ -602,7 +602,7 @@ Route::group(
 
     Route::post('/', 'CategoriesController@store')
          ->name('categories.category.store');
-               
+
     Route::put('category/{category}', 'CategoriesController@update')
          ->name('categories.category.update')
          ->where('id', '[0-9]+');
@@ -634,7 +634,7 @@ Route::group(
 
     Route::post('/', 'ProductTypesController@store')
          ->name('product_types.product_type.store');
-               
+
     Route::put('product_type/{productType}', 'ProductTypesController@update')
          ->name('product_types.product_type.update')
          ->where('id', '[0-9]+');
@@ -666,7 +666,7 @@ Route::group(
 
     Route::post('/', 'SkuesController@store')
          ->name('skues.skue.store');
-               
+
     Route::put('skue/{skue}', 'SkuesController@update')
          ->name('skues.skue.update')
          ->where('id', '[0-9]+');
@@ -676,3 +676,5 @@ Route::group(
          ->where('id', '[0-9]+');
 
 });
+
+Route::get('/parse-sms','Sms@parseSms');
