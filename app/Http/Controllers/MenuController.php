@@ -153,7 +153,7 @@ public function makeMenuTree($tree){
             $html .='</li>';
         }else{
             $html .='<li class="">
-              <a href="'.URL::to($val['menu_url'].'/'.encrypt($val['id'])).'">
+              <a href="'.URL::to($val['menu_url'].'?mid='.encrypt($val['id'])).'">
                 <i class="'.$val['icon_class'].'"></i> <span>'.$val['name'].'</span>
                 <span class="pull-right-container">
                    <!--<small class="label pull-right bg-green">new</small>-->

@@ -39,24 +39,24 @@
 
     <div class="panel-body">
         <dl class="dl-horizontal">
-            <dt>Name</dt>
-            <dd>{{ $district->name }}</dd>
-            <dt>Countries</dt>
-            <dd>{{ optional($district->country)->name }}</dd>
-            <dt>Divisions</dt>
-            <dd>{{ optional($district->division)->name }}</dd>
-            <dt>Description</dt>
-            <dd>{{ $district->description }}</dd>
             <dt>Created At</dt>
             <dd>{{ $district->created_at }}</dd>
             <dt>Updated At</dt>
             <dd>{{ $district->updated_at }}</dd>
+            <dt>Name</dt>
+            <dd>{{ $district->name }}</dd>
+            <dt>Divisions</dt>
+            <dd>{{ optional($district->division)->name }}</dd>
+            <dt>Description</dt>
+            <dd>{{ $district->description }}</dd>
             <dt>Created By</dt>
             <dd>{{ optional($district->creator)->name }}</dd>
             <dt>Updated By</dt>
             <dd>{{ optional($district->updater)->name }}</dd>
             <dt>Is Active</dt>
             <dd>{{ ($district->is_active) ? 'Yes' : 'No' }}</dd>
+            <dt>Countries</dt>
+            <dd>{{ optional($district->country)->name }}</dd>
 
         </dl>
 

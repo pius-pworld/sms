@@ -17,12 +17,12 @@
 	<section class="content-header">
       <h1>
         Data Tables
-        <small>Districts</small>
+        <small>Regions</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Districts</a></li>
-        <li class="active">Districts</li>
+        <li><a href="#">Regions</a></li>
+        <li class="active">Regions</li>
       </ol>
     </section>
 	
@@ -32,49 +32,47 @@
         <div class="col-xs-12">
 			<div class="box">
 				<div class="box-header">
-					<h3 class="box-title">Districts</h3>
+					<h3 class="box-title">Regions</h3>
 				</div>
 				 <div class="btn-group btn-group-sm pull-right" role="group">
-					<a href="{{ route('districts.district.create') }}" class="btn btn-success" title="Create New District">
+					<a href="{{ route('regions.region.create') }}" class="btn btn-success" title="Create New Region">
 						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 					</a>
 				</div>
-				@if(count($districts) == 0)
+				@if(count($regions) == 0)
 					<div class="text-center">
-						<h4>No Districts Available!</h4>
+						<h4>No Regions Available!</h4>
 					</div>
 				@else
 				<div class="box-body">
                 <table id="example2" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                                                    <th>Name</th>
-                            <th>Divisions</th>
+                                                    <th>Region Name</th>
 
                         <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach($districts as $district)
+                    @foreach($regions as $region)
                         <tr>
-                                                        <td>{{ $district->name }}</td>
-                            <td>{{ optional($district->division)->name }}</td>
+                                                        <td>{{ $region->region_name }}</td>
 
                             <td>
 
-                                <form method="POST" action="{!! route('districts.district.destroy', $district->id) !!}" accept-charset="UTF-8">
+                                <form method="POST" action="{!! route('regions.region.destroy', $region->id) !!}" accept-charset="UTF-8">
                                 <input name="_method" value="DELETE" type="hidden">
                                 {{ csrf_field() }}
 
                                     <div class="btn-group btn-group-xs pull-right" role="group">
-                                        <a href="{{ route('districts.district.show', $district->id ) }}" class="btn btn-info" title="Show District">
+                                        <a href="{{ route('regions.region.show', $region->id ) }}" class="btn btn-info" title="Show Region">
                                             <span class="glyphicon glyphicon-open" aria-hidden="true"></span>
                                         </a>
-                                        <a href="{{ route('districts.district.edit', $district->id ) }}" class="btn btn-primary" title="Edit District">
+                                        <a href="{{ route('regions.region.edit', $region->id ) }}" class="btn btn-primary" title="Edit Region">
                                             <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                                         </a>
 
-                                        <button type="submit" class="btn btn-danger" title="Delete District" onclick="return confirm(&quot;Delete District?&quot;)">
+                                        <button type="submit" class="btn btn-danger" title="Delete Region" onclick="return confirm(&quot;Delete Region?&quot;)">
                                             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                         </button>
                                     </div>
@@ -91,7 +89,7 @@
         </div>
 
         <div class="panel-footer">
-            {!! $districts->render() !!}
+            {!! $regions->render() !!}
         </div>
         
         @endif

@@ -17,12 +17,12 @@
 	<section class="content-header">
       <h1>
         Data Tables
-        <small>Districts</small>
+        <small>Distribution Houses</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Districts</a></li>
-        <li class="active">Districts</li>
+        <li><a href="#">Distribution Houses</a></li>
+        <li class="active">Distribution Houses</li>
       </ol>
     </section>
 	
@@ -32,49 +32,57 @@
         <div class="col-xs-12">
 			<div class="box">
 				<div class="box-header">
-					<h3 class="box-title">Districts</h3>
+					<h3 class="box-title">Distribution Houses</h3>
 				</div>
 				 <div class="btn-group btn-group-sm pull-right" role="group">
-					<a href="{{ route('districts.district.create') }}" class="btn btn-success" title="Create New District">
+					<a href="{{ route('distribution_houses.distribution_house.create') }}" class="btn btn-success" title="Create New Distribution House">
 						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 					</a>
 				</div>
-				@if(count($districts) == 0)
+				@if(count($distributionHouses) == 0)
 					<div class="text-center">
-						<h4>No Districts Available!</h4>
+						<h4>No Distribution Houses Available!</h4>
 					</div>
 				@else
 				<div class="box-body">
                 <table id="example2" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                                                    <th>Name</th>
-                            <th>Divisions</th>
+                                                    <th>Zones</th>
+                            <th>Regions</th>
+                            <th>Territories</th>
+                            <th>Market Name</th>
+                            <th>Code</th>
+                            <th>Point Name</th>
 
                         <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach($districts as $district)
+                    @foreach($distributionHouses as $distributionHouse)
                         <tr>
-                                                        <td>{{ $district->name }}</td>
-                            <td>{{ optional($district->division)->name }}</td>
+                                                        <td>{{ optional($distributionHouse->zone)->zone_name }}</td>
+                            <td>{{ optional($distributionHouse->region)->region_name }}</td>
+                            <td>{{ optional($distributionHouse->territory)->territory_name }}</td>
+                            <td>{{ $distributionHouse->market_name }}</td>
+                            <td>{{ $distributionHouse->code }}</td>
+                            <td>{{ $distributionHouse->point_name }}</td>
 
                             <td>
 
-                                <form method="POST" action="{!! route('districts.district.destroy', $district->id) !!}" accept-charset="UTF-8">
+                                <form method="POST" action="{!! route('distribution_houses.distribution_house.destroy', $distributionHouse->id) !!}" accept-charset="UTF-8">
                                 <input name="_method" value="DELETE" type="hidden">
                                 {{ csrf_field() }}
 
                                     <div class="btn-group btn-group-xs pull-right" role="group">
-                                        <a href="{{ route('districts.district.show', $district->id ) }}" class="btn btn-info" title="Show District">
+                                        <a href="{{ route('distribution_houses.distribution_house.show', $distributionHouse->id ) }}" class="btn btn-info" title="Show Distribution House">
                                             <span class="glyphicon glyphicon-open" aria-hidden="true"></span>
                                         </a>
-                                        <a href="{{ route('districts.district.edit', $district->id ) }}" class="btn btn-primary" title="Edit District">
+                                        <a href="{{ route('distribution_houses.distribution_house.edit', $distributionHouse->id ) }}" class="btn btn-primary" title="Edit Distribution House">
                                             <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                                         </a>
 
-                                        <button type="submit" class="btn btn-danger" title="Delete District" onclick="return confirm(&quot;Delete District?&quot;)">
+                                        <button type="submit" class="btn btn-danger" title="Delete Distribution House" onclick="return confirm(&quot;Delete Distribution House?&quot;)">
                                             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                         </button>
                                     </div>
@@ -91,7 +99,7 @@
         </div>
 
         <div class="panel-footer">
-            {!! $districts->render() !!}
+            {!! $distributionHouses->render() !!}
         </div>
         
         @endif

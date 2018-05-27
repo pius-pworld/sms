@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class District extends Model
+class Department extends Model
 {
     
 
@@ -13,7 +13,7 @@ class District extends Model
      *
      * @var string
      */
-    protected $table = 'districts';
+    protected $table = 'departments';
 
     /**
     * The database primary key value.
@@ -29,12 +29,8 @@ class District extends Model
      */
     protected $fillable = [
                   'name',
-                  'divisions_id',
-                  'description',
-                  'created_by',
-                  'updated_by',
-                  'is_active',
-                  'countries_id'
+                  'details',
+                  'is_active'
               ];
 
     /**
@@ -51,37 +47,6 @@ class District extends Model
      */
     protected $casts = [];
     
-    /**
-     * Get the division for this model.
-     */
-    public function division()
-    {
-        return $this->belongsTo('App\Models\Division','divisions_id');
-    }
-
-    /**
-     * Get the creator for this model.
-     */
-    public function creator()
-    {
-        return $this->belongsTo('App\User','created_by');
-    }
-
-    /**
-     * Get the updater for this model.
-     */
-    public function updater()
-    {
-        return $this->belongsTo('App\User','updated_by');
-    }
-
-    /**
-     * Get the country for this model.
-     */
-    public function country()
-    {
-        return $this->belongsTo('App\Models\Country','countries_id');
-    }
 
 
     /**
