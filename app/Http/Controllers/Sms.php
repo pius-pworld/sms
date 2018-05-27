@@ -41,7 +41,7 @@ class Sms extends Controller
             //validation
             $data = json_decode(json_encode($result_array));
             $validator = new JsonSchema\Validator;
-            $validator->validate($data, (object)['$ref' => 'file://' . realpath('resources/schemas/'.$identifier.'.json')]);
+            $validator->validate($data, (object)['$ref' => 'file://' . realpath('resources/schemas/'.strtolower($identifier).'.json')]);
             if (!$validator->isValid()) {
                 foreach ($validator->getErrors() as $error) {
                     echo sprintf("[%s] %s\n", $error['property'], $error['message']);
