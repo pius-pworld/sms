@@ -7,11 +7,11 @@
         <div class="panel-heading clearfix">
             
             <span class="pull-left">
-                <h4 class="mt-5 mb-5">Create New Product</h4>
+                <h4 class="mt-5 mb-5">Create New Product Type</h4>
             </span>
 
             <div class="btn-group btn-group-sm pull-right" role="group">
-                <a href="{{ route('products.product.index') }}" class="btn btn-primary" title="Show All Product">
+                <a href="{{ route('product_types.product_type.index') }}" class="btn btn-primary" title="Show All Product Type">
                     <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
                 </a>
             </div>
@@ -28,10 +28,10 @@
                 </ul>
             @endif
 
-            <form method="POST" action="{{ route('products.product.store') }}" accept-charset="UTF-8" id="create_product_form" name="create_product_form" class="form-horizontal" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('product_types.product_type.store') }}" accept-charset="UTF-8" id="create_product_type_form" name="create_product_type_form" class="form-horizontal">
             {{ csrf_field() }}
-            @include ('products.form', [
-                                        'product' => null,
+            @include ('product_types.form', [
+                                        'productType' => null,
                                       ])
 
                 <div class="form-group">

@@ -24,10 +24,6 @@
         "resource-file": "unions.json"
     },
     {
-        "model-name": "Product",
-        "resource-file": "products.json"
-    },
-    {
         "model-name": "Post",
         "resource-file": "posts.json"
     },
@@ -79,5 +75,20 @@
         "model-name": "Category",
         "resource-file": "categories.json",
         "table-name": "categories"
+    },
+    {
+        "model-name": "ProductType",
+        "resource-file": "product_types.json",
+        "table-name": "product_types"
+    },
+    {
+        "model-name": "Product",
+        "resource-file": "products.json",
+        "table-name": "products"
+    },
+    {
+        "model-name": "Skue",
+        "resource-file": "skues.json",
+        "table-name": "skues"
     }
 ]

@@ -17,12 +17,12 @@
 	<section class="content-header">
       <h1>
         Data Tables
-        <small>Products</small>
+        <small>Product Types</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Products</a></li>
-        <li class="active">Products</li>
+        <li><a href="#">Product Types</a></li>
+        <li class="active">Product Types</li>
       </ol>
     </section>
 	
@@ -32,55 +32,49 @@
         <div class="col-xs-12">
 			<div class="box">
 				<div class="box-header">
-					<h3 class="box-title">Products</h3>
+					<h3 class="box-title">Product Types</h3>
 				</div>
 				 <div class="btn-group btn-group-sm pull-right" role="group">
-					<a href="{{ route('products.product.create') }}" class="btn btn-success" title="Create New Product">
+					<a href="{{ route('product_types.product_type.create') }}" class="btn btn-success" title="Create New Product Type">
 						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 					</a>
 				</div>
-				@if(count($products) == 0)
+				@if(count($productTypes) == 0)
 					<div class="text-center">
-						<h4>No Products Available!</h4>
+						<h4>No Product Types Available!</h4>
 					</div>
 				@else
 				<div class="box-body">
                 <table id="example2" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                                                    <th>Product Types</th>
-                            <th>Categories</th>
-                            <th>Brand Name</th>
-                            <th>Product Name</th>
-                            <th>Segment</th>
+                                                    <th>Category Name</th>
+                            <th>Is Active</th>
 
                         <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach($products as $product)
+                    @foreach($productTypes as $productType)
                         <tr>
-                                                        <td>{{ optional($product->productType)->category_name }}</td>
-                            <td>{{ optional($product->category)->category_name }}</td>
-                            <td>{{ $product->brand_name }}</td>
-                            <td>{{ $product->product_name }}</td>
-                            <td>{{ $product->segment }}</td>
+                                                        <td>{{ $productType->category_name }}</td>
+                            <td>{{ ($productType->is_active) ? 'Yes' : 'No' }}</td>
 
                             <td>
 
-                                <form method="POST" action="{!! route('products.product.destroy', $product->id) !!}" accept-charset="UTF-8">
+                                <form method="POST" action="{!! route('product_types.product_type.destroy', $productType->id) !!}" accept-charset="UTF-8">
                                 <input name="_method" value="DELETE" type="hidden">
                                 {{ csrf_field() }}
 
                                     <div class="btn-group btn-group-xs pull-right" role="group">
-                                        <a href="{{ route('products.product.show', $product->id ) }}" class="btn btn-info" title="Show Product">
+                                        <a href="{{ route('product_types.product_type.show', $productType->id ) }}" class="btn btn-info" title="Show Product Type">
                                             <span class="glyphicon glyphicon-open" aria-hidden="true"></span>
                                         </a>
-                                        <a href="{{ route('products.product.edit', $product->id ) }}" class="btn btn-primary" title="Edit Product">
+                                        <a href="{{ route('product_types.product_type.edit', $productType->id ) }}" class="btn btn-primary" title="Edit Product Type">
                                             <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                                         </a>
 
-                                        <button type="submit" class="btn btn-danger" title="Delete Product" onclick="return confirm(&quot;Delete Product?&quot;)">
+                                        <button type="submit" class="btn btn-danger" title="Delete Product Type" onclick="return confirm(&quot;Delete Product Type?&quot;)">
                                             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                         </button>
                                     </div>
@@ -97,7 +91,7 @@
         </div>
 
         <div class="panel-footer">
-            {!! $products->render() !!}
+            {!! $productTypes->render() !!}
         </div>
         
         @endif

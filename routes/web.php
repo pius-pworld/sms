@@ -612,3 +612,67 @@ Route::group(
          ->where('id', '[0-9]+');
 
 });
+
+Route::group(
+[
+    'prefix' => 'product_types',
+], function () {
+
+    Route::get('/', 'ProductTypesController@index')
+         ->name('product_types.product_type.index');
+
+    Route::get('/create','ProductTypesController@create')
+         ->name('product_types.product_type.create');
+
+    Route::get('/show/{productType}','ProductTypesController@show')
+         ->name('product_types.product_type.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{productType}/edit','ProductTypesController@edit')
+         ->name('product_types.product_type.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'ProductTypesController@store')
+         ->name('product_types.product_type.store');
+               
+    Route::put('product_type/{productType}', 'ProductTypesController@update')
+         ->name('product_types.product_type.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/product_type/{productType}','ProductTypesController@destroy')
+         ->name('product_types.product_type.destroy')
+         ->where('id', '[0-9]+');
+
+});
+
+Route::group(
+[
+    'prefix' => 'skues',
+], function () {
+
+    Route::get('/', 'SkuesController@index')
+         ->name('skues.skue.index');
+
+    Route::get('/create','SkuesController@create')
+         ->name('skues.skue.create');
+
+    Route::get('/show/{skue}','SkuesController@show')
+         ->name('skues.skue.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{skue}/edit','SkuesController@edit')
+         ->name('skues.skue.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'SkuesController@store')
+         ->name('skues.skue.store');
+               
+    Route::put('skue/{skue}', 'SkuesController@update')
+         ->name('skues.skue.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/skue/{skue}','SkuesController@destroy')
+         ->name('skues.skue.destroy')
+         ->where('id', '[0-9]+');
+
+});

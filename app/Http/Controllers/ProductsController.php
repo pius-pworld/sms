@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use App\Models\Product;
+use App\Models\Category;
+use App\Models\ProductType;
 use Illuminate\Http\Request;
-use App\Models\ProductBrand;
-use App\Models\ProductCategory;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Exception;
-
+use Auth;
 class ProductsController extends Controller
 {
 
@@ -21,7 +19,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = Product::with('productbrand','productcategory','creator','updater')->paginate(25);
+        $products = Product::with('producttype','category')->paginate(25);
 
         return view('products.index', compact('products'));
     }
@@ -33,12 +31,10 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        $productBrands = ProductBrand::pluck('name','id')->all();
-$productCategories = ProductCategory::pluck('name','id')->all();
-$creators = User::pluck('name','id')->all();
-$updaters = User::pluck('name','id')->all();
+        $productTypes = ProductType::pluck('category_name','id')->all();
+$categories = Category::pluck('category_name','id')->all();
         
-        return view('products.create', compact('productBrands','productCategories','creators','updaters'));
+        return view('products.create', compact('productTypes','categories'));
     }
 
     /**
@@ -75,7 +71,7 @@ $updaters = User::pluck('name','id')->all();
      */
     public function show($id)
     {
-        $product = Product::with('productbrand','productcategory','creator','updater')->findOrFail($id);
+        $product = Product::with('producttype','category')->findOrFail($id);
 
         return view('products.show', compact('product'));
     }
@@ -90,12 +86,10 @@ $updaters = User::pluck('name','id')->all();
     public function edit($id)
     {
         $product = Product::findOrFail($id);
-        $productBrands = ProductBrand::pluck('name','id')->all();
-$productCategories = ProductCategory::pluck('name','id')->all();
-$creators = User::pluck('name','id')->all();
-$updaters = User::pluck('name','id')->all();
+        $productTypes = ProductType::pluck('category_name','id')->all();
+$categories = Category::pluck('category_name','id')->all();
 
-        return view('products.edit', compact('product','productBrands','productCategories','creators','updaters'));
+        return view('products.edit', compact('product','productTypes','categories'));
     }
 
     /**
@@ -158,25 +152,43 @@ $updaters = User::pluck('name','id')->all();
     protected function getData(Request $request)
     {
         $rules = [
-            'name' => 'string|min:1|max:25|nullable',
-            'product_brands_id' => 'nullable',
-            'product_categories_id' => 'nullable',
-            'description' => 'string|min:1|max:1000|nullable',
-            'image' => 'numeric|nullable',
-            'created_by' => 'nullable',
-            'updated_by' => 'nullable',
-            'is_active' => 'boolean|nullable',
+            'product_types_id' => 'nullable',
+            'categories_id' => 'nullable',
+            'brand_name' => 'nullable|string|min:0|max:255',
+            'product_name' => 'nullable|string|min:0|max:255',
+            'segment' => 'nullable|string|min:0|max:255',
+            'description' => 'nullable',
+            'file' => ['nullable','file'],
+            'is_active' => 'nullable|boolean',
      
         ];
-
         
         $data = $request->validate($rules);
-
+        if ($request->has('custom_delete_file')) {
+            $data['file'] = null;
+        }
+        if ($request->hasFile('file')) {
+            $data['file'] = $this->moveFile($request->file('file'));
+        }
 
         $data['is_active'] = $request->has('is_active');
 
-
         return $data;
     }
-
+  
+    /**
+     * Moves the attached file to the server.
+     *
+     * @param Symfony\Component\HttpFoundation\File\UploadedFile $file
+     *
+     * @return string
+     */
+    protected function moveFile($file)
+    {
+        if (!$file->isValid()) {
+            return '';
+        }
+        
+        return $file->store(config('codegenerator.files_upload_path'), config('filesystems.default'));
+    }
 }

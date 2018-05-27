@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class ProductType extends Model
 {
 
 
@@ -13,7 +13,7 @@ class Product extends Model
      *
      * @var string
      */
-    protected $table = 'products';
+    protected $table = 'product_types';
 
     /**
      * The database primary key value.
@@ -28,13 +28,7 @@ class Product extends Model
      * @var array
      */
     protected $fillable = [
-        'product_types_id',
-        'categories_id',
-        'brand_name',
-        'product_name',
-        'segment',
-        'description',
-        'file',
+        'category_name',
         'created_by',
         'updated_by',
         'is_active'
@@ -53,22 +47,6 @@ class Product extends Model
      * @var array
      */
     protected $casts = [];
-
-    /**
-     * Get the productType for this model.
-     */
-    public function productType()
-    {
-        return $this->belongsTo('App\Models\ProductType', 'product_types_id');
-    }
-
-    /**
-     * Get the category for this model.
-     */
-    public function category()
-    {
-        return $this->belongsTo('App\Models\Category', 'categories_id');
-    }
 
 
 }

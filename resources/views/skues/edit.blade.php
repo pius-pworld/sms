@@ -3,23 +3,27 @@
 @section('content')
 <div class="content-wrapper">
     <div class="panel panel-default">
-
+  
         <div class="panel-heading clearfix">
-            
-            <span class="pull-left">
-                <h4 class="mt-5 mb-5">Create New Product</h4>
-            </span>
 
+            <div class="pull-left">
+                <h4 class="mt-5 mb-5">{{ !empty($title) ? $title : 'Skue' }}</h4>
+            </div>
             <div class="btn-group btn-group-sm pull-right" role="group">
-                <a href="{{ route('products.product.index') }}" class="btn btn-primary" title="Show All Product">
+
+                <a href="{{ route('skues.skue.index') }}" class="btn btn-primary" title="Show All Skue">
                     <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
                 </a>
-            </div>
 
+                <a href="{{ route('skues.skue.create') }}" class="btn btn-success" title="Create New Skue">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                </a>
+
+            </div>
         </div>
 
         <div class="panel-body">
-        
+
             @if ($errors->any())
                 <ul class="alert alert-danger">
                     @foreach ($errors->all() as $error)
@@ -28,23 +32,21 @@
                 </ul>
             @endif
 
-            <form method="POST" action="{{ route('products.product.store') }}" accept-charset="UTF-8" id="create_product_form" name="create_product_form" class="form-horizontal" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('skues.skue.update', $skue->id) }}" id="edit_skue_form" name="edit_skue_form" accept-charset="UTF-8" class="form-horizontal">
             {{ csrf_field() }}
-            @include ('products.form', [
-                                        'product' => null,
+            <input name="_method" type="hidden" value="PUT">
+            @include ('skues.form', [
+                                        'skue' => $skue,
                                       ])
 
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
-                        <input class="btn btn-primary" type="submit" value="Add">
+                        <input class="btn btn-primary" type="submit" value="Update">
                     </div>
                 </div>
-
             </form>
 
         </div>
     </div>
- </div>
+</div>
 @endsection
-
-
