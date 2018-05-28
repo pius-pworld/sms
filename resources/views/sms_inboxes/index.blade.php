@@ -48,9 +48,7 @@
                 <table id="example2" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                                                    <th>Sms Inbox Name</th>
-                            <th>Transaction Id</th>
-                            <th>Sms Sender Number</th>
+                                                    <th>Sms Sender Number</th>
 
                         <th></th>
                         </tr>
@@ -58,9 +56,7 @@
                     <tbody>
                     @foreach($smsInboxes as $smsInbox)
                         <tr>
-                                                        <td>{{ $smsInbox->sms_inbox_name }}</td>
-                            <td>{{ $smsInbox->transactionId }}</td>
-                            <td>{{ $smsInbox->sms_sender_number }}</td>
+                                                        <td>{{ $smsInbox->sms_sender_number }}</td>
 
                             <td>
 

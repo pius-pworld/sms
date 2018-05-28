@@ -39,28 +39,12 @@
 
     <div class="panel-body">
         <dl class="dl-horizontal">
-            <dt>Sms Inbox Name</dt>
-            <dd>{{ $smsInbox->sms_inbox_name }}</dd>
-            <dt>Transaction Id</dt>
-            <dd>{{ $smsInbox->transactionId }}</dd>
             <dt>Sms Sender Number</dt>
             <dd>{{ $smsInbox->sms_sender_number }}</dd>
             <dt>Sms Content</dt>
             <dd>{{ $smsInbox->sms_content }}</dd>
-            <dt>Sms Received</dt>
-            <dd>{{ $smsInbox->sms_received }}</dd>
-            <dt>Created By</dt>
-            <dd>{{ optional($smsInbox->creator)->name }}</dd>
-            <dt>Created</dt>
-            <dd>{{ $smsInbox->created }}</dd>
-            <dt>Replied Datetime</dt>
-            <dd>{{ $smsInbox->replied_datetime }}</dd>
             <dt>Status</dt>
             <dd>{{ $smsInbox->status }}</dd>
-            <dt>Updated</dt>
-            <dd>{{ $smsInbox->updated }}</dd>
-            <dt>Updated By</dt>
-            <dd>{{ optional($smsInbox->updater)->name }}</dd>
             <dt>Sms Status</dt>
             <dd>{{ $smsInbox->sms_status }}</dd>
 

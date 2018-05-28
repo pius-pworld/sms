@@ -36,17 +36,9 @@ class Sms_inbox extends Model
      * @var array
      */
     protected $fillable = [
-                  'sms_inbox_name',
-                  'transactionId',
                   'sms_sender_number',
                   'sms_content',
-                  'sms_received',
-                  'created_by',
-                  'created',
-                  'replied_datetime',
                   'status',
-                  'updated',
-                  'updated_by',
                   'sms_status'
               ];
 
@@ -64,64 +56,7 @@ class Sms_inbox extends Model
      */
     protected $casts = [];
     
-    /**
-     * Get the creator for this model.
-     */
-    public function creator()
-    {
-        return $this->belongsTo('App\User','created_by');
-    }
 
-    /**
-     * Get the updater for this model.
-     */
-    public function updater()
-    {
-        return $this->belongsTo('App\User','updated_by');
-    }
 
-    /**
-     * Set the created.
-     *
-     * @param  string  $value
-     * @return void
-     */
-    public function setCreatedAttribute($value)
-    {
-        $this->attributes['created'] = !empty($value) ? date($this->getDateFormat(), strtotime($value)) : null;
-    }
-
-    /**
-     * Set the updated.
-     *
-     * @param  string  $value
-     * @return void
-     */
-    public function setUpdatedAttribute($value)
-    {
-        $this->attributes['updated'] = !empty($value) ? date($this->getDateFormat(), strtotime($value)) : null;
-    }
-
-    /**
-     * Get created in array format
-     *
-     * @param  string  $value
-     * @return array
-     */
-    public function getCreatedAttribute($value)
-    {
-        return date('j/n/Y g:i A', strtotime($value));
-    }
-
-    /**
-     * Get updated in array format
-     *
-     * @param  string  $value
-     * @return array
-     */
-    public function getUpdatedAttribute($value)
-    {
-        return date('j/n/Y g:i A', strtotime($value));
-    }
 
 }

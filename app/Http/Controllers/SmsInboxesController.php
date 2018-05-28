@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use App\Models\Sms_inbox;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Exception;
 
 class SmsInboxesController extends Controller
@@ -31,10 +29,9 @@ class SmsInboxesController extends Controller
      */
     public function create()
     {
-        $creators = User::pluck('name','id')->all();
-$updaters = User::pluck('name','id')->all();
         
-        return view('sms_inboxes.create', compact('creators','updaters'));
+        
+        return view('sms_inboxes.create');
     }
 
     /**
@@ -49,7 +46,7 @@ $updaters = User::pluck('name','id')->all();
         try {
             
             $data = $this->getData($request);
-            $data['created_by'] = Auth::Id();
+            
             Sms_inbox::create($data);
 
             return redirect()->route('sms_inboxes.sms_inbox.index')
@@ -71,7 +68,7 @@ $updaters = User::pluck('name','id')->all();
      */
     public function show($id)
     {
-        $smsInbox = Sms_inbox::with('creator','updater')->findOrFail($id);
+        $smsInbox = Sms_inbox::findOrFail($id);
 
         return view('sms_inboxes.show', compact('smsInbox'));
     }
@@ -86,10 +83,9 @@ $updaters = User::pluck('name','id')->all();
     public function edit($id)
     {
         $smsInbox = Sms_inbox::findOrFail($id);
-        $creators = User::pluck('name','id')->all();
-$updaters = User::pluck('name','id')->all();
+        
 
-        return view('sms_inboxes.edit', compact('smsInbox','creators','updaters'));
+        return view('sms_inboxes.edit', compact('smsInbox'));
     }
 
     /**
@@ -105,7 +101,7 @@ $updaters = User::pluck('name','id')->all();
         try {
             
             $data = $this->getData($request);
-            $data['updated_by'] = Auth::Id();
+            
             $smsInbox = Sms_inbox::findOrFail($id);
             $smsInbox->update($data);
 
@@ -152,17 +148,9 @@ $updaters = User::pluck('name','id')->all();
     protected function getData(Request $request)
     {
         $rules = [
-            'sms_inbox_name' => 'nullable|string|min:0|max:100',
-            'transactionId' => 'nullable|string|min:0|max:30',
             'sms_sender_number' => 'required|numeric|string|min:1|max:15',
             'sms_content' => 'required',
-            'sms_received' => 'nullable|string|min:0',
-            'created_by' => 'nullable',
-            'created' => 'nullable|date_format:j/n/Y g:i A',
-            'replied_datetime' => 'nullable|string|min:0',
             'status' => 'nullable',
-            'updated' => 'nullable|date_format:j/n/Y g:i A',
-            'updated_by' => 'nullable',
             'sms_status' => 'nullable|string|min:0|max:100',
      
         ];
