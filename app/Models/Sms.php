@@ -10,7 +10,7 @@ class Sms extends Model
     //table name
     protected  $tables="sms_inboxes";
     //primary key
-    protected  $primaryKeys ="sms_inbox_id";
+    protected  $primaryKeys ="id";
     //fillable
     protected $fillable=[
 
