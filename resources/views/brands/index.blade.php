@@ -17,12 +17,12 @@
 	<section class="content-header">
       <h1>
         Data Tables
-        <small>Product Brands</small>
+        <small>Brands</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Product Brands</a></li>
-        <li class="active">Product Brands</li>
+        <li><a href="#">Brands</a></li>
+        <li class="active">Brands</li>
       </ol>
     </section>
 	
@@ -32,47 +32,51 @@
         <div class="col-xs-12">
 			<div class="box">
 				<div class="box-header">
-					<h3 class="box-title">Product Brands</h3>
+					<h3 class="box-title">Brands</h3>
 				</div>
 				 <div class="btn-group btn-group-sm pull-right" role="group">
-					<a href="{{ route('product_brands.product_brand.create') }}" class="btn btn-success" title="Create New Product Brand">
+					<a href="{{ route('brands.brand.create') }}" class="btn btn-success" title="Create New Brand">
 						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 					</a>
 				</div>
-				@if(count($productBrands) == 0)
+				@if(count($brands) == 0)
 					<div class="text-center">
-						<h4>No Product Brands Available!</h4>
+						<h4>No Brands Available!</h4>
 					</div>
 				@else
 				<div class="box-body">
                 <table id="example2" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                                                    <th>Name</th>
+                                                    <th>Categories</th>
+                            <th>Brand Name</th>
+                            <th>Segment</th>
 
                         <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach($productBrands as $productBrand)
+                    @foreach($brands as $brand)
                         <tr>
-                                                        <td>{{ $productBrand->name }}</td>
+                                                        <td>{{ optional($brand->category)->category_name }}</td>
+                            <td>{{ $brand->brand_name }}</td>
+                            <td>{{ $brand->segment }}</td>
 
                             <td>
 
-                                <form method="POST" action="{!! route('product_brands.product_brand.destroy', $productBrand->id) !!}" accept-charset="UTF-8">
+                                <form method="POST" action="{!! route('brands.brand.destroy', $brand->id) !!}" accept-charset="UTF-8">
                                 <input name="_method" value="DELETE" type="hidden">
                                 {{ csrf_field() }}
 
                                     <div class="btn-group btn-group-xs pull-right" role="group">
-                                        <a href="{{ route('product_brands.product_brand.show', $productBrand->id ) }}" class="btn btn-info" title="Show Product Brand">
+                                        <a href="{{ route('brands.brand.show', $brand->id ) }}" class="btn btn-info" title="Show Brand">
                                             <span class="glyphicon glyphicon-open" aria-hidden="true"></span>
                                         </a>
-                                        <a href="{{ route('product_brands.product_brand.edit', $productBrand->id ) }}" class="btn btn-primary" title="Edit Product Brand">
+                                        <a href="{{ route('brands.brand.edit', $brand->id ) }}" class="btn btn-primary" title="Edit Brand">
                                             <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                                         </a>
 
-                                        <button type="submit" class="btn btn-danger" title="Delete Product Brand" onclick="return confirm(&quot;Delete Product Brand?&quot;)">
+                                        <button type="submit" class="btn btn-danger" title="Delete Brand" onclick="return confirm(&quot;Delete Brand?&quot;)">
                                             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                         </button>
                                     </div>
@@ -89,7 +93,7 @@
         </div>
 
         <div class="panel-footer">
-            {!! $productBrands->render() !!}
+            {!! $brands->render() !!}
         </div>
         
         @endif

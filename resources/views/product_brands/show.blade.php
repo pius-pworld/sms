@@ -39,14 +39,14 @@
 
     <div class="panel-body">
         <dl class="dl-horizontal">
-            <dt>Name</dt>
-            <dd>{{ $productBrand->name }}</dd>
-            <dt>Description</dt>
-            <dd>{{ $productBrand->description }}</dd>
             <dt>Created At</dt>
             <dd>{{ $productBrand->created_at }}</dd>
             <dt>Updated At</dt>
             <dd>{{ $productBrand->updated_at }}</dd>
+            <dt>Name</dt>
+            <dd>{{ $productBrand->name }}</dd>
+            <dt>Description</dt>
+            <dd>{{ $productBrand->description }}</dd>
             <dt>Created By</dt>
             <dd>{{ optional($productBrand->creator)->name }}</dd>
             <dt>Updated By</dt>

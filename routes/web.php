@@ -678,3 +678,67 @@ Route::group(
 });
 
 Route::get('/parse-sms','Sms@parseSms');
+
+Route::group(
+[
+    'prefix' => 'brands',
+], function () {
+
+    Route::get('/', 'BrandsController@index')
+         ->name('brands.brand.index');
+
+    Route::get('/create','BrandsController@create')
+         ->name('brands.brand.create');
+
+    Route::get('/show/{brand}','BrandsController@show')
+         ->name('brands.brand.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{brand}/edit','BrandsController@edit')
+         ->name('brands.brand.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'BrandsController@store')
+         ->name('brands.brand.store');
+               
+    Route::put('brand/{brand}', 'BrandsController@update')
+         ->name('brands.brand.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/brand/{brand}','BrandsController@destroy')
+         ->name('brands.brand.destroy')
+         ->where('id', '[0-9]+');
+
+});
+
+Route::group(
+[
+    'prefix' => 'file_uploads',
+], function () {
+
+    Route::get('/', 'FileUploadsController@index')
+         ->name('file_uploads.file_upload.index');
+
+    Route::get('/create','FileUploadsController@create')
+         ->name('file_uploads.file_upload.create');
+
+    Route::get('/show/{fileUpload}','FileUploadsController@show')
+         ->name('file_uploads.file_upload.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{fileUpload}/edit','FileUploadsController@edit')
+         ->name('file_uploads.file_upload.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'FileUploadsController@store')
+         ->name('file_uploads.file_upload.store');
+               
+    Route::put('file_upload/{fileUpload}', 'FileUploadsController@update')
+         ->name('file_uploads.file_upload.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/file_upload/{fileUpload}','FileUploadsController@destroy')
+         ->name('file_uploads.file_upload.destroy')
+         ->where('id', '[0-9]+');
+
+});

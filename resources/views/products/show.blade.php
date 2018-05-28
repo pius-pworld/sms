@@ -39,20 +39,18 @@
 
     <div class="panel-body">
         <dl class="dl-horizontal">
-            <dt>Product Types</dt>
-            <dd>{{ optional($product->productType)->category_name }}</dd>
-            <dt>Categories</dt>
-            <dd>{{ optional($product->category)->category_name }}</dd>
-            <dt>Brand Name</dt>
-            <dd>{{ $product->brand_name }}</dd>
             <dt>Product Name</dt>
             <dd>{{ $product->product_name }}</dd>
-            <dt>Segment</dt>
-            <dd>{{ $product->segment }}</dd>
+            <dt>Brands</dt>
+            <dd>{{ optional($product->brand)->brand_name }}</dd>
+            <dt>Skues</dt>
+            <dd>{{ optional($product->skue)->sku_name }}</dd>
+            <dt>Price</dt>
+            <dd>{{ $product->price }}</dd>
+            <dt>Quantity</dt>
+            <dd>{{ $product->quantity }}</dd>
             <dt>Description</dt>
             <dd>{{ $product->description }}</dd>
-            <dt>File</dt>
-            <dd>{{ basename($product->file) }}</dd>
             <dt>Is Active</dt>
             <dd>{{ ($product->is_active) ? 'Yes' : 'No' }}</dd>
 
