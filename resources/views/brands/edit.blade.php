@@ -7,15 +7,15 @@
         <div class="panel-heading clearfix">
 
             <div class="pull-left">
-                <h4 class="mt-5 mb-5">{{ !empty($title) ? $title : 'Product' }}</h4>
+                <h4 class="mt-5 mb-5">{{ !empty($title) ? $title : 'Brand' }}</h4>
             </div>
             <div class="btn-group btn-group-sm pull-right" role="group">
 
-                <a href="{{ route('products.product.index') }}" class="btn btn-primary" title="Show All Product">
+                <a href="{{ route('brands.brand.index') }}" class="btn btn-primary" title="Show All Brand">
                     <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
                 </a>
 
-                <a href="{{ route('products.product.create') }}" class="btn btn-success" title="Create New Product">
+                <a href="{{ route('brands.brand.create') }}" class="btn btn-success" title="Create New Brand">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 </a>
 
@@ -32,11 +32,11 @@
                 </ul>
             @endif
 
-            <form method="POST" action="{{ route('products.product.update', $product->id) }}" id="edit_product_form" name="edit_product_form" accept-charset="UTF-8" class="form-horizontal">
+            <form method="POST" action="{{ route('brands.brand.update', $brand->id) }}" id="edit_brand_form" name="edit_brand_form" accept-charset="UTF-8" class="form-horizontal">
             {{ csrf_field() }}
             <input name="_method" type="hidden" value="PUT">
-            @include ('products.form', [
-                                        'product' => $product,
+            @include ('brands.form', [
+                                        'brand' => $brand,
                                       ])
 
                 <div class="form-group">

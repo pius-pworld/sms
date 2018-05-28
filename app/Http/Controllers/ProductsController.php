@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use App\Models\Category;
-use App\Models\ProductType;
+use App\Models\Skue;
+use App\Models\Brand;
+use App\Models\product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Exception;
 use Auth;
+
 class ProductsController extends Controller
 {
 
@@ -19,7 +20,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = Product::with('producttype','category')->paginate(25);
+        $products = product::with('brand','skue')->paginate(25);
 
         return view('products.index', compact('products'));
     }
@@ -31,10 +32,10 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        $productTypes = ProductType::pluck('category_name','id')->all();
-$categories = Category::pluck('category_name','id')->all();
+        $brands = Brand::pluck('brand_name','id')->all();
+$skues = Skue::pluck('sku_name','id')->all();
         
-        return view('products.create', compact('productTypes','categories'));
+        return view('products.create', compact('brands','skues'));
     }
 
     /**
@@ -50,7 +51,7 @@ $categories = Category::pluck('category_name','id')->all();
             
             $data = $this->getData($request);
             $data['created_by'] = Auth::Id();
-            Product::create($data);
+            product::create($data);
 
             return redirect()->route('products.product.index')
                              ->with('success_message', 'Product was successfully added!');
@@ -71,7 +72,7 @@ $categories = Category::pluck('category_name','id')->all();
      */
     public function show($id)
     {
-        $product = Product::with('producttype','category')->findOrFail($id);
+        $product = product::with('brand','skue')->findOrFail($id);
 
         return view('products.show', compact('product'));
     }
@@ -85,11 +86,11 @@ $categories = Category::pluck('category_name','id')->all();
      */
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
-        $productTypes = ProductType::pluck('category_name','id')->all();
-$categories = Category::pluck('category_name','id')->all();
+        $product = product::findOrFail($id);
+        $brands = Brand::pluck('brand_name','id')->all();
+$skues = Skue::pluck('sku_name','id')->all();
 
-        return view('products.edit', compact('product','productTypes','categories'));
+        return view('products.edit', compact('product','brands','skues'));
     }
 
     /**
@@ -106,7 +107,7 @@ $categories = Category::pluck('category_name','id')->all();
             
             $data = $this->getData($request);
             $data['updated_by'] = Auth::Id();
-            $product = Product::findOrFail($id);
+            $product = product::findOrFail($id);
             $product->update($data);
 
             return redirect()->route('products.product.index')
@@ -129,7 +130,7 @@ $categories = Category::pluck('category_name','id')->all();
     public function destroy($id)
     {
         try {
-            $product = Product::findOrFail($id);
+            $product = product::findOrFail($id);
             $product->delete();
 
             return redirect()->route('products.product.index')
@@ -152,43 +153,21 @@ $categories = Category::pluck('category_name','id')->all();
     protected function getData(Request $request)
     {
         $rules = [
-            'product_types_id' => 'nullable',
-            'categories_id' => 'nullable',
-            'brand_name' => 'nullable|string|min:0|max:255',
-            'product_name' => 'nullable|string|min:0|max:255',
-            'segment' => 'nullable|string|min:0|max:255',
+            'product_name' => 'required|string|min:1|max:255',
+            'brands_id' => 'required',
+            'skues_id' => 'required',
+            'price' => 'nullable|numeric|min:-9|max:9',
+            'quantity' => 'nullable|numeric|min:-2147483648|max:2147483647',
             'description' => 'nullable',
-            'file' => ['nullable','file'],
             'is_active' => 'nullable|boolean',
      
         ];
         
         $data = $request->validate($rules);
-        if ($request->has('custom_delete_file')) {
-            $data['file'] = null;
-        }
-        if ($request->hasFile('file')) {
-            $data['file'] = $this->moveFile($request->file('file'));
-        }
 
         $data['is_active'] = $request->has('is_active');
 
         return $data;
     }
-  
-    /**
-     * Moves the attached file to the server.
-     *
-     * @param Symfony\Component\HttpFoundation\File\UploadedFile $file
-     *
-     * @return string
-     */
-    protected function moveFile($file)
-    {
-        if (!$file->isValid()) {
-            return '';
-        }
-        
-        return $file->store(config('codegenerator.files_upload_path'), config('filesystems.default'));
-    }
+
 }

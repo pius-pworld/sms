@@ -2,43 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Models\brand;
+use App\Models\Category;
 use Illuminate\Http\Request;
-use App\Models\product_brand;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Exception;
+use Auth;
 
-class ProductBrandsController extends Controller
+class BrandsController extends Controller
 {
 
     /**
-     * Display a listing of the product brands.
+     * Display a listing of the brands.
      *
      * @return Illuminate\View\View
      */
     public function index()
     {
-        $productBrands = product_brand::paginate(25);
+        $brands = brand::with('category')->paginate(25);
 
-        return view('product_brands.index', compact('productBrands'));
+        return view('brands.index', compact('brands'));
     }
 
     /**
-     * Show the form for creating a new product brand.
+     * Show the form for creating a new brand.
      *
      * @return Illuminate\View\View
      */
     public function create()
     {
-        $creators = User::pluck('name','id')->all();
-$updaters = User::pluck('name','id')->all();
+        $categories = Category::pluck('category_name','id')->all();
         
-        return view('product_brands.create', compact('creators','updaters'));
+        return view('brands.create', compact('categories'));
     }
 
     /**
-     * Store a new product brand in the storage.
+     * Store a new brand in the storage.
      *
      * @param Illuminate\Http\Request $request
      *
@@ -50,10 +49,10 @@ $updaters = User::pluck('name','id')->all();
             
             $data = $this->getData($request);
             $data['created_by'] = Auth::Id();
-            product_brand::create($data);
+            brand::create($data);
 
-            return redirect()->route('product_brands.product_brand.index')
-                             ->with('success_message', 'Product Brand was successfully added!');
+            return redirect()->route('brands.brand.index')
+                             ->with('success_message', 'Brand was successfully added!');
 
         } catch (Exception $exception) {
 
@@ -63,7 +62,7 @@ $updaters = User::pluck('name','id')->all();
     }
 
     /**
-     * Display the specified product brand.
+     * Display the specified brand.
      *
      * @param int $id
      *
@@ -71,13 +70,13 @@ $updaters = User::pluck('name','id')->all();
      */
     public function show($id)
     {
-        $productBrand = product_brand::with('creator','updater')->findOrFail($id);
+        $brand = brand::with('category')->findOrFail($id);
 
-        return view('product_brands.show', compact('productBrand'));
+        return view('brands.show', compact('brand'));
     }
 
     /**
-     * Show the form for editing the specified product brand.
+     * Show the form for editing the specified brand.
      *
      * @param int $id
      *
@@ -85,15 +84,14 @@ $updaters = User::pluck('name','id')->all();
      */
     public function edit($id)
     {
-        $productBrand = product_brand::findOrFail($id);
-        $creators = User::pluck('name','id')->all();
-$updaters = User::pluck('name','id')->all();
+        $brand = brand::findOrFail($id);
+        $categories = Category::pluck('category_name','id')->all();
 
-        return view('product_brands.edit', compact('productBrand','creators','updaters'));
+        return view('brands.edit', compact('brand','categories'));
     }
 
     /**
-     * Update the specified product brand in the storage.
+     * Update the specified brand in the storage.
      *
      * @param  int $id
      * @param Illuminate\Http\Request $request
@@ -106,11 +104,11 @@ $updaters = User::pluck('name','id')->all();
             
             $data = $this->getData($request);
             $data['updated_by'] = Auth::Id();
-            $productBrand = product_brand::findOrFail($id);
-            $productBrand->update($data);
+            $brand = brand::findOrFail($id);
+            $brand->update($data);
 
-            return redirect()->route('product_brands.product_brand.index')
-                             ->with('success_message', 'Product Brand was successfully updated!');
+            return redirect()->route('brands.brand.index')
+                             ->with('success_message', 'Brand was successfully updated!');
 
         } catch (Exception $exception) {
 
@@ -120,7 +118,7 @@ $updaters = User::pluck('name','id')->all();
     }
 
     /**
-     * Remove the specified product brand from the storage.
+     * Remove the specified brand from the storage.
      *
      * @param  int $id
      *
@@ -129,11 +127,11 @@ $updaters = User::pluck('name','id')->all();
     public function destroy($id)
     {
         try {
-            $productBrand = product_brand::findOrFail($id);
-            $productBrand->delete();
+            $brand = brand::findOrFail($id);
+            $brand->delete();
 
-            return redirect()->route('product_brands.product_brand.index')
-                             ->with('success_message', 'Product Brand was successfully deleted!');
+            return redirect()->route('brands.brand.index')
+                             ->with('success_message', 'Brand was successfully deleted!');
 
         } catch (Exception $exception) {
 
@@ -152,10 +150,10 @@ $updaters = User::pluck('name','id')->all();
     protected function getData(Request $request)
     {
         $rules = [
-            'name' => 'nullable|string|min:0|max:255',
-            'description' => 'nullable|string|min:0|max:1000',
-            'created_by' => 'nullable',
-            'updated_by' => 'nullable',
+            'categories_id' => 'nullable',
+            'brand_name' => 'nullable|string|min:0|max:255',
+            'segment' => 'nullable|string|min:0|max:255',
+            'description' => 'nullable',
             'is_active' => 'nullable|boolean',
      
         ];

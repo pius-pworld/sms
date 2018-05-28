@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class product extends Model
+class brand extends Model
 {
 
 
@@ -13,7 +13,7 @@ class product extends Model
      *
      * @var string
      */
-    protected $table = 'products';
+    protected $table = 'brands';
 
     /**
      * The database primary key value.
@@ -28,11 +28,9 @@ class product extends Model
      * @var array
      */
     protected $fillable = [
-        'product_name',
-        'brands_id',
-        'skues_id',
-        'price',
-        'quantity',
+        'categories_id',
+        'brand_name',
+        'segment',
         'description',
         'created_by',
         'updated_by',
@@ -54,19 +52,11 @@ class product extends Model
     protected $casts = [];
 
     /**
-     * Get the brand for this model.
+     * Get the category for this model.
      */
-    public function brand()
+    public function category()
     {
-        return $this->belongsTo('App\Models\Brand', 'brands_id');
-    }
-
-    /**
-     * Get the skue for this model.
-     */
-    public function skue()
-    {
-        return $this->belongsTo('App\Models\Skue', 'skues_id');
+        return $this->belongsTo('App\Models\Category', 'categories_id');
     }
 
 
