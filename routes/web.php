@@ -679,6 +679,8 @@ Route::group(
 
 Route::get('/parse-sms','Sms@parseSms');
 
+Route::post('/sms-inbox','Sms@smsInbox');
+
 Route::group(
 [
     'prefix' => 'brands',
@@ -700,7 +702,7 @@ Route::group(
 
     Route::post('/', 'BrandsController@store')
          ->name('brands.brand.store');
-               
+
     Route::put('brand/{brand}', 'BrandsController@update')
          ->name('brands.brand.update')
          ->where('id', '[0-9]+');
@@ -732,7 +734,7 @@ Route::group(
 
     Route::post('/', 'FileUploadsController@store')
          ->name('file_uploads.file_upload.store');
-               
+
     Route::put('file_upload/{fileUpload}', 'FileUploadsController@update')
          ->name('file_uploads.file_upload.update')
          ->where('id', '[0-9]+');
@@ -764,7 +766,7 @@ Route::group(
 
     Route::post('/', 'SmsInboxesController@store')
          ->name('sms_inboxes.sms_inbox.store');
-               
+
     Route::put('sms_inbox/{smsInbox}', 'SmsInboxesController@update')
          ->name('sms_inboxes.sms_inbox.update')
          ->where('id', '[0-9]+');
