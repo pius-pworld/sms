@@ -104,5 +104,10 @@
     {
         "model-name": "FileUpload",
         "resource-file": "file_uploads.json"
+    },
+    {
+        "model-name": "Sms_inbox",
+        "resource-file": "sms_inboxes.json",
+        "table-name": "sms_inboxes"
     }
 ]
