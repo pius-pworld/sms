@@ -106,7 +106,7 @@
         "resource-file": "file_uploads.json"
     },
     {
-        "model-name": "Sms_inbox",
+        "model-name": "SmsInbox",
         "resource-file": "sms_inboxes.json",
         "table-name": "sms_inboxes"
     }

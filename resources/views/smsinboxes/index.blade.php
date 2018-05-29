@@ -17,12 +17,12 @@
 	<section class="content-header">
       <h1>
         Data Tables
-        <small>Sms Inboxes</small>
+        <small>Smsinboxes</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Sms Inboxes</a></li>
-        <li class="active">Sms Inboxes</li>
+        <li><a href="#">Smsinboxes</a></li>
+        <li class="active">Smsinboxes</li>
       </ol>
     </section>
 	
@@ -32,53 +32,57 @@
         <div class="col-xs-12">
 			<div class="box">
 				<div class="box-header">
-					<h3 class="box-title">Sms Inboxes</h3>
+					<h3 class="box-title">Smsinboxes</h3>
 				</div>
 				 <div class="btn-group btn-group-sm pull-right" role="group">
-					<a href="{{ route('sms_inboxes.sms_inbox.create') }}" class="btn btn-success" title="Create New Sms Inbox">
+					<a href="{{ route('smsinboxes.smsinbox.create') }}" class="btn btn-success" title="Create New Smsinbox">
 						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 					</a>
 				</div>
-				@if(count($smsInboxes) == 0)
+				@if(count($smsinboxes) == 0)
 					<div class="text-center">
-						<h4>No Sms Inboxes Available!</h4>
+						<h4>No Smsinboxes Available!</h4>
 					</div>
 				@else
 				<div class="box-body">
                 <table id="example2" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                                                    <th>Sender</th>
-                            <th>Sms Content</th>
-                            <th>Status</th>
+                                                    <th>Sms Inbox Name</th>
+                            <th>Transaction Id</th>
+                            <th>Sender</th>
                             <th>Sms Status</th>
+                            <th>Sms Received</th>
+                            <th>Replied At</th>
 
                         <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach($smsInboxes as $smsInbox)
+                    @foreach($smsinboxes as $smsinbox)
                         <tr>
-                                                        <td>{{ $smsInbox->sender }}</td>
-                            <td>{{ $smsInbox->sms_content }}</td>
-                            <td>{{ $smsInbox->status }}</td>
-                            <td>{{ $smsInbox->sms_status }}</td>
+                                                        <td>{{ $smsinbox->sms_inbox_name }}</td>
+                            <td>{{ $smsinbox->transactionId }}</td>
+                            <td>{{ $smsinbox->sender }}</td>
+                            <td>{{ $smsinbox->sms_status }}</td>
+                            <td>{{ $smsinbox->sms_received }}</td>
+                            <td>{{ $smsinbox->replied_at }}</td>
 
                             <td>
 
-                                <form method="POST" action="{!! route('sms_inboxes.sms_inbox.destroy', $smsInbox->id) !!}" accept-charset="UTF-8">
+                                <form method="POST" action="{!! route('smsinboxes.smsinbox.destroy', $smsinbox->id) !!}" accept-charset="UTF-8">
                                 <input name="_method" value="DELETE" type="hidden">
                                 {{ csrf_field() }}
 
                                     <div class="btn-group btn-group-xs pull-right" role="group">
-                                        <a href="{{ route('sms_inboxes.sms_inbox.show', $smsInbox->id ) }}" class="btn btn-info" title="Show Sms Inbox">
+                                        <a href="{{ route('smsinboxes.smsinbox.show', $smsinbox->id ) }}" class="btn btn-info" title="Show Smsinbox">
                                             <span class="glyphicon glyphicon-open" aria-hidden="true"></span>
                                         </a>
-                                        <a href="{{ route('sms_inboxes.sms_inbox.edit', $smsInbox->id ) }}" class="btn btn-primary" title="Edit Sms Inbox">
+                                        <a href="{{ route('smsinboxes.smsinbox.edit', $smsinbox->id ) }}" class="btn btn-primary" title="Edit Smsinbox">
                                             <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                                         </a>
 
-                                        <button type="submit" class="btn btn-danger" title="Delete Sms Inbox" onclick="return confirm(&quot;Delete Sms Inbox?&quot;)">
+                                        <button type="submit" class="btn btn-danger" title="Delete Smsinbox" onclick="return confirm(&quot;Delete Smsinbox?&quot;)">
                                             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                         </button>
                                     </div>
@@ -95,7 +99,7 @@
         </div>
 
         <div class="panel-footer">
-            {!! $smsInboxes->render() !!}
+            {!! $smsinboxes->render() !!}
         </div>
         
         @endif

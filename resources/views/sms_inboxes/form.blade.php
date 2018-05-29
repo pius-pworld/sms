@@ -1,9 +1,9 @@
 
-<div class="form-group {{ $errors->has('sms_sender_number') ? 'has-error' : '' }}">
-    <label for="sms_sender_number" class="col-md-2 control-label">Sms Sender Number</label>
+<div class="form-group {{ $errors->has('sender') ? 'has-error' : '' }}">
+    <label for="sender" class="col-md-2 control-label">Sender</label>
     <div class="col-md-10">
-        <input class="form-control" name="sms_sender_number" type="text" id="sms_sender_number" value="{{ old('sms_sender_number', optional($smsInbox)->sms_sender_number) }}" min="1" max="15" required="true" placeholder="Enter sms sender number here...">
-        {!! $errors->first('sms_sender_number', '<p class="help-block">:message</p>') !!}
+        <input class="form-control" name="sender" type="text" id="sender" value="{{ old('sender', optional($smsInbox)->sender) }}" minlength="1" maxlength="15" required="true" placeholder="Enter sender here...">
+        {!! $errors->first('sender', '<p class="help-block">:message</p>') !!}
     </div>
 </div>
 

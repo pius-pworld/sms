@@ -7399,14 +7399,14 @@
         ]
     },
     {
-        "model-name": "Sms_inbox",
+        "model-name": "SmsInbox",
         "resource-file": "D:\\laragon\\www\\uro-cola\\resources\\laravel-code-generator\\sources\\sms_inboxes.json",
         "table-name": "sms_inboxes",
         "migrations": [
             {
-                "name": "2018_05_28_044707_create_sms_inboxes_table",
+                "name": "2018_05_29_094231_create_sms_inboxes_table",
                 "class-name": "CreateSmsInboxesTable",
-                "path": "D:\\laragon\\www\\uro-cola\\database\\migrations\\2018_05_28_044707_create_sms_inboxes_table.php",
+                "path": "D:\\laragon\\www\\uro-cola\\database\\migrations\\2018_05_29_094231_create_sms_inboxes_table.php",
                 "is-create": true,
                 "is-virtual": true,
                 "is-organized": false,
@@ -7521,13 +7521,13 @@
                             "on-update": null
                         },
                         {
-                            "name": "sms_sender_number",
-                            "labels": "Sms Sender Number",
+                            "name": "sender",
+                            "labels": "Sender",
                             "html-type": "text",
                             "css-class": "",
                             "options": {},
                             "html-value": null,
-                            "validation": "required|numeric",
+                            "validation": "required|string|min:1|max:15",
                             "is-on-index": true,
                             "is-on-show": true,
                             "is-on-form": true,
@@ -7548,7 +7548,7 @@
                             "is-date": false,
                             "date-format": "",
                             "cast-as": "",
-                            "placeholder": "Enter sms sender number here...",
+                            "placeholder": "Enter sender here...",
                             "delimiter": "; ",
                             "range": [],
                             "foreign-relation": null,
@@ -7895,7 +7895,7 @@
                             "name": "U_sms_inbox",
                             "type": "index",
                             "columns": [
-                                "sms_sender_number",
+                                "sender",
                                 "sms_received"
                             ]
                         }

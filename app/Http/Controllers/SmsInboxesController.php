@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sms_inbox;
+use App\Models\SmsInbox;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Exception;
 
 class SmsInboxesController extends Controller
@@ -17,7 +18,7 @@ class SmsInboxesController extends Controller
      */
     public function index()
     {
-        $smsInboxes = Sms_inbox::paginate(25);
+        $smsInboxes = SmsInbox::paginate(25);
 
         return view('sms_inboxes.index', compact('smsInboxes'));
     }
@@ -46,8 +47,8 @@ class SmsInboxesController extends Controller
         try {
             
             $data = $this->getData($request);
-            
-            Sms_inbox::create($data);
+            $data['created_by'] = Auth::Id();
+            SmsInbox::create($data);
 
             return redirect()->route('sms_inboxes.sms_inbox.index')
                              ->with('success_message', 'Sms Inbox was successfully added!');
@@ -68,7 +69,7 @@ class SmsInboxesController extends Controller
      */
     public function show($id)
     {
-        $smsInbox = Sms_inbox::findOrFail($id);
+        $smsInbox = SmsInbox::findOrFail($id);
 
         return view('sms_inboxes.show', compact('smsInbox'));
     }
@@ -82,7 +83,7 @@ class SmsInboxesController extends Controller
      */
     public function edit($id)
     {
-        $smsInbox = Sms_inbox::findOrFail($id);
+        $smsInbox = SmsInbox::findOrFail($id);
         
 
         return view('sms_inboxes.edit', compact('smsInbox'));
@@ -101,8 +102,8 @@ class SmsInboxesController extends Controller
         try {
             
             $data = $this->getData($request);
-            
-            $smsInbox = Sms_inbox::findOrFail($id);
+            $data['updated_by'] = Auth::Id();
+            $smsInbox = SmsInbox::findOrFail($id);
             $smsInbox->update($data);
 
             return redirect()->route('sms_inboxes.sms_inbox.index')
@@ -125,7 +126,7 @@ class SmsInboxesController extends Controller
     public function destroy($id)
     {
         try {
-            $smsInbox = Sms_inbox::findOrFail($id);
+            $smsInbox = SmsInbox::findOrFail($id);
             $smsInbox->delete();
 
             return redirect()->route('sms_inboxes.sms_inbox.index')
@@ -148,7 +149,7 @@ class SmsInboxesController extends Controller
     protected function getData(Request $request)
     {
         $rules = [
-            'sms_sender_number' => 'required|numeric|string|min:1|max:15',
+            'sender' => 'required|string|min:1|max:15',
             'sms_content' => 'required',
             'status' => 'nullable',
             'sms_status' => 'nullable|string|min:0|max:100',

@@ -39,8 +39,8 @@
 
     <div class="panel-body">
         <dl class="dl-horizontal">
-            <dt>Sms Sender Number</dt>
-            <dd>{{ $smsInbox->sms_sender_number }}</dd>
+            <dt>Sender</dt>
+            <dd>{{ $smsInbox->sender }}</dd>
             <dt>Sms Content</dt>
             <dd>{{ $smsInbox->sms_content }}</dd>
             <dt>Status</dt>
