@@ -38,8 +38,8 @@ class SmsInbox extends Model
     protected $fillable = [
                   'sender',
                   'sms_content',
-                  'status',
-                  'sms_status'
+                  'sms_status',
+                  'is_active'
               ];
 
     /**

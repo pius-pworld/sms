@@ -50,7 +50,6 @@
                         <tr>
                                                     <th>Sender</th>
                             <th>Sms Content</th>
-                            <th>Status</th>
                             <th>Sms Status</th>
 
                         <th></th>
@@ -61,7 +60,6 @@
                         <tr>
                                                         <td>{{ $smsInbox->sender }}</td>
                             <td>{{ $smsInbox->sms_content }}</td>
-                            <td>{{ $smsInbox->status }}</td>
                             <td>{{ $smsInbox->sms_status }}</td>
 
                             <td>

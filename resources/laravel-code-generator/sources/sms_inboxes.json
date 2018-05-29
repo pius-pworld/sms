@@ -321,8 +321,8 @@
             "on-update": null
         },
         {
-            "name": "status",
-            "labels": "Status",
+            "name": "sms_status",
+            "labels": "Sms Status",
             "html-type": "select",
             "css-class": "",
             "options": {
@@ -341,7 +341,7 @@
             "data-type-params": [
                 8
             ],
-            "data-value": "Active",
+            "data-value": null,
             "is-index": false,
             "is-unique": false,
             "is-primary": false,
@@ -354,7 +354,7 @@
             "is-date": false,
             "date-format": "",
             "cast-as": "",
-            "placeholder": "Enter status here...",
+            "placeholder": "Enter sms status here...",
             "delimiter": "; ",
             "range": [],
             "foreign-relation": null,
@@ -439,20 +439,21 @@
             "on-update": "Illuminate\\Support\\Facades\\Auth::Id();"
         },
         {
-            "name": "sms_status",
-            "labels": "Sms Status",
-            "html-type": "text",
+            "name": "is_active",
+            "labels": "Is Active",
+            "html-type": "checkbox",
             "css-class": "",
-            "options": {},
+            "options": {
+                "0": "No",
+                "1": "Yes"
+            },
             "html-value": null,
-            "validation": "nullable|string|min:0|max:100",
-            "is-on-index": true,
+            "validation": "nullable|boolean",
+            "is-on-index": false,
             "is-on-show": true,
             "is-on-form": true,
-            "data-type": "string",
-            "data-type-params": [
-                100
-            ],
+            "data-type": "bool",
+            "data-type-params": [],
             "data-value": null,
             "is-index": false,
             "is-unique": false,
@@ -466,7 +467,7 @@
             "is-date": false,
             "date-format": "",
             "cast-as": "",
-            "placeholder": "Enter sms status here...",
+            "placeholder": {},
             "delimiter": "; ",
             "range": [],
             "foreign-relation": null,

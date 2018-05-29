@@ -151,13 +151,14 @@ class SmsInboxesController extends Controller
         $rules = [
             'sender' => 'required|string|min:1|max:15',
             'sms_content' => 'required',
-            'status' => 'nullable',
-            'sms_status' => 'nullable|string|min:0|max:100',
+            'sms_status' => 'nullable',
+            'is_active' => 'nullable|boolean',
      
         ];
         
         $data = $request->validate($rules);
 
+        $data['is_active'] = $request->has('is_active');
 
         return $data;
     }

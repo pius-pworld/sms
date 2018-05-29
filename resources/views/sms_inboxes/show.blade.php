@@ -43,10 +43,10 @@
             <dd>{{ $smsInbox->sender }}</dd>
             <dt>Sms Content</dt>
             <dd>{{ $smsInbox->sms_content }}</dd>
-            <dt>Status</dt>
-            <dd>{{ $smsInbox->status }}</dd>
             <dt>Sms Status</dt>
             <dd>{{ $smsInbox->sms_status }}</dd>
+            <dt>Is Active</dt>
+            <dd>{{ ($smsInbox->is_active) ? 'Yes' : 'No' }}</dd>
 
         </dl>
 

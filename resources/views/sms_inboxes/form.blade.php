@@ -15,31 +15,37 @@
     </div>
 </div>
 
-<div class="form-group {{ $errors->has('status') ? 'has-error' : '' }}">
-    <label for="status" class="col-md-2 control-label">Status</label>
+<div class="form-group {{ $errors->has('sms_status') ? 'has-error' : '' }}">
+    <label for="sms_status" class="col-md-2 control-label">Sms Status</label>
     <div class="col-md-10">
-        <select class="form-control" id="status" name="status">
-        	    <option value="" style="display: none;" {{ old('status', optional($smsInbox)->status ?: '') == '' ? 'selected' : '' }} disabled selected>Enter status here...</option>
+        <select class="form-control" id="sms_status" name="sms_status">
+        	    <option value="" style="display: none;" {{ old('sms_status', optional($smsInbox)->sms_status ?: '') == '' ? 'selected' : '' }} disabled selected>Enter sms status here...</option>
         	@foreach (['Active' => 'Active',
 'Inactive' => 'Inactive',
 'Pending' => 'Pending',
 'Replied' => 'Replied',
 'Unread' => 'Unread'] as $key => $text)
-			    <option value="{{ $key }}" {{ old('status', optional($smsInbox)->status) == $key ? 'selected' : '' }}>
+			    <option value="{{ $key }}" {{ old('sms_status', optional($smsInbox)->sms_status) == $key ? 'selected' : '' }}>
 			    	{{ $text }}
 			    </option>
 			@endforeach
         </select>
         
-        {!! $errors->first('status', '<p class="help-block">:message</p>') !!}
+        {!! $errors->first('sms_status', '<p class="help-block">:message</p>') !!}
     </div>
 </div>
 
-<div class="form-group {{ $errors->has('sms_status') ? 'has-error' : '' }}">
-    <label for="sms_status" class="col-md-2 control-label">Sms Status</label>
+<div class="form-group {{ $errors->has('is_active') ? 'has-error' : '' }}">
+    <label for="is_active" class="col-md-2 control-label">Is Active</label>
     <div class="col-md-10">
-        <input class="form-control" name="sms_status" type="text" id="sms_status" value="{{ old('sms_status', optional($smsInbox)->sms_status) }}" maxlength="100" placeholder="Enter sms status here...">
-        {!! $errors->first('sms_status', '<p class="help-block">:message</p>') !!}
+        <div class="checkbox">
+            <label for="is_active_1">
+            	<input id="is_active_1" class="" name="is_active" type="checkbox" value="1" {{ old('is_active', optional($smsInbox)->is_active) == '1' ? 'checked' : '' }}>
+                Yes
+            </label>
+        </div>
+
+        {!! $errors->first('is_active', '<p class="help-block">:message</p>') !!}
     </div>
 </div>
 
