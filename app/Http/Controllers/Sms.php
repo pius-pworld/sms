@@ -26,7 +26,7 @@ class Sms extends Controller
                 $result_array[$dt[0]] =count($dt)-1 >1 ? implode('-',array_slice($dt,1)) : $dt[1] ;
             }
             else{
-                echo "Invalid SMS Format at String Contains (".$val.")";
+                echo  "Invalid SMS Format at String Contains (".$val.")";
                 die;
             }
         }
@@ -35,7 +35,7 @@ class Sms extends Controller
     //parse Data
     private function parseData($input_data){
         if(strpos($input_data, '/') === false){
-          die('Invalid string');
+          return 'Invalid message string';
         }
         else{
             list($identifier,$input)=explode('/',$input_data, 2);
@@ -48,11 +48,11 @@ class Sms extends Controller
                 $validator->validate($data, (object)['$ref' => 'file://' . realpath('resources/schemas/'.strtolower($identifier).'.json')]);
                 if (!$validator->isValid()) {
                     foreach ($validator->getErrors() as $error) {
-                        echo sprintf("[%s] %s\n", $error['property'], $error['message']);
+                        return sprintf("[%s] %s\n", $error['property'], $error['message']);
                     }
                 }
                 else{
-                    echo "Validate data";
+                    return true;
                 }
             }
 
@@ -75,7 +75,7 @@ class Sms extends Controller
     public function parseSms($id){
         $data=$this->sms_model->getSms($id);
         if(!empty($data) && !empty($data->sms_content)){
-           $this->parseData($data->sms_content);
+           return $this->parseData($data->sms_content);
         }
 
     }

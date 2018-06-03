@@ -15,25 +15,25 @@
     </div>
 </div>
 
-<div class="form-group {{ $errors->has('sms_status') ? 'has-error' : '' }}">
-    <label for="sms_status" class="col-md-2 control-label">Sms Status</label>
-    <div class="col-md-10">
-        <select class="form-control" id="sms_status" name="sms_status">
-        	    <option value="" style="display: none;" {{ old('sms_status', optional($smsInbox)->sms_status ?: '') == '' ? 'selected' : '' }} disabled selected>Enter sms status here...</option>
-        	@foreach (['Active' => 'Active',
-'Inactive' => 'Inactive',
-'Pending' => 'Pending',
-'Replied' => 'Replied',
-'Unread' => 'Unread'] as $key => $text)
-			    <option value="{{ $key }}" {{ old('sms_status', optional($smsInbox)->sms_status) == $key ? 'selected' : '' }}>
-			    	{{ $text }}
-			    </option>
-			@endforeach
-        </select>
-        
-        {!! $errors->first('sms_status', '<p class="help-block">:message</p>') !!}
-    </div>
-</div>
+{{--<div class="form-group {{ $errors->has('sms_status') ? 'has-error' : '' }}">--}}
+    {{--<label for="sms_status" class="col-md-2 control-label">Sms Status</label>--}}
+    {{--<div class="col-md-10">--}}
+        {{--<select class="form-control" id="sms_status" name="sms_status">--}}
+        	    {{--<option value="" style="display: none;" {{ old('sms_status', optional($smsInbox)->sms_status ?: '') == '' ? 'selected' : '' }} disabled selected>Enter sms status here...</option>--}}
+        	{{--@foreach (['Active' => 'Active',--}}
+{{--'Inactive' => 'Inactive',--}}
+{{--'Pending' => 'Pending',--}}
+{{--'Replied' => 'Replied',--}}
+{{--'Unread' => 'Unread'] as $key => $text)--}}
+			    {{--<option value="{{ $key }}" {{ old('sms_status', optional($smsInbox)->sms_status) == $key ? 'selected' : '' }}>--}}
+			    	{{--{{ $text }}--}}
+			    {{--</option>--}}
+			{{--@endforeach--}}
+        {{--</select>--}}
+
+        {{--{!! $errors->first('sms_status', '<p class="help-block">:message</p>') !!}--}}
+    {{--</div>--}}
+{{--</div>--}}
 
 <div class="form-group {{ $errors->has('is_active') ? 'has-error' : '' }}">
     <label for="is_active" class="col-md-2 control-label">Is Active</label>

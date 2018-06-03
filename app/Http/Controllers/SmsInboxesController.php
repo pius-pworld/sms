@@ -170,8 +170,17 @@ class SmsInboxesController extends Controller
     }
 
 
-    public function process($id){
-        $this->sms->parseSms($id);
+    public function process($id,Request $request){
+        $parseData=$this->sms->parseSms($id);
+        if($parseData === true){
+            SmsInbox::find($id)->update(['sms_status'=>'Processed']);
+            return redirect()->route('sms_inboxes.sms_inbox.index')
+                ->with('success_message', 'Order successfully placed!');
+        }
+        else{
+            dd($parseData);
+            echo "not validate data";
+        }
     }
 
 }

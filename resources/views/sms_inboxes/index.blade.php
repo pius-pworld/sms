@@ -83,9 +83,11 @@
                                 
                             </td>
                             <td>
+                                <?php if($smsInbox->sms_status === 'Active'):?>
                                 <a href="{{ route('sms_inboxes.sms_inbox.process', $smsInbox->id ) }}" class="btn btn-primary" title="Edit Sms Inbox">
                                     <span class="glyphicon glyphicon-plane" aria-hidden="true"></span>
                                 </a>
+                                <?php endif;?>
                             </td>
                         </tr>
                     @endforeach
