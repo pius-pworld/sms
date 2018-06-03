@@ -774,5 +774,8 @@ Route::group(
     Route::delete('/sms_inbox/{smsInbox}','SmsInboxesController@destroy')
          ->name('sms_inboxes.sms_inbox.destroy')
          ->where('id', '[0-9]+');
+    Route::get('/{smsInbox}/process','SmsInboxesController@process')
+        ->name('sms_inboxes.sms_inbox.process')
+        ->where('id', '[0-9]+');
 
 });
