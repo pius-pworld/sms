@@ -112,6 +112,7 @@ class MenuController extends Controller
                ->orderBy('sort_number', 'asc')
                ->get()->all();
         $tree = $_this->buildTree($menuList);
+
         $menuHtml = $_this->makeMenuTree($tree);
         return $menuHtml;
         
