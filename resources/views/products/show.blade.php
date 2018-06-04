@@ -39,8 +39,6 @@
 
     <div class="panel-body">
         <dl class="dl-horizontal">
-            <dt>Product Name</dt>
-            <dd>{{ $product->product_name }}</dd>
             <dt>Brands</dt>
             <dd>{{ optional($product->brand)->brand_name }}</dd>
             <dt>Skues</dt>

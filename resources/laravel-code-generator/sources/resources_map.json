@@ -82,11 +82,6 @@
         "table-name": "product_types"
     },
     {
-        "model-name": "Skue",
-        "resource-file": "skues.json",
-        "table-name": "skues"
-    },
-    {
         "model-name": "product_brand",
         "resource-file": "product_brands.json",
         "table-name": "product_brands"
@@ -109,5 +104,10 @@
         "model-name": "SmsInbox",
         "resource-file": "sms_inboxes.json",
         "table-name": "sms_inboxes"
+    },
+    {
+        "model-name": "Skue",
+        "resource-file": "skues.json",
+        "table-name": "skues"
     }
 ]

@@ -39,12 +39,16 @@
 
     <div class="panel-body">
         <dl class="dl-horizontal">
+            <dt>Brands</dt>
+            <dd>{{ optional($skue->brand)->brand_name }}</dd>
             <dt>Sku Name</dt>
             <dd>{{ $skue->sku_name }}</dd>
             <dt>Short Name</dt>
             <dd>{{ $skue->short_name }}</dd>
             <dt>Description</dt>
             <dd>{{ $skue->description }}</dd>
+            <dt>Ordering</dt>
+            <dd>{{ $skue->ordering }}</dd>
             <dt>Is Active</dt>
             <dd>{{ ($skue->is_active) ? 'Yes' : 'No' }}</dd>
 

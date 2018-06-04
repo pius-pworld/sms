@@ -1,4 +1,20 @@
 
+<div class="form-group {{ $errors->has('brands_id') ? 'has-error' : '' }}">
+    <label for="brands_id" class="col-md-2 control-label">Brands</label>
+    <div class="col-md-10">
+        <select class="form-control" id="brands_id" name="brands_id">
+        	    <option value="" style="display: none;" {{ old('brands_id', optional($skue)->brands_id ?: '') == '' ? 'selected' : '' }} disabled selected>Select brands</option>
+        	@foreach ($brands as $key => $brand)
+			    <option value="{{ $key }}" {{ old('brands_id', optional($skue)->brands_id) == $key ? 'selected' : '' }}>
+			    	{{ $brand }}
+			    </option>
+			@endforeach
+        </select>
+        
+        {!! $errors->first('brands_id', '<p class="help-block">:message</p>') !!}
+    </div>
+</div>
+
 <div class="form-group {{ $errors->has('sku_name') ? 'has-error' : '' }}">
     <label for="sku_name" class="col-md-2 control-label">Sku Name</label>
     <div class="col-md-10">
@@ -20,6 +36,14 @@
     <div class="col-md-10">
         <textarea class="form-control" name="description" cols="50" rows="10" id="description">{{ old('description', optional($skue)->description) }}</textarea>
         {!! $errors->first('description', '<p class="help-block">:message</p>') !!}
+    </div>
+</div>
+
+<div class="form-group {{ $errors->has('ordering') ? 'has-error' : '' }}">
+    <label for="ordering" class="col-md-2 control-label">Ordering</label>
+    <div class="col-md-10">
+        <input class="form-control" name="ordering" type="number" id="ordering" value="{{ old('ordering', optional($skue)->ordering) }}" min="-2147483648" max="2147483647" placeholder="Enter ordering here...">
+        {!! $errors->first('ordering', '<p class="help-block">:message</p>') !!}
     </div>
 </div>
 

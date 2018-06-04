@@ -23,6 +23,11 @@ Route::post('password/email','Auth\ForgotPasswordController@sendResetLinkEmail')
 Route::get('password/reset/{token}','Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset','Auth\ResetPasswordController@reset');
 
+Route::get('ordering/brand_skue','OrderingController@ordering_brand_skue');
+Route::post('orderingBrandSkueAction','OrderingController@ordering_brand_skue_action');
+Route::get('showSkue/{id?}','OrderingController@show_skue');
+Route::post('orderingSkueAction','OrderingController@orderingSkueAction');
+
 Route::group(
 [
     'prefix' => 'product_brands',

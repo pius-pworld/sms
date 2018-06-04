@@ -1,12 +1,4 @@
 
-<div class="form-group {{ $errors->has('product_name') ? 'has-error' : '' }}">
-    <label for="product_name" class="col-md-2 control-label">Product Name</label>
-    <div class="col-md-10">
-        <input class="form-control" name="product_name" type="text" id="product_name" value="{{ old('product_name', optional($product)->product_name) }}" minlength="1" maxlength="255" required="true" placeholder="Enter product name here...">
-        {!! $errors->first('product_name', '<p class="help-block">:message</p>') !!}
-    </div>
-</div>
-
 <div class="form-group {{ $errors->has('brands_id') ? 'has-error' : '' }}">
     <label for="brands_id" class="col-md-2 control-label">Brands</label>
     <div class="col-md-10">

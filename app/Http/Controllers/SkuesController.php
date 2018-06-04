@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Skue;
+use App\Models\Brand;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Exception;
-use Auth;
+
 class SkuesController extends Controller
 {
 
@@ -17,7 +19,7 @@ class SkuesController extends Controller
      */
     public function index()
     {
-        $skues = Skue::paginate(25);
+        $skues = Skue::with('brand')->paginate(25);
 
         return view('skues.index', compact('skues'));
     }
@@ -29,9 +31,9 @@ class SkuesController extends Controller
      */
     public function create()
     {
+        $brands = Brand::pluck('brand_name','id')->all();
         
-        
-        return view('skues.create');
+        return view('skues.create', compact('brands'));
     }
 
     /**
@@ -68,7 +70,7 @@ class SkuesController extends Controller
      */
     public function show($id)
     {
-        $skue = Skue::findOrFail($id);
+        $skue = Skue::with('brand')->findOrFail($id);
 
         return view('skues.show', compact('skue'));
     }
@@ -83,9 +85,9 @@ class SkuesController extends Controller
     public function edit($id)
     {
         $skue = Skue::findOrFail($id);
-        
+        $brands = Brand::pluck('brand_name','id')->all();
 
-        return view('skues.edit', compact('skue'));
+        return view('skues.edit', compact('skue','brands'));
     }
 
     /**
@@ -148,9 +150,11 @@ class SkuesController extends Controller
     protected function getData(Request $request)
     {
         $rules = [
+            'brands_id' => 'nullable',
             'sku_name' => 'required|string|min:1|max:255',
             'short_name' => 'nullable|string|min:0|max:255',
             'description' => 'nullable',
+            'ordering' => 'nullable|numeric|min:-2147483648|max:2147483647',
             'is_active' => 'nullable|boolean',
      
         ];

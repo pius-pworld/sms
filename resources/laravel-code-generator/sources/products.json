@@ -42,9 +42,9 @@
             "options": {},
             "html-value": null,
             "validation": "required|string|min:1|max:255",
-            "is-on-index": true,
-            "is-on-show": true,
-            "is-on-form": true,
+            "is-on-index": false,
+            "is-on-show": false,
+            "is-on-form": false,
             "data-type": "string",
             "data-type-params": [
                 255
