@@ -48,22 +48,20 @@
                 <table id="example2" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                                                    <th>Sender</th>
+                            <th>Sender</th>
                             <th>Sms Content</th>
                             <th>Sms Status</th>
-
-                        <th></th>
+                            <th>Action</th>
+                            <th>Process</th>
                         </tr>
                     </thead>
                     <tbody>
                     @foreach($smsInboxes as $smsInbox)
                         <tr>
-                                                        <td>{{ $smsInbox->sender }}</td>
+                            <td>{{ $smsInbox->sender }}</td>
                             <td>{{ $smsInbox->sms_content }}</td>
                             <td>{{ $smsInbox->sms_status }}</td>
-
                             <td>
-
                                 <form method="POST" action="{!! route('sms_inboxes.sms_inbox.destroy', $smsInbox->id) !!}" accept-charset="UTF-8">
                                 <input name="_method" value="DELETE" type="hidden">
                                 {{ csrf_field() }}
@@ -83,6 +81,13 @@
 
                                 </form>
                                 
+                            </td>
+                            <td>
+                                <?php if($smsInbox->sms_status === 'Active'):?>
+                                <a href="{{ route('sms_inboxes.sms_inbox.process', $smsInbox->id ) }}" class="btn btn-primary" title="Edit Sms Inbox">
+                                    <span class="glyphicon glyphicon-plane" aria-hidden="true"></span>
+                                </a>
+                                <?php endif;?>
                             </td>
                         </tr>
                     @endforeach

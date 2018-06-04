@@ -26,7 +26,7 @@ class Sms extends Controller
                 $result_array[$dt[0]] =count($dt)-1 >1 ? implode('-',array_slice($dt,1)) : $dt[1] ;
             }
             else{
-                echo "Invalid SMS Format at String Contains (".$val.")";
+                echo  "Invalid SMS Format at String Contains (".$val.")";
                 die;
             }
         }
@@ -34,23 +34,30 @@ class Sms extends Controller
     }
     //parse Data
     private function parseData($input_data){
-        list($identifier,$input)=explode('/',$input_data, 2);
-        $input_array=(explode("/", $input));
-        if(strtolower($identifier) === 'order'){
-            $result_array=self::prepareData($input_array);
-            //validation
-            $data = json_decode(json_encode($result_array));
-            $validator = new JsonSchema\Validator;
-            $validator->validate($data, (object)['$ref' => 'file://' . realpath('resources/schemas/'.strtolower($identifier).'.json')]);
-            if (!$validator->isValid()) {
-                foreach ($validator->getErrors() as $error) {
-                    echo sprintf("[%s] %s\n", $error['property'], $error['message']);
+        if(strpos($input_data, '/') === false){
+          return 'Invalid message string';
+        }
+        else{
+            list($identifier,$input)=explode('/',$input_data, 2);
+            $input_array=(explode("/", $input));
+            if(strtolower($identifier) === 'order'){
+                $result_array=self::prepareData($input_array);
+                //validation
+                $data = json_decode(json_encode($result_array));
+                $validator = new JsonSchema\Validator;
+                $validator->validate($data, (object)['$ref' => 'file://' . realpath('resources/schemas/'.strtolower($identifier).'.json')]);
+                if (!$validator->isValid()) {
+                    foreach ($validator->getErrors() as $error) {
+                        return sprintf("[%s] %s\n", $error['property'], $error['message']);
+                    }
+                }
+                else{
+                    return true;
                 }
             }
-            else{
-                echo "Validate data";
-            }
+
         }
+
     }
 
     //get total
@@ -65,10 +72,10 @@ class Sms extends Controller
     }
 
     //
-    public function parseSms(){
-        $data=$this->sms_model->getSms(2);
+    public function parseSms($id){
+        $data=$this->sms_model->getSms($id);
         if(!empty($data) && !empty($data->sms_content)){
-           $this->parseData($data->sms_content);
+           return $this->parseData($data->sms_content);
         }
 
     }

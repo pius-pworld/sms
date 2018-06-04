@@ -5,11 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\SmsInbox;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Sms;
 use Illuminate\Support\Facades\Auth;
 use Exception;
 
 class SmsInboxesController extends Controller
 {
+    private $sms;
+    function __construct()
+    {
+        $this->sms = new Sms();
+    }
 
     /**
      * Display a listing of the sms inboxes.
@@ -161,6 +167,20 @@ class SmsInboxesController extends Controller
         $data['is_active'] = $request->has('is_active');
 
         return $data;
+    }
+
+
+    public function process($id,Request $request){
+        $parseData=$this->sms->parseSms($id);
+        if($parseData === true){
+            SmsInbox::find($id)->update(['sms_status'=>'Processed']);
+            return redirect()->route('sms_inboxes.sms_inbox.index')
+                ->with('success_message', 'Order successfully placed!');
+        }
+        else{
+            dd($parseData);
+            echo "not validate data";
+        }
     }
 
 }
