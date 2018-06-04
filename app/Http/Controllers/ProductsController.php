@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Skue;
 use App\Models\Brand;
-use App\Models\product;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Exception;
@@ -20,7 +20,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = product::with('brand','skue')->paginate(25);
+        $products = Product::with('brand','skue')->paginate(25);
 
         return view('products.index', compact('products'));
     }
@@ -50,8 +50,8 @@ $skues = Skue::pluck('sku_name','id')->all();
         try {
             
             $data = $this->getData($request);
-            $data['created_by'] = Auth::Id();
-            product::create($data);
+            $data['created_by'] = Auth::id();
+            Product::create($data);
 
             return redirect()->route('products.product.index')
                              ->with('success_message', 'Product was successfully added!');
@@ -72,7 +72,7 @@ $skues = Skue::pluck('sku_name','id')->all();
      */
     public function show($id)
     {
-        $product = product::with('brand','skue')->findOrFail($id);
+        $product = Product::with('brand','skue')->findOrFail($id);
 
         return view('products.show', compact('product'));
     }
@@ -86,7 +86,7 @@ $skues = Skue::pluck('sku_name','id')->all();
      */
     public function edit($id)
     {
-        $product = product::findOrFail($id);
+        $product = Product::findOrFail($id);
         $brands = Brand::pluck('brand_name','id')->all();
 $skues = Skue::pluck('sku_name','id')->all();
 
@@ -106,8 +106,8 @@ $skues = Skue::pluck('sku_name','id')->all();
         try {
             
             $data = $this->getData($request);
-            $data['updated_by'] = Auth::Id();
-            $product = product::findOrFail($id);
+            $data['updated_by'] = Auth::id();
+            $product = Product::findOrFail($id);
             $product->update($data);
 
             return redirect()->route('products.product.index')
@@ -130,7 +130,7 @@ $skues = Skue::pluck('sku_name','id')->all();
     public function destroy($id)
     {
         try {
-            $product = product::findOrFail($id);
+            $product = Product::findOrFail($id);
             $product->delete();
 
             return redirect()->route('products.product.index')
@@ -153,7 +153,6 @@ $skues = Skue::pluck('sku_name','id')->all();
     protected function getData(Request $request)
     {
         $rules = [
-            'product_name' => 'required|string|min:1|max:255',
             'brands_id' => 'required',
             'skues_id' => 'required',
             'price' => 'nullable|numeric|min:-9|max:9',

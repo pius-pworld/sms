@@ -28,9 +28,11 @@ class Skue extends Model
      * @var array
      */
     protected $fillable = [
+                  'brands_id',
                   'sku_name',
                   'short_name',
                   'description',
+                  'ordering',
                   'is_active'
               ];
 
@@ -48,7 +50,51 @@ class Skue extends Model
      */
     protected $casts = [];
     
+    /**
+     * Get the brand for this model.
+     */
+    public function brand()
+    {
+        return $this->belongsTo('App\Models\Brand','brands_id');
+    }
+
+    /**
+     * Get the creator for this model.
+     */
+    public function creator()
+    {
+        return $this->belongsTo('App\User','created_by');
+    }
+
+    /**
+     * Get the updater for this model.
+     */
+    public function updater()
+    {
+        return $this->belongsTo('App\User','updated_by');
+    }
 
 
+    /**
+     * Get created_at in array format
+     *
+     * @param  string  $value
+     * @return array
+     */
+    public function getCreatedAtAttribute($value)
+    {
+        return date('j/n/Y g:i A', strtotime($value));
+    }
+
+    /**
+     * Get updated_at in array format
+     *
+     * @param  string  $value
+     * @return array
+     */
+    public function getUpdatedAtAttribute($value)
+    {
+        return date('j/n/Y g:i A', strtotime($value));
+    }
 
 }

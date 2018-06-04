@@ -24,6 +24,8 @@
           href="{{asset('public/bower_components/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css')}}">
     <!-- Bootstrap time Picker -->
     <link rel="stylesheet" href="{{asset('public/plugins/timepicker/bootstrap-timepicker.min.css')}}">
+    <!--jquery ui-->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <!-- Select2 -->
     <link rel="stylesheet" href="{{asset('public/bower_components/select2/dist/css/select2.min.css')}}">
     <!-- Theme style -->
@@ -37,7 +39,39 @@
     <!-- AdminLTE Skins. Choose a skin from the css/skins
         folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="{{asset('public/dist/css/skins/_all-skins.min.css')}}">
+    <script src="{{asset('public/bower_components/jquery/dist/jquery.min.js')}}"></script>
+    <!-- Bootstrap 3.3.7 -->
+    <script src="{{asset('public/bower_components/bootstrap/dist/js/bootstrap.min.js')}}"></script>
+    <!-- Jquery UI-->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- Select2 -->
+    <script src="{{asset('public/bower_components/select2/dist/js/select2.full.min.js')}}"></script>
+    <!-- InputMask -->
+    <script src="{{asset('public/plugins/input-mask/jquery.inputmask.js')}}"></script>
+    <script src="{{asset('public/plugins/input-mask/jquery.inputmask.date.extensions.js')}}"></script>
+    <script src="{{asset('public/plugins/input-mask/jquery.inputmask.extensions.js')}}"></script>
+    <!-- date-range-picker -->
+    <script src="{{asset('public/bower_components/moment/min/moment.min.js')}}"></script>
+    <script src="{{asset('public/bower_components/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
+    <!-- bootstrap datepicker -->
+    <script src="{{asset('public/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js')}}"></script>
+    <!-- bootstrap color picker -->
+    <script src="{{asset('public/bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js')}}"></script>
+    <!-- bootstrap time picker -->
+    <script src="{{asset('public/plugins/timepicker/bootstrap-timepicker.min.js')}}"></script>
+    <!-- SlimScroll -->
+    <script src="{{asset('public/bower_components/jquery-slimscroll/jquery.slimscroll.min.js')}}"></script>
+    <!-- iCheck 1.0.1 -->
+    <script src="{{asset('public/plugins/iCheck/icheck.min.js')}}"></script>
+    <!-- FastClick -->
+    <script src="{{asset('public/bower_components/fastclick/lib/fastclick.js')}}"></script>
+    <!-- AdminLTE App -->
+    <script src="{{asset('public/dist/js/adminlte.min.js')}}"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="{{asset('public/dist/js/demo.js')}}"></script>
 
+    <script src="{{asset('public/bower_components/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('public/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -150,37 +184,7 @@
     <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
-<script src="{{asset('public/bower_components/jquery/dist/jquery.min.js')}}"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="{{asset('public/bower_components/bootstrap/dist/js/bootstrap.min.js')}}"></script>
-<!-- Select2 -->
-<script src="{{asset('public/bower_components/select2/dist/js/select2.full.min.js')}}"></script>
-<!-- InputMask -->
-<script src="{{asset('public/plugins/input-mask/jquery.inputmask.js')}}"></script>
-<script src="{{asset('public/plugins/input-mask/jquery.inputmask.date.extensions.js')}}"></script>
-<script src="{{asset('public/plugins/input-mask/jquery.inputmask.extensions.js')}}"></script>
-<!-- date-range-picker -->
-<script src="{{asset('public/bower_components/moment/min/moment.min.js')}}"></script>
-<script src="{{asset('public/bower_components/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
-<!-- bootstrap datepicker -->
-<script src="{{asset('public/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js')}}"></script>
-<!-- bootstrap color picker -->
-<script src="{{asset('public/bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js')}}"></script>
-<!-- bootstrap time picker -->
-<script src="{{asset('public/plugins/timepicker/bootstrap-timepicker.min.js')}}"></script>
-<!-- SlimScroll -->
-<script src="{{asset('public/bower_components/jquery-slimscroll/jquery.slimscroll.min.js')}}"></script>
-<!-- iCheck 1.0.1 -->
-<script src="{{asset('public/plugins/iCheck/icheck.min.js')}}"></script>
-<!-- FastClick -->
-<script src="{{asset('public/bower_components/fastclick/lib/fastclick.js')}}"></script>
-<!-- AdminLTE App -->
-<script src="{{asset('public/dist/js/adminlte.min.js')}}"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="{{asset('public/dist/js/demo.js')}}"></script>
 
-<script src="{{asset('public/bower_components/datatables.net/js/jquery.dataTables.min.js')}}"></script>
-<script src="{{asset('public/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
 <!-- SlimScroll -->
 <!-- Page script -->
 <script>
