@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\SmsInbox;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -169,11 +170,42 @@ class SmsInboxesController extends Controller
         return $data;
     }
 
+    private function totalCheck($input_data){
+        $total=0;
+        foreach ($input_data as $key => $value) {
+                $total=$total + (int)$value;
+        }
+        return $total;
+    }
+
 
     public function process($id,Request $request){
         $parseData=$this->sms->parseSms($id);
-        if($parseData === true){
-            SmsInbox::find($id)->update(['sms_status'=>'Processed']);
+        if($parseData['status'] === true){
+//            var_dump(Order::findOrFail(1));
+//            die;
+            $aso_id = $parseData['data']['asoid'];
+            $order_date = $parseData['data']['orderdate'];
+            $order_total = str_replace('c','',$parseData['data']['total']);
+            unset($parseData['data']['asoid']);
+            unset($parseData['data']['orderdate']);
+            unset($parseData['data']['total']);
+            $total = $this->totalCheck($parseData['data']);
+            if($total === (int)$order_total){
+                $data=[
+                    'requester_name'=>'test',
+                    'requester_phone'=>'testss',
+                    'dh_phone'=>'asdsd',
+                    'dh_name' =>'adsadsad',
+                    'tso_name'=>'asdasd',
+                    'tso_phone'=>'asdsadsd'
+                ];
+                dd($data);
+                Order::create($data);
+            }
+            dd($parseData['data']);
+            //insert order
+            //SmsInbox::find($id)->update(['sms_status'=>'Processed']);
             return redirect()->route('sms_inboxes.sms_inbox.index')
                 ->with('success_message', 'Order successfully placed!');
         }
