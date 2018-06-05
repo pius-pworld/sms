@@ -182,21 +182,26 @@ class SmsInboxesController extends Controller
         }
         return $total;
     }
+    private function prepareOrderData(&$data){
+        $aso_id = $data['asoid'];
+        $order_date = $data['orderdate'];
+        $order_total = str_replace('c', '', $data['total']);
+        unset($data['asoid']);
+        unset($data['orderdate']);
+        unset($data['total']);
+    }
 
-
-    public function process($id, Request $request)
-    {
-        $parseData = $this->sms->parseSms($id);
-        if ($parseData['status'] === true) {
-            $aso_id = $parseData['data']['asoid'];
-            $order_date = $parseData['data']['orderdate'];
-            $order_total = str_replace('c', '', $parseData['data']['total']);
-            unset($parseData['data']['asoid']);
-            unset($parseData['data']['orderdate']);
-            unset($parseData['data']['total']);
-            $total = $this->totalCheck($parseData['data']);
-            if ($total === (int)$order_total) {
-                $order = [
+    private function  prepareSaleData(&$data){
+        $aso_id = $data['asoid'];
+        $order_date = $data['orderdate'];
+        $order_total = str_replace('c', '', $data['total']);
+        unset($data['asoid']);
+        unset($data['orderdate']);
+        unset($data['total']);
+        $total = $this->totalCheck($data);
+        if ($total === (int)$order_total) {
+            $sale_information =[
+                  "order"=>   [
                     'requester_name' => 'test',
                     'requester_phone' => 'testss',
                     'dh_phone' => 'asdsd',
@@ -204,29 +209,88 @@ class SmsInboxesController extends Controller
                     'tso_name' => 'asdasd',
                     'tso_phone' => 'asdsadsd',
                     'order_total' => $total,
-                    'created_by'=>Auth::Id()
-                ];
-                $order_details = [
+                    'created_by'=> Auth::Id()
+                  ],
+                "order_details"=>[
                     'route_name' => 'asdsad',
                     'total_outlet' => 10,
                     'visited_outlet' => 11,
-                    'order_details'=>'asdsad',
+                    'order_details'=>json_encode($data),
                     'created_by'=>1
-                ];
-                Order::insertOrder($order,$order_details);
-                //SmsInbox::find($id)->update(['sms_status'=>'Processed']);
-                return redirect()->route('sms_inboxes.sms_inbox.index')
-                    ->with('success_message', 'Order successfully placed!');
+                ]
+            ];
+            return $sale_information;
+        }
+    }
 
-            }
-            else{
+
+    public function process($id, Request $request)
+    {
+        $parseData = $this->sms->parseSms($id);
+        if ($parseData['status'] === true) {
+            if($parseData['type'] === 'order'){
+                $order_information=$this->prepareOrderData($parseData['data']);
+                if(Order::insertOrder($order_information['order'],$order_information['order_details'])){
+                    SmsInbox::find($id)->update(['sms_status'=>'Processed']);
+                    return redirect()->route('sms_inboxes.sms_inbox.index')
+                        ->with('success_message', 'Order successfully placed!');
+                }
+                else{
                 return redirect()->route('sms_inboxes.sms_inbox.index')
                     ->with('error_message', 'Invalid order total!!');
             }
+            }
+
+            if($parseData['type'] === 'sale'){
+                $sale_information=$this->prepareSaleData($parseData['data']);
+                if(Order::insertOrder($sale_information['order'],$sale_information['order_details'])){
+                    SmsInbox::find($id)->update(['sms_status'=>'Processed']);
+                    return redirect()->route('sms_inboxes.sms_inbox.index')
+                        ->with('success_message', 'Order successfully placed!');
+                }
+                else{
+                    return redirect()->route('sms_inboxes.sms_inbox.index')
+                        ->with('error_message', 'Invalid order total!!');
+            }
+
+            dd($parseData['data']);
+
+
+//            $total = $this->totalCheck($parseData['data']);
+//            if ($total === (int)$order_total) {
+//                $order = [
+//                    'requester_name' => 'test',
+//                    'requester_phone' => 'testss',
+//                    'dh_phone' => 'asdsd',
+//                    'dh_name' => 'adsadsad',
+//                    'tso_name' => 'asdasd',
+//                    'tso_phone' => 'asdsadsd',
+//                    'order_total' => $total,
+//                    'created_by'=> Auth::Id()
+//                ];
+//                $order_details = [
+//                    'route_name' => 'asdsad',
+//                    'total_outlet' => 10,
+//                    'visited_outlet' => 11,
+//                    'order_details'=>json_encode($parseData['data']),
+//                    'created_by'=>1
+//                ];
+//                if(Order::insertOrder($order,$order_details)){
+//                    SmsInbox::find($id)->update(['sms_status'=>'Processed']);
+//                    return redirect()->route('sms_inboxes.sms_inbox.index')
+//                        ->with('success_message', 'Order successfully placed!');
+//                }
+
+//
+            }
+//            else{
+//                return redirect()->route('sms_inboxes.sms_inbox.index')
+//                    ->with('error_message', 'Invalid order total!!');
+//            }
 
         } else {
-            dd($parseData);
-            echo "not validate data";
+            return redirect()->route('sms_inboxes.sms_inbox.index')
+                ->with('error_message', $parseData['message']);
         }
     }
 

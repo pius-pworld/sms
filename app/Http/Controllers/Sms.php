@@ -26,33 +26,55 @@ class Sms extends Controller
                 $result_array[$dt[0]] =count($dt)-1 >1 ? implode('-',array_slice($dt,1)) : $dt[1] ;
             }
             else{
-                echo  "Invalid SMS Format at String Contains (".$val.")";
-                die;
+                return ['status'=>false,'message'=>!empty($val) ? 'Invalid SMS Format from String Contains ('.$val.') !!' :'Invalid SMS Format !!'];
             }
         }
-        return $result_array;
+        return ['status'=>true,'data'=>$result_array];
     }
     //parse Data
     private function parseData($input_data){
         if(strpos($input_data, '/') === false){
-          return 'Invalid message string';
+          return ['status'=>false,'message'=>'Invalid message string'];
         }
         else{
             list($identifier,$input)=explode('/',$input_data, 2);
             $input_array=(explode("/", $input));
             if(strtolower($identifier) === 'order'){
                 $result_array=self::prepareData($input_array);
+                $result_array['type']= strtolower($identifier);
+                if($result_array['status'] === false){
+                    return $result_array;
+                }
                 //validation
-                $data = json_decode(json_encode($result_array));
+                $data = json_decode(json_encode($result_array['data']));
                 $validator = new JsonSchema\Validator;
                 $validator->validate($data, (object)['$ref' => 'file://' . realpath('resources/schemas/'.strtolower($identifier).'.json')]);
                 if (!$validator->isValid()) {
                     foreach ($validator->getErrors() as $error) {
-                        return sprintf("[%s] %s\n", $error['property'], $error['message']);
+                        return ['status'=>false,'message'=>sprintf("[%s] %s\n", $error['property'], $error['message'])];
                     }
                 }
                 else{
-                    return ['status'=>true,'data'=>$result_array];
+                    return $result_array;
+                }
+            }
+            elseif (strtolower($identifier) === 'sale'){
+                $result_array=self::prepareData($input_array);
+                $result_array['type']= strtolower($identifier);
+                if($result_array['status'] === false){
+                    return $result_array;
+                }
+                //validation
+                $data = json_decode(json_encode($result_array['data']));
+                $validator = new JsonSchema\Validator;
+                $validator->validate($data, (object)['$ref' => 'file://' . realpath('resources/schemas/'.strtolower($identifier).'.json')]);
+                if (!$validator->isValid()) {
+                    foreach ($validator->getErrors() as $error) {
+                        return ['status'=>false,'message'=>sprintf("[%s] %s\n", $error['property'], $error['message'])];
+                    }
+                }
+                else{
+                    return $result_array;
                 }
             }
 
