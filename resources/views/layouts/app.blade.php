@@ -59,6 +59,8 @@
     <script src="{{asset('public/bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js')}}"></script>
     <!-- bootstrap time picker -->
     <script src="{{asset('public/plugins/timepicker/bootstrap-timepicker.min.js')}}"></script>
+    <!-- bootstrap validation -->
+    <script src="{{asset('public/bower_components/bootstrap/dist/js/validator.js')}}"></script>
     <!-- SlimScroll -->
     <script src="{{asset('public/bower_components/jquery-slimscroll/jquery.slimscroll.min.js')}}"></script>
     <!-- iCheck 1.0.1 -->

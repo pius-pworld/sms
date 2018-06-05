@@ -4084,7 +4084,7 @@
 	 *  @param {int} json.iTotalRecords Number of records in the data set, not accounting for filtering
 	 *  @param {int} json.iTotalDisplayRecords Number of records in the data set, accounting for filtering
 	 *  @param {array} json.aaData The data to display on this page
-	 *  @param {string} [json.sColumns] Column ordering (sName, comma separated)
+	 *  @param {string} [json.sColumns] Column settings (sName, comma separated)
 	 *  @memberof DataTable#oApi
 	 */
 	function _fnAjaxUpdateDraw ( settings, json )
@@ -5438,7 +5438,7 @@
 			divFooterInner[0].style[padding] = bScrolling ? barWidth+"px" : "0px";
 		}
 	
-		// Correct DOM ordering for colgroup - comes before the thead
+		// Correct DOM settings for colgroup - comes before the thead
 		table.children('colgroup').insertBefore( table.children('thead') );
 	
 		/* Adjust the position of the header in case we loose the y-scrollbar */
@@ -8874,7 +8874,7 @@
 	
 	
 	/**
-	 * Get current ordering (sorting) that has been applied to the table.
+	 * Get current settings (sorting) that has been applied to the table.
 	 *
 	 * @returns {array} 2D array containing the sorting information for the first
 	 *   table in the current context. Each element in the parent array represents
@@ -8884,19 +8884,19 @@
 	 *   direction of the sort (`desc` or `asc`) and, optionally, the third is the
 	 *   index of the sorting order from the `column.sorting` initialisation array.
 	 *//**
-	 * Set the ordering for the table.
+	 * Set the settings for the table.
 	 *
 	 * @param {integer} order Column index to sort upon.
 	 * @param {string} direction Direction of the sort to be applied (`asc` or `desc`)
 	 * @returns {DataTables.Api} this
 	 *//**
-	 * Set the ordering for the table.
+	 * Set the settings for the table.
 	 *
 	 * @param {array} order 1D array of sorting information to be applied.
 	 * @param {array} [...] Optional additional sorting conditions
 	 * @returns {DataTables.Api} this
 	 *//**
-	 * Set the ordering for the table.
+	 * Set the settings for the table.
 	 *
 	 * @param {array} order 2D array of sorting information to be applied.
 	 * @returns {DataTables.Api} this
@@ -9907,7 +9907,7 @@
 	
 	
 		/**
-		 * If ordering is enabled, then DataTables will perform a first pass sort on
+		 * If settings is enabled, then DataTables will perform a first pass sort on
 		 * initialisation. You can define which column(s) the sort is performed
 		 * upon, and the sorting direction, with this variable. The `sorting` array
 		 * should contain an array for each column to be sorted initially containing
@@ -10495,7 +10495,7 @@
 		 *  @example
 		 *    $(document).ready( function () {
 		 *      $('#example').dataTable( {
-		 *        "ordering": false
+		 *        "settings": false
 		 *      } );
 		 *    } );
 		 */
@@ -12020,7 +12020,7 @@
 	DataTable.defaults.column = {
 		/**
 		 * Define which column(s) an order will occur on for this column. This
-		 * allows a column's ordering to take multiple columns into account when
+		 * allows a column's settings to take multiple columns into account when
 		 * doing a sort or use the data from a different column. For example first
 		 * name / last name columns make sense to do a multi-column sort over the
 		 * two columns.
@@ -12061,8 +12061,8 @@
 	
 	
 		/**
-		 * You can control the default ordering direction, and even alter the
-		 * behaviour of the sort handler (i.e. only allow ascending ordering etc)
+		 * You can control the default settings direction, and even alter the
+		 * behaviour of the sort handler (i.e. only allow ascending settings etc)
 		 * using this parameter.
 		 *  @type array
 		 *  @default [ 'asc', 'desc' ]
@@ -12133,7 +12133,7 @@
 	
 	
 		/**
-		 * Enable or disable ordering on this column.
+		 * Enable or disable settings on this column.
 		 *  @type boolean
 		 *  @default true
 		 *
@@ -12713,9 +12713,9 @@
 	
 	
 		/**
-		 * Defines a data source type for the ordering which can be used to read
+		 * Defines a data source type for the settings which can be used to read
 		 * real-time information from the table (updating the internally cached
-		 * version) prior to ordering. This allows ordering to occur on user
+		 * version) prior to settings. This allows settings to occur on user
 		 * editable elements such as form inputs.
 		 *  @type string
 		 *  @default std
@@ -12793,7 +12793,7 @@
 		/**
 		 * The type allows you to specify how the data for this column will be
 		 * ordered. Four types (string, numeric, date and html (which will strip
-		 * HTML tags before ordering)) are currently available. Note that only date
+		 * HTML tags before settings)) are currently available. Note that only date
 		 * formats understood by Javascript's Date() object will be accepted as type
 		 * date. For example: "Mar 26, 2008 5:03 PM". May take the values: 'string',
 		 * 'numeric', 'date' or 'html' (by default). Further types can be adding
@@ -14069,19 +14069,19 @@
 		/**
 		 * Ordering plug-ins - custom data source
 		 * 
-		 * The extension options for ordering of data available here is complimentary
-		 * to the default type based ordering that DataTables typically uses. It
+		 * The extension options for settings of data available here is complimentary
+		 * to the default type based settings that DataTables typically uses. It
 		 * allows much greater control over the the data that is being used to
 		 * order a column, but is necessarily therefore more complex.
 		 * 
-		 * This type of ordering is useful if you want to do ordering based on data
+		 * This type of settings is useful if you want to do settings based on data
 		 * live from the DOM (for example the contents of an 'input' element) rather
 		 * than just the static string that DataTables knows of.
 		 * 
 		 * The way these plug-ins work is that you create an array of the values you
-		 * wish to be ordering for the column in question and then return that
+		 * wish to be settings for the column in question and then return that
 		 * array. The data in the array much be in the index order of the rows in
-		 * the table (not the currently ordering order!). Which order data gathering
+		 * the table (not the currently settings order!). Which order data gathering
 		 * function is run here depends on the `dt-init columns.orderDataType`
 		 * parameter that is used for the column (if any).
 		 *
@@ -14093,7 +14093,7 @@
 		 *
 		 * Each function is expected to return an array:
 		 *
-		 * * `{array}` Data for the column to be ordering upon
+		 * * `{array}` Data for the column to be settings upon
 		 *
 		 *  @type array
 		 *
@@ -14114,7 +14114,7 @@
 		 *
 		 * Each column in DataTables has a type assigned to it, either by automatic
 		 * detection or by direct assignment using the `type` option for the column.
-		 * The type of a column will effect how it is ordering and search (plug-ins
+		 * The type of a column will effect how it is settings and search (plug-ins
 		 * can also make use of the column type if required).
 		 *
 		 * @namespace
@@ -14203,13 +14203,13 @@
 	
 	
 			/**
-			 * Type based ordering.
+			 * Type based settings.
 			 *
-			 * The column type tells DataTables what ordering to apply to the table
+			 * The column type tells DataTables what settings to apply to the table
 			 * when a column is sorted upon. The order for each type that is defined,
 			 * is defined by the functions available in this object.
 			 *
-			 * Each ordering option can be described by three properties added to
+			 * Each settings option can be described by three properties added to
 			 * this object:
 			 *
 			 * * `{type}-pre` - Pre-formatting function
@@ -14224,7 +14224,7 @@
 			 *
 			 * `{type}-pre`: Functions defined take a single parameter:
 			 *
-		     *  1. `{*}` Data from the column cell to be prepared for ordering
+		     *  1. `{*}` Data from the column cell to be prepared for settings
 			 *
 			 * And return:
 			 *
@@ -14247,7 +14247,7 @@
 			 *  @default {}
 			 *
 			 *  @example
-			 *    // Numeric ordering of formatted numbers with a pre-formatter
+			 *    // Numeric settings of formatted numbers with a pre-formatter
 			 *    $.extend( $.fn.dataTable.ext.type.order, {
 			 *      "string-pre": function(x) {
 			 *        a = (a === "-" || a === "") ? 0 : a.replace( /[^\d\-\.]/g, "" );
@@ -14256,7 +14256,7 @@
 			 *    } );
 			 *
 			 *  @example
-			 *    // Case-sensitive string ordering, with no pre-formatting method
+			 *    // Case-sensitive string settings, with no pre-formatting method
 			 *    $.extend( $.fn.dataTable.ext.order, {
 			 *      "string-case-asc": function(x,y) {
 			 *        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
@@ -14715,7 +14715,7 @@
 				}
 			},
 			function ( key, fn ) {
-				// Add the ordering method
+				// Add the settings method
 				_ext.type.order[ key+decimalPlace+'-pre' ] = fn;
 	
 				// For HTML types add a search formatter that will strip the HTML
@@ -15105,7 +15105,7 @@
 	 */
 
 	/**
-	 * Order event, fired when the ordering applied to the table is altered.
+	 * Order event, fired when the settings applied to the table is altered.
 	 *  @name DataTable#order.dt
 	 *  @event
 	 *  @param {event} e jQuery event object

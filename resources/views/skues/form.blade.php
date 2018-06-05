@@ -39,11 +39,11 @@
     </div>
 </div>
 
-<div class="form-group {{ $errors->has('ordering') ? 'has-error' : '' }}">
+<div class="form-group {{ $errors->has('settings') ? 'has-error' : '' }}">
     <label for="ordering" class="col-md-2 control-label">Ordering</label>
     <div class="col-md-10">
-        <input class="form-control" name="ordering" type="number" id="ordering" value="{{ old('ordering', optional($skue)->ordering) }}" min="-2147483648" max="2147483647" placeholder="Enter ordering here...">
-        {!! $errors->first('ordering', '<p class="help-block">:message</p>') !!}
+        <input class="form-control" name="ordering" type="number" id="ordering" value="{{ old('settings', optional($skue)->ordering) }}" min="-2147483648" max="2147483647" placeholder="Enter ordering here...">
+        {!! $errors->first('settings', '<p class="help-block">:message</p>') !!}
     </div>
 </div>
 

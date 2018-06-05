@@ -23,10 +23,18 @@ Route::post('password/email','Auth\ForgotPasswordController@sendResetLinkEmail')
 Route::get('password/reset/{token}','Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset','Auth\ResetPasswordController@reset');
 
-Route::get('ordering/brand_skue','OrderingController@ordering_brand_skue');
-Route::post('orderingBrandSkueAction','OrderingController@ordering_brand_skue_action');
-Route::get('showSkue/{id?}','OrderingController@show_skue');
-Route::post('orderingSkueAction','OrderingController@orderingSkueAction');
+/* Settings routing */
+Route::get('settings/brand_skue','SettingsController@ordering_brand_skue');
+Route::post('orderingBrandSkueAction','SettingsController@ordering_brand_skue_action');
+Route::get('showSkue/{id?}','SettingsController@show_skue');
+Route::post('orderingSkueAction','SettingsController@orderingSkueAction');
+Route::get('promotions','SettingsController@setPromotions');
+Route::get('promotionsList','SettingsController@promotions_list');
+Route::post('promotionSubmit','SettingsController@promotion_submit');
+Route::get('deletePromotions/{id}','SettingsController@delete_promotions');
+Route::get('packageDetails/{id}','SettingsController@package_details');
+Route::get('activeInactive/{id}/{is_active}','SettingsController@active_inactive');
+/* End setting routings */
 
 Route::group(
 [

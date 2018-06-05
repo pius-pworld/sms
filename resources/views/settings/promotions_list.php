@@ -21,7 +21,7 @@
             <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">Ordering &nbsp; &nbsp; &nbsp;<a style="font-size:12px; text-decoration:underline; color:#00f;" href="{{URL::to('ordering/brand_skue')}}">Back to Brands List</a> </h3>
+                        <h3 class="box-title">Ordering &nbsp; &nbsp; &nbsp;<a style="font-size:12px; text-decoration:underline; color:#00f;" href="{{URL::to('settings/brand_skue')}}">Back to Brands List</a> </h3>
                     </div>
                     <div class="box-body">
                         <table id="sort" class="table table-bordered table-striped">

@@ -95,7 +95,7 @@ INSERT INTO `menus` VALUES ('12', 'Brand', '#', 'Sub', '7', '1', 'fa fa-list', '
 INSERT INTO `menus` VALUES ('13', 'SMS', 'All SMS Menu Here', 'Main', '0', '1', 'fa fa-comment', '#', '1', '1', '0', null, null, '1');
 INSERT INTO `menus` VALUES ('14', 'SMS Inbox', '#', 'Sub', '13', '1', 'fa fa-list', 'sms_inboxes', '1', '1', '0', null, null, '1');
 INSERT INTO `menus` VALUES ('15', 'Settings', '#', 'Main', '0', '1', 'fa fa-cog', '#', '1', '1', '0', null, null, '1');
-INSERT INTO `menus` VALUES ('16', 'Ordering Brand&Skue', '#', 'Sub', '15', '1', 'fa fa-list-ol', 'ordering/brand_skue', '1', '1', '0', null, null, '1');
+INSERT INTO `menus` VALUES ('16', 'Ordering Brand&Skue', '#', 'Sub', '15', '1', 'fa fa-list-ol', 'settings/brand_skue', '1', '1', '0', null, null, '1');
 
 -- ----------------------------
 -- Table structure for products

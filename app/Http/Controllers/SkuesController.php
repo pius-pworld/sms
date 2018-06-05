@@ -154,7 +154,7 @@ class SkuesController extends Controller
             'sku_name' => 'required|string|min:1|max:255',
             'short_name' => 'nullable|string|min:0|max:255',
             'description' => 'nullable',
-            'ordering' => 'nullable|numeric|min:-2147483648|max:2147483647',
+            'settings' => 'nullable|numeric|min:-2147483648|max:2147483647',
             'is_active' => 'nullable|boolean',
      
         ];
