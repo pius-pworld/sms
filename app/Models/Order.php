@@ -39,15 +39,16 @@ class Order extends Model
 
 
     public static function insertOrder($order,$order_details){
-
         try{
             DB::beginTransaction();
             $order= Order::Create($order);
             $order_details['orders_id'] = $order->id;
             OrderDetail::Create($order_details);
             DB::commit();
+            return true;
         }catch(\Exception $e){
             DB::rollBack();
+            return false;
         }
 
     }
