@@ -83,7 +83,7 @@
                                                 <select class="form-control" id="" name="package_key[1]">
                                                     <option value="" selected="" disabled="">Select Sku</option>
                                                     @foreach($skues as $skue)
-                                                        <option value="{{$skue->id}}">{{$skue->sku_name}}</option>
+                                                        <option value="{{$skue->id}}">{{$skue->brand_name.' '.$skue->sku_name}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -94,7 +94,7 @@
                                                 <select class="form-control" id="" name="package_key[2]">
                                                     <option value="" selected="" disabled="">Select Sku</option>
                                                     @foreach($skues as $skue)
-                                                        <option value="{{$skue->id}}">{{$skue->sku_name}}</option>
+                                                        <option value="{{$skue->id}}">{{$skue->brand_name.' '.$skue->sku_name}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -105,7 +105,7 @@
                                                 <select class="form-control" id="" name="package_key[3]">
                                                     <option value="" selected="" disabled="">Select Sku</option>
                                                     @foreach($skues as $skue)
-                                                        <option value="{{$skue->id}}">{{$skue->sku_name}}</option>
+                                                        <option value="{{$skue->id}}">{{$skue->brand_name.' '.$skue->sku_name}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -116,7 +116,7 @@
                                                 <select class="form-control" id="" name="package_key[4]">
                                                     <option value="" selected="" disabled="">Select Sku</option>
                                                     @foreach($skues as $skue)
-                                                        <option value="{{$skue->id}}">{{$skue->sku_name}}</option>
+                                                        <option value="{{$skue->id}}">{{$skue->brand_name.' '.$skue->sku_name}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -139,7 +139,7 @@
                                                     <select class="form-control" id="" name="free_items[1]">
                                                         <option value="" selected="" disabled="">Select Sku</option>
                                                         @foreach($skues as $skue)
-                                                            <option value="{{$skue->id}}">{{$skue->sku_name}}</option>
+                                                            <option value="{{$skue->id}}">{{$skue->brand_name.' '.$skue->sku_name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -150,7 +150,7 @@
                                                     <select class="form-control" id="" name="free_items[2]">
                                                         <option value="" selected="" disabled="">Select Sku</option>
                                                         @foreach($skues as $skue)
-                                                            <option value="{{$skue->id}}">{{$skue->sku_name}}</option>
+                                                            <option value="{{$skue->id}}">{{$skue->brand_name.' '.$skue->sku_name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -161,7 +161,7 @@
                                                     <select class="form-control" id="" name="free_items[3]">
                                                         <option value="" selected="" disabled="">Select Sku</option>
                                                         @foreach($skues as $skue)
-                                                            <option value="{{$skue->id}}">{{$skue->sku_name}}</option>
+                                                            <option value="{{$skue->id}}">{{$skue->brand_name.' '.$skue->sku_name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -172,7 +172,7 @@
                                                     <select class="form-control" id="" name="free_items[4]">
                                                         <option value="" selected="" disabled="">Select Sku</option>
                                                         @foreach($skues as $skue)
-                                                            <option value="{{$skue->id}}">{{$skue->sku_name}}</option>
+                                                            <option value="{{$skue->id}}">{{$skue->brand_name.' '.$skue->sku_name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>

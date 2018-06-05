@@ -53,7 +53,10 @@ class SettingsController extends Controller
     public function setPromotions()
     {
 //        return 'set promotion page';
-        $data['skues'] = DB::table('skues')->where('is_active',1)->orderBy('ordering')->get();
+        $data['skues'] = DB::table('skues')
+            ->join('brands', 'brands.id', '=', 'skues.brands_id')
+            ->select('skues.*','brands.brand_name')
+            ->where('skues.is_active',1)->orderBy('skues.ordering')->get();
         return view('settings.setPromotions',$data);
     }
 
