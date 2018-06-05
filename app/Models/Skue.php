@@ -32,7 +32,7 @@ class Skue extends Model
                   'sku_name',
                   'short_name',
                   'description',
-                  'ordering',
+                  'settings',
                   'is_active'
               ];
 
