@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use App\Models\Order_Detail;
+use App\Models\OrderDetail;
 use App\Models\SmsInbox;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sms;
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class SmsInboxesController extends Controller
 {
     private $sms;
+
     function __construct()
     {
         $this->sms = new Sms();
@@ -36,8 +41,8 @@ class SmsInboxesController extends Controller
      */
     public function create()
     {
-        
-        
+
+
         return view('sms_inboxes.create');
     }
 
@@ -51,18 +56,18 @@ class SmsInboxesController extends Controller
     public function store(Request $request)
     {
         try {
-            
+
             $data = $this->getData($request);
             $data['created_by'] = Auth::Id();
             SmsInbox::create($data);
 
             return redirect()->route('sms_inboxes.sms_inbox.index')
-                             ->with('success_message', 'Sms Inbox was successfully added!');
+                ->with('success_message', 'Sms Inbox was successfully added!');
 
         } catch (Exception $exception) {
 
             return back()->withInput()
-                         ->withErrors(['unexpected_error' => 'Unexpected error occurred while trying to process your request!']);
+                ->withErrors(['unexpected_error' => 'Unexpected error occurred while trying to process your request!']);
         }
     }
 
@@ -90,7 +95,7 @@ class SmsInboxesController extends Controller
     public function edit($id)
     {
         $smsInbox = SmsInbox::findOrFail($id);
-        
+
 
         return view('sms_inboxes.edit', compact('smsInbox'));
     }
@@ -106,20 +111,20 @@ class SmsInboxesController extends Controller
     public function update($id, Request $request)
     {
         try {
-            
+
             $data = $this->getData($request);
             $data['updated_by'] = Auth::Id();
             $smsInbox = SmsInbox::findOrFail($id);
             $smsInbox->update($data);
 
             return redirect()->route('sms_inboxes.sms_inbox.index')
-                             ->with('success_message', 'Sms Inbox was successfully updated!');
+                ->with('success_message', 'Sms Inbox was successfully updated!');
 
         } catch (Exception $exception) {
 
             return back()->withInput()
-                         ->withErrors(['unexpected_error' => 'Unexpected error occurred while trying to process your request!']);
-        }        
+                ->withErrors(['unexpected_error' => 'Unexpected error occurred while trying to process your request!']);
+        }
     }
 
     /**
@@ -136,20 +141,20 @@ class SmsInboxesController extends Controller
             $smsInbox->delete();
 
             return redirect()->route('sms_inboxes.sms_inbox.index')
-                             ->with('success_message', 'Sms Inbox was successfully deleted!');
+                ->with('success_message', 'Sms Inbox was successfully deleted!');
 
         } catch (Exception $exception) {
 
             return back()->withInput()
-                         ->withErrors(['unexpected_error' => 'Unexpected error occurred while trying to process your request!']);
+                ->withErrors(['unexpected_error' => 'Unexpected error occurred while trying to process your request!']);
         }
     }
 
-    
+
     /**
      * Get the request's data from the request.
      *
-     * @param Illuminate\Http\Request\Request $request 
+     * @param Illuminate\Http\Request\Request $request
      * @return array
      */
     protected function getData(Request $request)
@@ -159,9 +164,9 @@ class SmsInboxesController extends Controller
             'sms_content' => 'required',
             'sms_status' => 'nullable',
             'is_active' => 'nullable|boolean',
-     
+
         ];
-        
+
         $data = $request->validate($rules);
 
         $data['is_active'] = $request->has('is_active');
@@ -169,15 +174,57 @@ class SmsInboxesController extends Controller
         return $data;
     }
 
-
-    public function process($id,Request $request){
-        $parseData=$this->sms->parseSms($id);
-        if($parseData === true){
-            SmsInbox::find($id)->update(['sms_status'=>'Processed']);
-            return redirect()->route('sms_inboxes.sms_inbox.index')
-                ->with('success_message', 'Order successfully placed!');
+    private function totalCheck($input_data)
+    {
+        $total = 0;
+        foreach ($input_data as $key => $value) {
+            $total = $total + (int)$value;
         }
-        else{
+        return $total;
+    }
+
+
+    public function process($id, Request $request)
+    {
+        $parseData = $this->sms->parseSms($id);
+        if ($parseData['status'] === true) {
+            $aso_id = $parseData['data']['asoid'];
+            $order_date = $parseData['data']['orderdate'];
+            $order_total = str_replace('c', '', $parseData['data']['total']);
+            unset($parseData['data']['asoid']);
+            unset($parseData['data']['orderdate']);
+            unset($parseData['data']['total']);
+            $total = $this->totalCheck($parseData['data']);
+            if ($total === (int)$order_total) {
+                $order = [
+                    'requester_name' => 'test',
+                    'requester_phone' => 'testss',
+                    'dh_phone' => 'asdsd',
+                    'dh_name' => 'adsadsad',
+                    'tso_name' => 'asdasd',
+                    'tso_phone' => 'asdsadsd',
+                    'order_total' => $total,
+                    'created_by'=>Auth::Id()
+                ];
+                $order_details = [
+                    'route_name' => 'asdsad',
+                    'total_outlet' => 10,
+                    'visited_outlet' => 11,
+                    'order_details'=>'asdsad',
+                    'created_by'=>1
+                ];
+                Order::insertOrder($order,$order_details);
+                //SmsInbox::find($id)->update(['sms_status'=>'Processed']);
+                return redirect()->route('sms_inboxes.sms_inbox.index')
+                    ->with('success_message', 'Order successfully placed!');
+
+            }
+            else{
+                return redirect()->route('sms_inboxes.sms_inbox.index')
+                    ->with('error_message', 'Invalid order total!!');
+            }
+
+        } else {
             dd($parseData);
             echo "not validate data";
         }

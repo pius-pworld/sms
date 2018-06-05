@@ -52,7 +52,7 @@ class Sms extends Controller
                     }
                 }
                 else{
-                    return true;
+                    return ['status'=>true,'data'=>$result_array];
                 }
             }
 
