@@ -7,8 +7,10 @@ use App\Models\Brand;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Exception;
-use Auth;
+
+
 
 class ProductsController extends Controller
 {
@@ -50,7 +52,7 @@ $skues = Skue::pluck('sku_name','id')->all();
         try {
             
             $data = $this->getData($request);
-            $data['created_by'] = Auth::id();
+            $data['created_by'] = Auth::Id();
             Product::create($data);
 
             return redirect()->route('products.product.index')
@@ -106,7 +108,7 @@ $skues = Skue::pluck('sku_name','id')->all();
         try {
             
             $data = $this->getData($request);
-            $data['updated_by'] = Auth::id();
+            $data['updated_by'] = Auth::Id();
             $product = Product::findOrFail($id);
             $product->update($data);
 
@@ -153,10 +155,11 @@ $skues = Skue::pluck('sku_name','id')->all();
     protected function getData(Request $request)
     {
         $rules = [
+            'key_word' => 'nullable|string|min:0|max:255',
             'brands_id' => 'required',
             'skues_id' => 'required',
-            'price' => 'nullable|numeric|min:-9|max:9',
-            'quantity' => 'nullable|numeric|min:-2147483648|max:2147483647',
+            'price' => 'nullable|numeric|min:-999999999.99|max:999999999.99',
+            'quantity' => 'nullable|numeric|min:-999999999.99|max:999999999.99',
             'description' => 'nullable',
             'is_active' => 'nullable|boolean',
      

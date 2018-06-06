@@ -1,4 +1,12 @@
 
+<div class="form-group {{ $errors->has('key_word') ? 'has-error' : '' }}">
+    <label for="key_word" class="col-md-2 control-label">Key Word</label>
+    <div class="col-md-10">
+        <input class="form-control" name="key_word" type="text" id="key_word" value="{{ old('key_word', optional($product)->key_word) }}" maxlength="255" placeholder="Enter key word here...">
+        {!! $errors->first('key_word', '<p class="help-block">:message</p>') !!}
+    </div>
+</div>
+
 <div class="form-group {{ $errors->has('brands_id') ? 'has-error' : '' }}">
     <label for="brands_id" class="col-md-2 control-label">Brands</label>
     <div class="col-md-10">
@@ -34,7 +42,7 @@
 <div class="form-group {{ $errors->has('price') ? 'has-error' : '' }}">
     <label for="price" class="col-md-2 control-label">Price</label>
     <div class="col-md-10">
-        <input class="form-control" name="price" type="number" id="price" value="{{ old('price', optional($product)->price) }}" min="-9" max="9" placeholder="Enter price here...">
+        <input class="form-control" name="price" type="number" id="price" value="{{ old('price', optional($product)->price) }}" min="-999999999" max="999999999" placeholder="Enter price here..." step="any">
         {!! $errors->first('price', '<p class="help-block">:message</p>') !!}
     </div>
 </div>
@@ -42,7 +50,7 @@
 <div class="form-group {{ $errors->has('quantity') ? 'has-error' : '' }}">
     <label for="quantity" class="col-md-2 control-label">Quantity</label>
     <div class="col-md-10">
-        <input class="form-control" name="quantity" type="number" id="quantity" value="{{ old('quantity', optional($product)->quantity) }}" min="-2147483648" max="2147483647" placeholder="Enter quantity here...">
+        <input class="form-control" name="quantity" type="number" id="quantity" value="{{ old('quantity', optional($product)->quantity) }}" min="-999999999" max="999999999" placeholder="Enter quantity here...">
         {!! $errors->first('quantity', '<p class="help-block">:message</p>') !!}
     </div>
 </div>
