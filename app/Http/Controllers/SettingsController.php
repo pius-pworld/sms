@@ -106,11 +106,11 @@ class SettingsController extends Controller
     {
         $details = DB::table('promotional_package')->select('*')->where('id',$id)->first();
 
-        $ddetails = json_decode($details->package_details);
+        $ddetails = json_decode($details->package_details,true);
         //dd((array)$ddetails);
-        $data['ddetails'] = (array)$ddetails;
-        $items = json_decode($details->package_free_item);
-        $data['items'] = (array)$items;
+        $data['ddetails'] = $ddetails;
+        $items = json_decode($details->package_free_item,true);
+        $data['items'] = $items;
         $psku_id = array();
         foreach($ddetails as $k=>$d)
         {
