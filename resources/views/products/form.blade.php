@@ -63,17 +63,11 @@
     </div>
 </div>
 
-<div class="form-group {{ $errors->has('is_active') ? 'has-error' : '' }}">
-    <label for="is_active" class="col-md-2 control-label">Is Active</label>
+<div class="form-group {{ $errors->has('pack_size') ? 'has-error' : '' }}">
+    <label for="pack_size" class="col-md-2 control-label">Pack Size</label>
     <div class="col-md-10">
-        <div class="checkbox">
-            <label for="is_active_1">
-            	<input id="is_active_1" class="" name="is_active" type="checkbox" value="1" {{ old('is_active', optional($product)->is_active) == '1' ? 'checked' : '' }}>
-                Yes
-            </label>
-        </div>
-
-        {!! $errors->first('is_active', '<p class="help-block">:message</p>') !!}
+        <input class="form-control" name="pack_size" type="text" id="pack_size" value="{{ old('pack_size', optional($product)->pack_size) }}" maxlength="50" placeholder="Enter pack size here...">
+        {!! $errors->first('pack_size', '<p class="help-block">:message</p>') !!}
     </div>
 </div>
 

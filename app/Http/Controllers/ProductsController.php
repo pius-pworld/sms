@@ -9,8 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Exception;
-
-
+use DB;
 
 class ProductsController extends Controller
 {
@@ -35,7 +34,11 @@ class ProductsController extends Controller
     public function create()
     {
         $brands = Brand::pluck('brand_name','id')->all();
-$skues = Skue::pluck('sku_name','id')->all();
+        $skues = Skue::select(DB::raw('CONCAT(brands.brand_name, ", ", skues.sku_name) AS sku_name'), 'skues.id')
+            ->join('brands', 'brands.id', '=', 'skues.brands_id')
+            ->pluck('sku_name', 'id');
+//        $skues = Skue::join('brands','brands.id','=','skues.brands_id')->pluck('CONCAT(skues.sku_name, ", ", brands.brand_name) as sku_name','skues.id')->all();
+        //dd($skues);
         
         return view('products.create', compact('brands','skues'));
     }
@@ -90,7 +93,10 @@ $skues = Skue::pluck('sku_name','id')->all();
     {
         $product = Product::findOrFail($id);
         $brands = Brand::pluck('brand_name','id')->all();
-$skues = Skue::pluck('sku_name','id')->all();
+        $skues = Skue::select(DB::raw('CONCAT(brands.brand_name, ", ", skues.sku_name) AS sku_name'), 'skues.id')
+            ->join('brands', 'brands.id', '=', 'skues.brands_id')
+            ->pluck('sku_name', 'id');
+//$skues = Skue::pluck('sku_name','id')->all();
 
         return view('products.edit', compact('product','brands','skues'));
     }
@@ -161,7 +167,7 @@ $skues = Skue::pluck('sku_name','id')->all();
             'price' => 'nullable|numeric|min:-999999999.99|max:999999999.99',
             'quantity' => 'nullable|numeric|min:-999999999.99|max:999999999.99',
             'description' => 'nullable',
-            'is_active' => 'nullable|boolean',
+            'pack_size' => 'nullable|string|min:0|max:50',
      
         ];
         
