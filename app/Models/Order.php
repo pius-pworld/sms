@@ -34,6 +34,12 @@ class Order extends Model
         'tso_name',
         'tso_phone',
         'order_total',
+        'route_name',
+        'total_outlet',
+        'visited_outlet',
+        'order_type',
+        'total_no_of_memo',
+        'order_total',
         'created_by'
     ];
 
@@ -42,11 +48,11 @@ class Order extends Model
         try{
             DB::beginTransaction();
             $order= Order::Create($order);
-            $order_details['orders_id'] = $order->id;
-            OrderDetail::Create($order_details);
+            OrderDetail::insert($order_details);
             DB::commit();
             return true;
         }catch(\Exception $e){
+            dd($e);
             DB::rollBack();
             return false;
         }

@@ -211,7 +211,7 @@
     "total": {
       "$id": "/properties/total",
       "type": "string",
-      "pattern":"^[0-9]+c$",
+      "pattern":"^[0-9]+$",
       "title": "The Total Schema "
     }
   },

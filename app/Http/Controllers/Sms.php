@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use \App\Models\Sms as Sms_model;
 use JsonSchema;
 
+
 class Sms extends Controller
 {
     private $sms_model;
@@ -39,7 +40,7 @@ class Sms extends Controller
         else{
             list($identifier,$input)=explode('/',$input_data, 2);
             $input_array=(explode("/", $input));
-            if(strtolower($identifier) === 'order'){
+            if(strtolower($identifier) === ORDER){
                 $result_array=self::prepareData($input_array);
                 $result_array['type']= strtolower($identifier);
                 if($result_array['status'] === false){
@@ -58,7 +59,7 @@ class Sms extends Controller
                     return $result_array;
                 }
             }
-            elseif (strtolower($identifier) === 'sale'){
+            elseif (strtolower($identifier) === SALE){
                 $result_array=self::prepareData($input_array);
                 $result_array['type']= strtolower($identifier);
                 if($result_array['status'] === false){
