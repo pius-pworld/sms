@@ -51,8 +51,8 @@
             <dd>{{ $product->quantity }}</dd>
             <dt>Description</dt>
             <dd>{{ $product->description }}</dd>
-            <dt>Is Active</dt>
-            <dd>{{ ($product->is_active) ? 'Yes' : 'No' }}</dd>
+            <dt>Pack Size</dt>
+            <dd>{{ $product->pack_size }}</dd>
 
         </dl>
 

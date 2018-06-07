@@ -53,6 +53,7 @@
                             <th>Skues</th>
                             <th>Price</th>
                             <th>Quantity</th>
+                            <th>Pack Size</th>
 
                         <th></th>
                         </tr>
@@ -65,6 +66,7 @@
                             <td>{{ optional($product->skue)->sku_name }}</td>
                             <td>{{ $product->price }}</td>
                             <td>{{ $product->quantity }}</td>
+                            <td>{{ $product->pack_size }}</td>
 
                             <td>
 
