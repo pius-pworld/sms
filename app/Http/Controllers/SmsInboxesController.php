@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Order_Detail;
 use App\Models\OrderDetail;
+use App\Models\Sale;
 use App\Models\SmsInbox;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -195,13 +196,13 @@ class SmsInboxesController extends Controller
     private function prepareOrderData(&$data)
     {
         $aso_id = $data['asoid'];
-        $order_date = $data['orderdate'];
+        $order_date = $data['dt'];
         $route_name = $data['rt'];
         $total_outlet= $data['ou'];
         $visited_outlet = $data['vo'];
         $order_total = str_replace('c', '', $data['total']);
         unset($data['asoid']);
-        unset($data['orderdate']);
+        unset($data['dt']);
         unset($data['total']);
         unset($data['rt']);
         unset($data['ou']);
@@ -209,6 +210,8 @@ class SmsInboxesController extends Controller
         $total = $this->totalCheck($data, 'order',$total_memo);
         if ($total === (int)$order_total) {
             $order_information['order'] = [
+                'aso_id'=> $aso_id,
+                'order_date'=>$order_date,
                 'requester_name' => 'test',
                 'requester_phone' => 'testss',
                 'dh_phone' => 'asdsd',
@@ -232,33 +235,30 @@ class SmsInboxesController extends Controller
     private function prepareSaleData(&$data)
     {
         $aso_id = $data['asoid'];
-        $order_date = $data['orderdate'];
+        $order_date = $data['dt'];
         $order_total = str_replace('c', '', $data['total']);
         unset($data['asoid']);
-        unset($data['orderdate']);
+        unset($data['dt']);
         unset($data['total']);
-        $total = $this->totalCheck($data);
+        $total = $this->totalCheck($data,SALE);
         if ($total === (int)$order_total) {
-            $sale_information = [
-                "order" => [
-                    'requester_name' => 'test',
-                    'requester_phone' => 'testss',
-                    'dh_phone' => 'asdsd',
-                    'dh_name' => 'adsadsad',
-                    'tso_name' => 'asdasd',
-                    'tso_phone' => 'asdsadsd',
-                    'order_total' => $total,
-                    'created_by' => Auth::Id()
-                ],
-                "order_details" => [
-                    'route_name' => 'asdsad',
-                    'total_outlet' => 10,
-                    'visited_outlet' => 11,
-                    'order_details' => json_encode($data),
-                    'created_by' => 1
-                ]
+            $sale_information['order'] = [
+                'aso_id'=> $aso_id,
+                'sale_date'=>$order_date,
+                'sender_name' => 'test',
+                'sender_phone' => 'testss',
+                'dh_phone' => 'asdsd',
+                'dh_name' => 'adsadsad',
+                'tso_name' => 'asdasd',
+                'tso_phone' => 'asdsadsd',
+                'sale_type'=>'Secondary',
+                'sale_total' => $total,
+                'created_by' => Auth::Id()
             ];
             return $sale_information;
+        }
+        else {
+            return false;
         }
     }
 
@@ -278,7 +278,6 @@ class SmsInboxesController extends Controller
                 if ($order_information != false) {
                     foreach ($parseData['data'] as $key => $value){
                         $order_information['order_details'][] =[
-                            "order_id"   => 10,
                             "short_name" => $key,
                             "quantity"   => (int)explode(',',$value)[0],
                             "created_by" =>1
@@ -299,7 +298,14 @@ class SmsInboxesController extends Controller
             if ($parseData['type'] === SALE) {
                 $sale_information = $this->prepareSaleData($parseData['data']);
                 if ($sale_information != false) {
-                    if (Order::insertOrder($sale_information['order'], $sale_information['order_details'])) {
+                    foreach ($parseData['data'] as $key => $value){
+                        $sale_information['order_details'][] =[
+                            "short_name" => $key,
+                            "quantity"   => (int)explode(',',$value)[0],
+                            "created_by" =>1
+                        ];
+                    }
+                    if (Sale::insertSale($sale_information['order'], $sale_information['order_details'])) {
                         SmsInbox::find($id)->update(['sms_status' => 'Processed']);
                         return redirect()->route('sms_inboxes.sms_inbox.index')
                             ->with('success_message', 'Order successfully placed!');

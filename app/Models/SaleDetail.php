@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class OrderDetail extends Model
+class SaleDetail extends Model
 {
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'order_details';
+    protected $table = 'sale_details';
 
     /**
      * The database primary key value.
@@ -33,6 +33,4 @@ class OrderDetail extends Model
 //        'order_details',
 //        'created_by'
 //    ];
-
-
 }

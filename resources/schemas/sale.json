@@ -9,11 +9,11 @@
       "pattern": "^[0-9]+$",
       "title": "The Asoid Schema "
     },
-    "orderdate": {
-      "$id": "/properties/orderdate",
+    "dt": {
+      "$id": "/properties/dt",
       "type": "string",
-      "pattern":"^[0-9]{2}-[0-9]{2}-[0-9]{2}$",
-      "title": "The Orderdate Schema "
+      "format":"date",
+      "title": "The dt Schema "
     },
     "tp": {
       "$id": "/properties/tp",

@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class Order extends Model
+class Sale extends Model
 {
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'orders';
+    protected $table = 'sales';
 
     /**
      * The database primary key value.
@@ -28,32 +28,26 @@ class Order extends Model
      */
     protected $fillable = [
         'aso_id',
-        'order_date',
-        'requester_name',
-        'requester_phone',
+        'sale_date',
+        'sender_name',
+        'sender_phone',
         'dh_phone',
         'dh_name',
         'tso_name',
         'tso_phone',
-        'order_total',
-        'route_name',
-        'total_outlet',
-        'visited_outlet',
-        'order_type',
-        'total_no_of_memo',
-        'order_total',
+        'sale_type',
+        'sale_total',
         'created_by'
     ];
 
-
-    public static function insertOrder($order,$order_details){
+    public static function insertSale($sale,$sale_details){
         try{
             DB::beginTransaction();
-            $order= Order::Create($order);
-            foreach ($order_details as $key=>$value){
-                $order_details[$key]['orders_id']=$order->id;
+            $sale= Sale::Create($sale);
+            foreach ($sale_details as $key=>$value){
+                $sale_details[$key]['sales_id']=$sale->id;
             }
-            OrderDetail::insert($order_details);
+            SaleDetail::insert($sale_details);
             DB::commit();
             return true;
         }catch(\Exception $e){
