@@ -28,6 +28,8 @@ class Order extends Model
      */
     protected $fillable = [
         'aso_id',
+        'asm_rsm_id',
+        'dbid',
         'order_date',
         'requester_name',
         'requester_phone',

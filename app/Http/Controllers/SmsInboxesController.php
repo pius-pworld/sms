@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 const ORDER ='order';
 const SALE   ='sale';
+const PRIMARY   ='primary';
 class SmsInboxesController extends Controller
 {
     private $sms;
@@ -184,6 +185,9 @@ class SmsInboxesController extends Controller
             if ($type === SALE) {
                 $total = $total + (int)$value;
             }
+            if($type===PRIMARY){
+                $total = $total + (int)$value;
+            }
             if ($type === 'order') {
                 $val = explode(',', $value);
                 $total = $total + (int)$val[0];
@@ -262,6 +266,38 @@ class SmsInboxesController extends Controller
         }
     }
 
+    private function preparePrimaryData(&$data){
+        $asm_rms_id = $data['asm_rsm_id'];
+        $dbid= $data['dbid'];
+        $order_date = $data['dt'];
+        $order_total =  $data['total'];
+        $da=$data['da'];
+        unset($data['asm_rsm_id']);
+        unset($data['dbid']);
+        unset($data['dt']);
+        unset($data['total']);
+        unset($data['da']);
+        $total = $this->totalCheck($data,PRIMARY);
+        if ($total === (int)$order_total) {
+            $primary_order_information['order'] = [
+                'asm_rsm_id'=> $asm_rms_id,
+                'dbid'=>$dbid,
+                'order_date'=>$order_date,
+                'requester_name' => 'test',
+                'requester_phone' => 'testss',
+                'order_type'=>'Primary',
+                'order_total' => $total,
+                'order_da'    =>$da,
+                'created_by' => Auth::Id()
+            ];
+            return $primary_order_information;
+        }
+        else{
+            return false;
+        }
+
+    }
+
     /**
      * process sms
      * @param $id sms ID
@@ -314,36 +350,28 @@ class SmsInboxesController extends Controller
                     return redirect()->route('sms_inboxes.sms_inbox.index')
                         ->with('error_message', 'Invalid order total!!');
                 }
+            }
 
-                dd($parseData['data']);
-
-
-//            $total = $this->totalCheck($parseData['data']);
-//            if ($total === (int)$order_total) {
-//                $order = [
-//                    'requester_name' => 'test',
-//                    'requester_phone' => 'testss',
-//                    'dh_phone' => 'asdsd',
-//                    'dh_name' => 'adsadsad',
-//                    'tso_name' => 'asdasd',
-//                    'tso_phone' => 'asdsadsd',
-//                    'order_total' => $total,
-//                    'created_by'=> Auth::Id()
-//                ];
-//                $order_details = [
-//                    'route_name' => 'asdsad',
-//                    'total_outlet' => 10,
-//                    'visited_outlet' => 11,
-//                    'order_details'=>json_encode($parseData['data']),
-//                    'created_by'=>1
-//                ];
-//                if(Order::insertOrder($order,$order_details)){
-//                    SmsInbox::find($id)->update(['sms_status'=>'Processed']);
-//                    return redirect()->route('sms_inboxes.sms_inbox.index')
-//                        ->with('success_message', 'Order successfully placed!');
-//                }
-
-//
+            if($parseData['type'] === PRIMARY){
+                $primary_information = $this->preparePrimaryData($parseData['data']);
+                if ($primary_information != false) {
+                    foreach ($parseData['data'] as $key => $value){
+                        $primary_information['order_details'][] =[
+                            "short_name" => $key,
+                            "quantity"   => (int)$value,
+                            "created_by" =>1
+                        ];
+                    }
+                    if (Order::insertOrder($primary_information['order'], $primary_information['order_details'])) {
+                        SmsInbox::find($id)->update(['sms_status' => 'Processed']);
+                        return redirect()->route('sms_inboxes.sms_inbox.index')
+                            ->with('success_message', 'Order successfully placed!');
+                    }
+                }
+               else{
+                   return redirect()->route('sms_inboxes.sms_inbox.index')
+                       ->with('error_message', 'Invalid order total!!');
+               }
             }
 //            else{
 //                return redirect()->route('sms_inboxes.sms_inbox.index')

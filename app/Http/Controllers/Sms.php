@@ -59,7 +59,26 @@ class Sms extends Controller
                     return $result_array;
                 }
             }
-            elseif (strtolower($identifier) === SALE){
+            if (strtolower($identifier) === SALE){
+                $result_array=self::prepareData($input_array);
+                $result_array['type']= strtolower($identifier);
+                if($result_array['status'] === false){
+                    return $result_array;
+                }
+                //validation
+                $data = json_decode(json_encode($result_array['data']));
+                $validator = new JsonSchema\Validator;
+                $validator->validate($data, (object)['$ref' => 'file://' . realpath('resources/schemas/'.strtolower($identifier).'.json')]);
+                if (!$validator->isValid()) {
+                    foreach ($validator->getErrors() as $error) {
+                        return ['status'=>false,'message'=>sprintf("[%s] %s\n", $error['property'], $error['message'])];
+                    }
+                }
+                else{
+                    return $result_array;
+                }
+            }
+            if(strtolower($identifier) === PRIMARY){
                 $result_array=self::prepareData($input_array);
                 $result_array['type']= strtolower($identifier);
                 if($result_array['status'] === false){
