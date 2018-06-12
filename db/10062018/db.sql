@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `departments` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table larafremworktestdb.departments: ~1 rows (approximately)
+-- Dumping data for table larafremworktestdb.departments: ~2 rows (approximately)
 /*!40000 ALTER TABLE `departments` DISABLE KEYS */;
 INSERT INTO `departments` (`id`, `name`, `created_at`, `updated_at`, `created_by`, `updated_by`, `details`, `is_active`) VALUES
 	(1, 'IT', '2018-05-26 03:08:58', '2018-05-26 03:08:58', 1, 1, 'qwdwq', 1),
@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS `designations` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table larafremworktestdb.designations: ~0 rows (approximately)
+-- Dumping data for table larafremworktestdb.designations: ~1 rows (approximately)
 /*!40000 ALTER TABLE `designations` DISABLE KEYS */;
 INSERT INTO `designations` (`id`, `name`, `created_at`, `updated_at`, `created_by`, `updated_by`, `details`, `status`) VALUES
 	(1, 'IT Executive', NULL, NULL, 1, NULL, NULL, 1);
@@ -944,7 +944,7 @@ CREATE TABLE IF NOT EXISTS `sms_inboxes` (
   UNIQUE KEY `U_sms_inbox` (`sender`,`sms_received`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
--- Dumping data for table larafremworktestdb.sms_inboxes: ~0 rows (approximately)
+-- Dumping data for table larafremworktestdb.sms_inboxes: ~2 rows (approximately)
 /*!40000 ALTER TABLE `sms_inboxes` DISABLE KEYS */;
 INSERT INTO `sms_inboxes` (`id`, `sms_inbox_name`, `transactionId`, `sender`, `sms_content`, `sms_received`, `created_by`, `created`, `replied_datetime`, `sms_status`, `updated`, `updated_by`, `is_active`) VALUES
 	(1, NULL, NULL, '01719415744', 'Order/ASOID-0011/Dt-2018-02-17/Rt-Banani/OU-10/VO-8/Tp-000,001/Tc-001,01/BHp-000,0/BHc-000,1/Fp-000,1/Fc-000,1/F(h)-000,1/F(1)-000,1/F(2)-000,1/UCp-000,1/UCc-000,1/UC(h)-000,1/ULp-000,1/ULc-000,1/UL(h)-000,1/UOp-000,1/UOc-000,2/UO(h)-000,1/UO(1)-000,2/UZ-000,1/Ornj-000,1/Lmnj-000,1/M-000,1/M(h)-000,1/M(1)-000,1/MKp-000,1/MKt-000,1/MK(h)-000,1/LYp-000,1/Lyc-000,1/A(h)-000,1/A(1.5)-000,1/Total-0001', NULL, NULL, NULL, NULL, 'Processed', '2018-06-07 10:35:06', NULL, 1),
@@ -1114,7 +1114,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `users_username_unique` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
--- Dumping data for table larafremworktestdb.users: ~1 rows (approximately)
+-- Dumping data for table larafremworktestdb.users: ~5 rows (approximately)
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `user_type`, `zones_id`, `regions_id`, `territories_id`, `distribution_house_id`, `name`, `email`, `password`, `password_key`, `password_expire_days`, `last_name`, `mobile`, `home_telephone`, `username`, `secret_question_1`, `secret_question_2`, `secret_question_ans_1`, `secret_question_ans_2`, `identification_type_id`, `identification_number`, `identification_expire_date`, `date_of_birth`, `gender`, `religion_id`, `father_name`, `father_occupation_id`, `mother_name`, `mother_occupation_id`, `bank_account_number`, `bank_id`, `bank_branch`, `last_login_date_time`, `default_module_id`, `created_by`, `updated_by`, `status`, `user_image`, `address`, `is_reliever`, `reliever_to`, `reliever_start_datetime`, `reliever_end_datetime`, `line_manager_id`, `designation_id`, `department_id`, `location_id`, `default_vehicle_id`, `default_url`, `default_language_id`, `joining_date`, `emergency_contact_person_name`, `emergency_contact_relation`, `emergency_contact_number`, `remember_token`, `created_at`, `updated_at`) VALUES
 	(1, NULL, NULL, NULL, NULL, NULL, 'Apsis', 'apsis@gmail.com', '$2y$10$2nkgX.Wgvs4q3wCgICad/uz2g90yakp5Tb5y9UYGyYSslArBSJXvK', NULL, NULL, NULL, NULL, NULL, 'apsis', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL, NULL, 0, 0, 0, NULL, 'images/default/avatar.jpg', NULL, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, NULL, 0, NULL, NULL, NULL, NULL, 'UkFIalitisZHtGJ4taJapkeOnncBf4QtXqNeGNhTy9E5yPdrE38dt4kXjOVX', NULL, NULL),
