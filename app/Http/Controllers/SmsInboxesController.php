@@ -332,6 +332,35 @@ class SmsInboxesController extends Controller
 
     }
 
+    private function preparePromotionData(&$data){
+        $aso_id = $data['asoid'];
+        $order_date = $data['dt'];
+        $route_name = $data['rt'];
+        unset($data['asoid']);
+        unset($data['dt']);
+        unset($data['rt']);
+        if(!empty($aso_id) && !empty($order_date) && !empty($route_name)){
+            $promotional_sale['order'] = [
+                'aso_id'=> $aso_id,
+                'sale_date'=>$order_date,
+                'sender_name' => 'test',
+                'sender_phone' => 'testss',
+                'dh_phone' => 'asdsd',
+                'dh_name' => 'adsadsad',
+                'tso_name' => 'asdasd',
+                'tso_phone' => 'asdsadsd',
+                'sale_route' => $route_name,
+                'sale_type'=>'Promotional',
+                'created_by' => Auth::Id()
+            ];
+
+            return $promotional_sale;
+        }
+       else{
+            return false;
+       }
+    }
+
     /**
      * process order
      * @param $id
@@ -347,7 +376,7 @@ class SmsInboxesController extends Controller
                 $order_information['order_details'][] =[
                     "short_name" => $key,
                     "quantity"   => (int)explode(',',$value)[0],
-                    "created_by" =>1
+                    "created_by" => Auth::id()
                 ];
             }
 
@@ -410,7 +439,7 @@ class SmsInboxesController extends Controller
                 $primary_information['order_details'][] =[
                     "short_name" => $key,
                     "quantity"   => (int)$value,
-                    "created_by" =>1
+                    "created_by" => Auth::id()
                 ];
             }
 
@@ -429,7 +458,32 @@ class SmsInboxesController extends Controller
     }
 
     private function processPromotion($id,$parseData){
-        dd($id,$parseData);
+        $promotion_information = $this->preparePromotionData($parseData['data']);
+
+        if ($promotion_information != false) {
+
+            foreach ($parseData['data']['pdn'] as $key => $value){
+                $promotion_information['order_details'][] =[
+                    "short_name" => $value['short_name'],
+                    "quantity"   => (int)$value['quantity'],
+                    'no_of_memo' => (int)$value['no_of_memo'],
+                    "created_by" =>Auth::id()
+                ];
+            }
+
+            if (Sale::insertSale($promotion_information['order'], $promotion_information['order_details'])) {
+                SmsInbox::find($id)->update(['sms_status' => 'Processed']);
+
+                return redirect()->route('sms_inboxes.sms_inbox.index')
+                    ->with('success_message', 'Sell successfully placed!');
+            }
+
+        }
+        else{
+
+            return redirect()->route('sms_inboxes.sms_inbox.index')
+                ->with('error_message', 'Invalid sell SMS!!');
+        }
     }
 
     /**

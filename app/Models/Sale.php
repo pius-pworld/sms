@@ -37,6 +37,7 @@ class Sale extends Model
         'tso_phone',
         'sale_type',
         'sale_total',
+        'sale_route',
         'created_by'
     ];
 
