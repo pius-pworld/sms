@@ -32,6 +32,8 @@ class SmsOutbox extends Model
      */
     protected $fillable=[
         'sms_reciever_number',
-        'sms_content'
+        'sms_content',
+        'priority',
+        'order_type'
     ];
 }

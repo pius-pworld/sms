@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SmsOutbox;
 use Illuminate\Http\Request;
 
 class SmsOutboxesController extends Controller
@@ -29,7 +30,7 @@ class SmsOutboxesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -40,7 +41,7 @@ class SmsOutboxesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -51,7 +52,7 @@ class SmsOutboxesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -62,8 +63,8 @@ class SmsOutboxesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -74,11 +75,29 @@ class SmsOutboxesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
+    }
+
+    public static function writeOutbox($number, $message, array $options = [])
+    {
+        $input_data['sms_reciever_number'] = $number;
+        $input_data['sms_content'] = $message;
+        if (array_key_exists('priority', $options)) {
+            $input_data['priority'] = $options['priority'];
+        }
+        if (array_key_exists('order_type', $options)) {
+            $input_data['order_type'] = $options['order_type'];
+        }
+        if (array_key_exists('order_state', $options)) {
+            $input_data['order_state'] = $options['order_state'];
+        }
+
+        SmsOutbox::Create($input_data);
+
     }
 }

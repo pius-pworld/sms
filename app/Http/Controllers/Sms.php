@@ -23,7 +23,7 @@ class Sms extends Controller
      * @param array $input
      * @return array
      */
-    private function prepareData(array $input)
+    private function prepareData(array $input,$number,$identifier)
     {
         $result_array = [];
 
@@ -33,8 +33,9 @@ class Sms extends Controller
                 $dt = explode("-", $val);
                 $result_array[$dt[0]] = count($dt) - 1 > 1 ? implode('-', array_slice($dt, 1)) : $dt[1];
             } else {
-
-                return ['status' => false, 'message' => !empty($val) ? 'Invalid SMS Format from String Contains (' . $val . ') !!' : 'Invalid SMS Format !!'];
+                $error_message = !empty($val) ? 'Invalid SMS Format from String Contains (' . $val . ') !!' : 'Invalid SMS Format !!';
+                SmsOutboxesController::writeOutbox($number,$error_message,['order_type'=>$identifier,'priority'=>3]);
+                return ['status' => false, 'message' => $error_message];
             }
         }
 
@@ -47,9 +48,9 @@ class Sms extends Controller
      * @param $input_array
      * @return array
      */
-    private function validateData($identifier, $input_array)
+    private function validateData($identifier, $input_array,$additionals=[])
     {
-        $result_array = self::prepareData($input_array);
+        $result_array = self::prepareData($input_array,$additionals['sender'],$identifier);
         $result_array['type'] = strtolower($identifier);
 
         if ($result_array['status'] === false) {
@@ -63,8 +64,9 @@ class Sms extends Controller
 
         if (!$validator->isValid()) {
             foreach ($validator->getErrors() as $error) {
-
-                return ['status' => false, 'message' => sprintf("%s %s in $identifier SMS \n", $error['property'], $error['constraint'])];
+                $error_message = sprintf("%s %s in $identifier SMS \n", $error['property'], $error['constraint']);
+                SmsOutboxesController::writeOutbox($additionals['sender'],$error_message,['order_type'=>$identifier,'priority'=>3]);
+                return ['status' => false, 'message' => $error_message];
             }
         } else {
 
@@ -87,8 +89,8 @@ class Sms extends Controller
        return $result_array;
     }
 
-    private function validatePromotionData($identifier, $input_array){
-        $result_array = self::prepareData($input_array);
+    private function validatePromotionData($identifier, $input_array,$additionals=[]){
+        $result_array = self::prepareData($input_array,$additionals['sender'],$identifier);
         $result_array['type'] = strtolower($identifier);
         $result_array['data']['pdn'] = $this->packageInformation($result_array['data']['pdn']);
         $data = json_decode(json_encode($result_array['data']));
@@ -98,7 +100,9 @@ class Sms extends Controller
 
         if (!$validator->isValid()) {
             foreach ($validator->getErrors() as $error) {
-                return ['status' => false, 'message' => sprintf("%s %s in $identifier SMS \n", $error['property'], $error['constraint'])];
+                $error_message = sprintf("%s %s in $identifier SMS \n", $error['property'], $error['constraint']);
+                SmsOutboxesController::writeOutbox($number,$error_message,['order_type'=>$identifier,'priority'=>3]);
+                return ['status' => false, 'message' => $error_message];
             }
         } else {
             return $result_array;
@@ -110,7 +114,7 @@ class Sms extends Controller
      * @param $input_data
      * @return array
      */
-    private function parseData($input_data)
+    private function parseData($input_data,$additionals=[])
     {
 
         if (strpos($input_data, '/') === false) {
@@ -124,19 +128,19 @@ class Sms extends Controller
             switch (strtolower($identifier)) {
                 case ORDER:
 
-                    $res = $this->validateData($identifier, $input_array);
+                    $res = $this->validateData($identifier, $input_array,['sender'=>$additionals['sender']]);
                     break;
                 case SALE:
 
-                    $res = $this->validateData($identifier, $input_array);
+                    $res = $this->validateData($identifier, $input_array,['sender'=>$additionals['sender']]);
                     break;
                 case PRIMARY:
 
-                    $res = $this->validateData($identifier, $input_array);
+                    $res = $this->validateData($identifier, $input_array,['sender'=>$additionals['sender']]);
                     break;
                 case PROMOTION:
 
-                    $res= $this->validatePromotionData($identifier,$input_array);
+                    $res= $this->validatePromotionData($identifier,$input_array,['sender'=>$additionals['sender']]);
                     break;
                 default:
 
@@ -177,7 +181,7 @@ class Sms extends Controller
 
         if (!empty($data) && !empty($data->sms_content)) {
 
-            return $this->parseData($data->sms_content);
+            return $this->parseData($data->sms_content,['sender'=>$data->sender]);
         }
 
     }
