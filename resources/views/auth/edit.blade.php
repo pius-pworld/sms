@@ -7,20 +7,20 @@
     <section class="content-header">
         <h1>
             User
-            <small>Add</small>
+            <small>Edit</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
             <li><a href="#">Forms</a></li>
-            <li class="active">User Add</li>
+            <li class="active">General Elements</li>
         </ol>
     </section>
     <section class="content">
         <div class="box box-default">
-            <form method="POST" action="{{ route('register') }}">
-                @csrf
+            <form method="POST" action="{{ route('user.update',$user->id) }}">
+                {{ csrf_field() }}
                 <div class="box-header with-border">
-                    <h3 class="box-title">ADD</h3>
+                    <h3 class="box-title">Edit</h3>
                     <div class="btn-group btn-group-sm pull-right" role="group">
                         <a href="{{ route('users') }}" class="btn btn-success" title="Create New User">
                             <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
@@ -34,7 +34,7 @@
                                 <label for="name">{{ __('First Name') }}</label>
                                 <input id="name" type="text"
                                        class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}"
-                                       name="name" value="{{ old('name') }}" placeholder="Enter First Name" tabindex="1"
+                                       name="name" value="{{ old('name',optional($user)->name) }}" placeholder="Enter First Name" tabindex="1"
                                        required autofocus>
 
                                 @if ($errors->has('name'))
@@ -47,7 +47,7 @@
                                 <label for="last_name">{{ __('Last Name') }}</label>
                                 <input id="last_name" type="text"
                                        class="form-control{{ $errors->has('last_name') ? ' is-invalid' : '' }}"
-                                       name="last_name" value="{{ old('last_name') }}" placeholder="Enter Last Name"
+                                       name="last_name" value="{{ old('last_name',optional($user)->last_name) }}" placeholder="Enter Last Name"
                                        tabindex="2" required>
 
                                 @if ($errors->has('last_name'))
@@ -60,7 +60,7 @@
                                 <label for="mobile">{{ __('Mobile') }}</label>
                                 <input id="name" type="text"
                                        class="form-control{{ $errors->has('mobile') ? ' is-invalid' : '' }}"
-                                       name="mobile" maxlength="11" value="{{ old('mobile') }}" placeholder="Enter Mobile" tabindex="3"
+                                       name="mobile" maxlength="11" value="{{ old('mobile',optional($user)->mobile) }}" placeholder="Enter Mobile" tabindex="3"
                                        required>
                                 @if ($errors->has('mobile'))
                                     <span class="invalid-feedback">
@@ -94,7 +94,7 @@
                                     </div>
                                     <input id="datepicker" type="text"
                                            class="form-control pull-right{{ $errors->has('date_of_birth') ? ' is-invalid' : '' }}"
-                                           name="date_of_birth" value="{{ old('date_of_birth') }}"
+                                           name="date_of_birth" value="{{ old('date_of_birth',optional($user)->date_of_birth) }}"
                                            placeholder="Enter DOB" tabindex="6" required>
 
                                     @if ($errors->has('date_of_birth'))
@@ -111,7 +111,7 @@
                                 <label for="last_name">{{ __('Email Address') }}</label>
                                 <input id="email" type="email"
                                        class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}"
-                                       name="email"  value="{{ old('email') }}" tabindex="7"
+                                       name="email"  value="{{ old('email',optional($user)->email) }}" tabindex="7"
                                        placeholder="Enter Email Address" required>
 
                                 @if ($errors->has('email'))
@@ -126,7 +126,7 @@
                                 <label for="username">{{ __('Username') }}</label>
                                 <input id="username" type="text"
                                        class="form-control{{ $errors->has('username') ? ' is-invalid' : '' }}"
-                                       name="username"  value="{{ old('username') }}" tabindex="8"
+                                       name="username"  value="{{ old('username',optional($user)->username) }}" tabindex="8"
                                        placeholder="Enter username" required>
 
                                 @if ($errors->has('username'))
@@ -139,7 +139,7 @@
                                 <label for="password">{{ __('Password') }}</label>
                                 <input id="password" type="password"
                                        class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}"
-                                       name="password"  placeholder="Enter Password" tabindex="9" required>
+                                       name="password"  placeholder="Enter Password" tabindex="9" >
 
                                 @if ($errors->has('password'))
                                     <span class="invalid-feedback">
@@ -151,7 +151,7 @@
                                 <label for="password">{{ __('Confirm Password') }}</label>
                                 <input id="password-confirm" type="password" class="form-control"
                                        name="password_confirmation"  tabindex="10" placeholder="Enter Confirm Password"
-                                       required>
+                                       >
                             </div>
                         </div>
                     </div>
@@ -179,7 +179,7 @@
                                         style="width: 100%;">
                                     <option>Select Line Manager</option>
                                     @foreach($users as $user)
-                                        <option value="{{$user->id}}"{{ old('line_manager_id') == $user->id ? 'selected' : ''}}>{{$user->name}}</option>
+                                        <option value="{{$user->id}}"{{ old('line_manager_id') == $user->line_manager_id ? 'selected' : ''}}>{{$user->name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('line_manager_id'))
@@ -208,7 +208,7 @@
                                 <select name="designation_id" class="form-control select2" tabindex="14"
                                         style="width: 100%;">
                                     <option value="">Select designation</option>
-                                    @foreach($desinations as $desination)
+                                    @foreach($designations as $desination)
                                         <option value="{{$desination->id}}"{{ old('designation_id') == $desination->id ? 'selected' : ''}}>{{$desination->name}}</option>
                                     @endforeach
                                 </select>
@@ -225,7 +225,7 @@
                                 <select name="default_module_id" class="form-control select2" tabindex="15"
                                         style="width: 100%;">
                                     @foreach($allmodules as $md)
-                                        <option value="{{$md->id}}"{{ old('default_module_id') == @$user->id ? 'selected' : ''}}>{{$md->name}}</option>
+                                        <option value="{{$md->id}}"{{ old('default_module_id') == $md->id ? 'selected' : ''}}>{{$md->name}}</option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('default_module_id'))

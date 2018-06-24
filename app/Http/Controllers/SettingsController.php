@@ -6,9 +6,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
+use commonHelper;
 
 class SettingsController extends Controller
 {
+    public function __construct()
+    {
+        DB::enableQueryLog();
+    }
     public function ordering_brand_skue()
     {
         $data['brands'] = DB::table('brands')->where('is_active',1)->orderBy('ordering')->get();
@@ -134,4 +139,149 @@ class SettingsController extends Controller
         DB::table('promotional_package')->where('id', $id)->update(['is_active' => ($is_active)?0:1]);
         return redirect('promotionsList')->with('success', 'Information has been changed.');
     }
+
+
+    public function target_set($type,$target_month=null)
+    {
+        $data['type'] = $type;
+        $data['target_month'] = $target_month;
+        if($target_month)
+        {
+            $data['existingValue'] = DB::table('targets')
+                ->select('*')
+                ->where('target_type',$type)
+                ->where('target_month',$target_month)->get();
+            //commonHelper::debug($data['existingValue'],1);
+
+            if($type == 'zones')
+            {
+                $data['geographies'] = DB::table('zones')->select('id','zone_name as gname')->where('is_active',1)->orderBy('ordering')->get();
+                $data['baseData'] = $this->baseData($data['geographies']);
+            }
+            $data['skues'] = DB::table('skues')
+                ->select('skues.*')
+                ->leftJoin('brands', 'brands.id', '=', 'skues.brands_id')
+                ->where('skues.is_active',1)
+                ->orderBy('brands.ordering')->get();
+
+            $data['brands'] = DB::table('skues')
+                ->select('brands.brand_name',DB::raw('COUNT(skues.brands_id) as total'))
+                ->leftJoin('brands', 'brands.id', '=', 'skues.brands_id')
+                ->where('skues.is_active',1)
+                ->groupBy('skues.brands_id')
+                ->orderBy('brands.ordering')->get();
+        }
+        return view('settings.target_set',$data);
+    }
+
+    public function target_set_process(Request $request)
+    {
+        $post = $request->all();
+        $data['type'] = $post['target_type'];
+        $data['target_month'] = $post['target_month'];
+        $data['existingValue'] = array();
+        if($post['target_type'] == 'zones')
+        {
+            $data['geographies'] = DB::table('zones')->select('id','zone_name as gname')->where('is_active',1)->orderBy('ordering')->get();
+            $data['baseData'] = $this->baseData($data['geographies']);
+        }
+
+        $data['skues'] = DB::table('skues')
+            ->select('skues.*')
+            ->leftJoin('brands', 'brands.id', '=', 'skues.brands_id')
+            ->where('skues.is_active',1)
+            ->orderBy('brands.ordering')->get();
+
+        $data['brands'] = DB::table('skues')
+            ->select('brands.brand_name',DB::raw('COUNT(skues.brands_id) as total'))
+            ->leftJoin('brands', 'brands.id', '=', 'skues.brands_id')
+            ->where('skues.is_active',1)
+            ->groupBy('skues.brands_id')
+            ->orderBy('brands.ordering')->get();
+
+
+        $existing = DB::table('targets')
+            ->where('target_type',$post['target_type'])
+            ->where('target_month',$post['target_month'])->get();
+
+
+
+        if($existing->isEmpty())
+        {
+            return view('settings.target_set_ajax_data_show',$data);
+        }
+        else
+        {
+            echo false;
+        }
+    }
+
+    public function baseData($geography)
+    {
+        $data = array();
+        foreach($geography as $k=>$v)
+        {
+            $skues = DB::table('skues')->where('is_active',1)->orderBy('ordering')->get();
+            foreach($skues as $sk=>$sv)
+            {
+                $base = rand(10,100);
+                $data[$v->id][$sv->brands_id][$sv->id] = $base;
+            }
+        }
+        return $data;
+    }
+
+    public function target_submit(Request $request)
+    {
+        $post = $request->all();
+//        dd($post);
+        $insertData['target_type'] = $post['target_type'];
+        $insertData['target_month'] = $post['target_month'];
+        $insertData['base_date'] = $post['base_date'];
+
+        if($post['edit'])
+        {
+            DB::table('targets')
+                ->where('target_type', $post['target_type'])
+                ->where('target_month',$post['target_month'])->delete();
+        }
+
+        foreach($post['geography_id'] as $geography)
+        {
+            $insertData['type_id'] = $geography;
+            $baseValue = array();
+            foreach($post['base_distribute'][$geography] as $k=>$v)
+            {
+                foreach($v as $vk=>$vv)
+                {
+                    $baseValue[$vk] = $vv;
+                }
+            }
+            $insertData['base_value'] = json_encode($baseValue);
+
+            $targetValue = array();
+            foreach($post['target_distribute'][$geography] as $k=>$v)
+            {
+                foreach($v as $vk=>$vv)
+                {
+                    $targetValue[$vk] = $vv;
+                }
+            }
+            $insertData['target_value'] = json_encode($targetValue);
+            $insertData['created_by'] = Auth::id();
+            DB::table('targets')->insert($insertData);
+        }
+
+        return redirect('targetSet/zones')->with('success', 'Information has been added.');
+    }
+
+    public function remove_target($type,$target_month)
+    {
+       // dd($type);
+        DB::table('targets')
+            ->where('target_type', $type)
+            ->where('target_month',$target_month)->delete();
+        return redirect('targetSet/'.$type)->with('success', 'Information has been removed.');
+    }
+
 }

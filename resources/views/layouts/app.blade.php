@@ -34,6 +34,18 @@
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="{{asset('public/dist/css/skins/_all-skins.min.css')}}">
     <link rel="stylesheet" href="{{asset('public/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css')}}">
+
+    <link rel="stylesheet" href="{{asset('public/css/datepicker.css')}}">
+    <link href="{{asset('public/bower_components/bootstrap/dist/css/bootstrap-datetimepicker.min.css')}}" rel="stylesheet">
+
+
+
+
+
+
+
+
+
     <!-- Theme style -->
     <link rel="stylesheet" href=".{{asset('public/dist/css/AdminLTE.min.css')}}">
     <!-- AdminLTE Skins. Choose a skin from the css/skins
@@ -59,6 +71,7 @@
     <script src="{{asset('public/bower_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js')}}"></script>
     <!-- bootstrap time picker -->
     <script src="{{asset('public/plugins/timepicker/bootstrap-timepicker.min.js')}}"></script>
+    <script src="{{asset('public/bower_components/bootstrap/dist/js/bootstrap-datetimepicker.min.js')}}"></script>
     <!-- bootstrap validation -->
     <script src="{{asset('public/bower_components/bootstrap/dist/js/validator.js')}}"></script>
     <!-- SlimScroll -->
@@ -74,6 +87,13 @@
 
     <script src="{{asset('public/bower_components/datatables.net/js/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('public/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
+
+
+
+
+
+
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -86,11 +106,17 @@
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
+<script>
+    function baseUrl(url) {
+        return "<?php echo URL::to('"+url+"'); ?>";
+    }
+</script>
 <div class="wrapper" id="app">
 
 @include('includes.header')
 @include('includes.sidebar')
 @yield('content')
+@include('includes.common_html')
 @include('includes.footer')
 
 <!-- Control Sidebar -->
@@ -189,6 +215,7 @@
 
 <!-- SlimScroll -->
 <!-- Page script -->
+<script src="{{asset('public/js/myScript.js')}}"></script>
 <script>
     $(function () {
         //Initialize Select2 Elements

@@ -1,15 +1,18 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
+use Illuminate\Http\Request;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Carbon\Carbon;
 use Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Form;
 
 class RegisterController extends Controller
 {
@@ -24,14 +27,71 @@ class RegisterController extends Controller
     |
     */
 
-    use RegistersUsers;
+    //use RegistersUsers;
+    public function showRegistrationForm()
+    {
+        $user_settigns = DB::table('user_settings')->get();
+        $users = User::where('id', '!=', Auth::id())->get();
+        $departments = DB::table('departments')->get();
+        $desinations = DB::table('designations')->get();
+        $allmodules = DB::table('modules')->get();
+        $user_levels = DB::table('user_levels')->get();
+        return view('auth.register', compact('users','departments','desinations','allmodules','user_levels','user_settigns'));
+    }
+
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        event(new Registered($user = $this->create($request->all())));
+
+        $this->guard()->login($user);
+
+        return $this->registered($request, $user)
+            ?: redirect($this->redirectPath());
+    }
+    public function redirectPath()
+    {
+        if (method_exists($this, 'redirectTo')) {
+            return $this->redirectTo();
+        }
+
+        return property_exists($this, 'redirectTo') ? $this->redirectTo : '/users';
+    }
+    /**
+     * Get the guard to be used during registration.
+     *
+     * @return \Illuminate\Contracts\Auth\StatefulGuard
+     */
+    protected function guard()
+    {
+        return Auth::guard();
+    }
+
+    /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function registered(Request $request, $user)
+    {
+        //
+    }
 
     /**
      * Where to redirect users after registration.
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/users';
 
     /**
      * Create a new controller instance.
@@ -41,6 +101,12 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+    }
+
+    public function users()
+    {
+        $users = User::paginate(25);
+        return view('auth.index', compact('users'));
     }
 
     /**
@@ -53,17 +119,17 @@ class RegisterController extends Controller
     {
 
         $userconfig = Config::get('constants.users_options');
-		if($userconfig['passwordtype'] == 'easy')
-			$password_length = 'digits_between:8,12';
-		
-		if($userconfig['passwordtype'] == 'normal')
-			$password_length = 'digits_between:12,20';
-		
-		if($userconfig['passwordtype'] == 'complex')
-			$password_length = 'digits_between:12,20';
-		
-		$username = 'required|string|email|min:' . $userconfig['usernameminlength'] . '|max:' . $userconfig['usernamemaxlength'] . '|unique:users';
-        $password = 'bail|required|string|confirmed|' . $password_length .'|password_'.$userconfig['passwordtype'];
+        if ($userconfig['passwordtype'] == 'easy')
+            $password_length = 'digits_between:8,12';
+
+        if ($userconfig['passwordtype'] == 'normal')
+            $password_length = 'digits_between:12,20';
+
+        if ($userconfig['passwordtype'] == 'complex')
+            $password_length = 'digits_between:12,20';
+
+        $username = 'required|string|email|min:' . $userconfig['usernameminlength'] . '|max:' . $userconfig['usernamemaxlength'] . '|unique:users';
+        $password = 'bail|required|string|confirmed|' . $password_length . '|password_' . $userconfig['passwordtype'];
 
         return Validator::make($data, [
             'name' => 'required|string|max:100',
@@ -89,19 +155,24 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $userconfig = Config::get('constants.users_options');
-		$user = User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'password_key' => md5($data['password']),
             'password_expire_days' => $userconfig['passwordexpireduration'],
+            'username' => $data['username'],
             'last_name' => $data['last_name'],
+            'gender' => $data['gender'],
             'mobile' => $data['mobile'],
             'date_of_birth' => Carbon::parse($data['date_of_birth'])->format('Y-m-d H:i:s'),
             'location_id' => $data['location_id'],
             'department_id' => $data['department_id'],
+            'line_manager_id' => $data['line_manager_id'],
             'designation_id' => $data['designation_id'],
             'default_module_id' => $data['default_module_id'],
+            'created_by' => Auth::id(),
+            'status' =>$data['status'],
         ]);
 
 
@@ -136,4 +207,96 @@ class RegisterController extends Controller
 
         return $user;
     }
+
+
+    /**
+     * Display the specified post.
+     *
+     * @param int $id
+     *
+     * @return Illuminate\View\View
+     */
+    public function show($id)
+    {
+        $user = User::findOrFail($id);
+
+        return view('auth.show', compact('user'));
+    }
+
+    /**
+     * Show the form for editing the specified post.
+     *
+     * @param int $id
+     *
+     * @return Illuminate\View\View
+     */
+    public function edit($id)
+    {
+        $user_settigns = DB::table('user_settings')->get();
+        $users = User::where('id', '!=', Auth::id())->get();
+        $departments = DB::table('departments')->get();
+        $designations = DB::table('designations')->get();
+        $allmodules = DB::table('modules')->get();
+        $user_levels = DB::table('user_levels')->get();
+        $user = User::findOrFail($id);
+
+        return view('auth.edit', compact('user', 'users', 'departments', 'designations', 'allmodules', 'user_levels', 'user_settigns'));
+    }
+
+
+    /**
+     * Update the specified post in the storage.
+     *
+     * @param  int $id
+     * @param Illuminate\Http\Request $request
+     *
+     * @return Illuminate\Http\RedirectResponse | Illuminate\Routing\Redirector
+     */
+    public function update($id, Request $request)
+    {
+        try {
+
+            $data = $this->getData($request);
+
+            $user = User::findOrFail($id);
+            $user->update($data);
+
+            return redirect()->route('auth.index')
+                ->with('success_message', 'User was successfully updated!');
+
+        } catch (Exception $exception) {
+
+            return back()->withInput()
+                ->withErrors(['unexpected_error' => 'Unexpected error occurred while trying to process your request!']);
+        }
+    }
+
+    protected function getData(Request $request)
+    {
+        $userconfig = Config::get('constants.users_options');
+        $username = 'required|string|email|min:' . $userconfig['usernameminlength'] . '|max:' . $userconfig['usernamemaxlength'] . '|unique:users';
+        $password = 'bail|string|confirmed|password_' . $userconfig['passwordtype'];
+
+
+        $rules = [
+            'name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'mobile' => 'required|numeric|unique:users',
+            'date_of_birth' => 'required',
+            'email' => $username,
+            'username' => 'required',
+            'password' => $password,
+            'location_id' => 'required',
+            'department_id' => 'required',
+            'designation_id' => 'required',
+            'default_module_id' => 'required',
+
+        ];
+
+        $data = $request->validate($rules);
+
+
+        return $data;
+    }
+
 }

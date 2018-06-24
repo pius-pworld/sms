@@ -8,7 +8,7 @@
         "loginsecuritycode":"NULL",
         "sessiontime":"30",
         "passwordtype":"easy",
-        "passwordexpireduration":"NULL",
+        "passwordexpireduration":"0",
         "lastusedpassword":"NULL"
     }
 }

@@ -11,9 +11,23 @@
 |
 */
 
+Route::get('users', 'Auth\RegisterController@users')->name('users');
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 Route::post('register', 'Auth\RegisterController@register');
 
+Route::get('/show/{user}','Auth\RegisterController@show')
+    ->name('user.show')
+    ->where('id', '[0-9]+');
+Route::get('/{user}/edit','Auth\RegisterController@edit')
+    ->name('user.edit')
+    ->where('id', '[0-9]+');
+Route::put('user/{user}', 'Auth\RegisterController@update')
+    ->name('user.update')
+    ->where('id', '[0-9]+');
+
+Route::delete('/user/{user}','Auth\RegisterController@destroy')
+    ->name('user.destroy')
+    ->where('id', '[0-9]+');
 
 Route::get('/','Auth\LoginController@showLoginForm')->name('login');
 Route::post('/login','Auth\LoginController@login');
@@ -34,6 +48,11 @@ Route::post('promotionSubmit','SettingsController@promotion_submit');
 Route::get('deletePromotions/{id}','SettingsController@delete_promotions');
 Route::get('packageDetails/{id}','SettingsController@package_details');
 Route::get('activeInactive/{id}/{is_active}','SettingsController@active_inactive');
+Route::get('targetSet/{type}/{target_month?}','SettingsController@target_set');
+Route::post('targetSetProcess','SettingsController@target_set_process');
+Route::post('targetSubmit','SettingsController@target_submit');
+Route::get('targetRemove/{type}/{target_month}','SettingsController@remove_target');
+//Route::get('showExistingSetting/{target_type}/{target_month}','SettingsController@show_existing_setting');
 /* End setting routings */
 
 Route::group(
@@ -562,37 +581,7 @@ Route::group(
 
 });
 
-Route::group(
-[
-    'prefix' => 'users',
-], function () {
 
-    Route::get('/', 'UsersController@index')
-         ->name('users.user.index');
-
-    Route::get('/create','UsersController@create')
-         ->name('users.user.create');
-
-    Route::get('/show/{user}','UsersController@show')
-         ->name('users.user.show')
-         ->where('id', '[0-9]+');
-
-    Route::get('/{user}/edit','UsersController@edit')
-         ->name('users.user.edit')
-         ->where('id', '[0-9]+');
-
-    Route::post('/', 'UsersController@store')
-         ->name('users.user.store');
-
-    Route::put('user/{user}', 'UsersController@update')
-         ->name('users.user.update')
-         ->where('id', '[0-9]+');
-
-    Route::delete('/user/{user}','UsersController@destroy')
-         ->name('users.user.destroy')
-         ->where('id', '[0-9]+');
-
-});
 
 Route::group(
 [
