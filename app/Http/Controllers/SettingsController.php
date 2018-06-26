@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
-use commonHelper;
+use targetHelper;
 
 class SettingsController extends Controller
 {
@@ -143,21 +143,54 @@ class SettingsController extends Controller
 
     public function target_set($type,$target_month=null)
     {
+        //debug(session()->all(),1);
+        //debug(Auth::user(),1);
         $data['type'] = $type;
         $data['target_month'] = $target_month;
+        $data['targetType'] = 'new';
+
         if($target_month)
         {
+            $data['base'] = rand(10,555);
+            $data['targetType'] = 'edit';
             $data['existingValue'] = DB::table('targets')
                 ->select('*')
                 ->where('target_type',$type)
                 ->where('target_month',$target_month)->get();
-            //commonHelper::debug($data['existingValue'],1);
+//            debug($data['existingValue'][0]->base_date,1);
 
             if($type == 'zones')
             {
                 $data['geographies'] = DB::table('zones')->select('id','zone_name as gname')->where('is_active',1)->orderBy('ordering')->get();
-                $data['baseData'] = $this->baseData($data['geographies']);
             }
+            else if($type == 'regions')
+            {
+                //$data['geographies'] = DB::table('regions')->select('id','region_name as gname')->orderBy('ordering')->get();
+                $data['geographies'] = DB::table('distribution_houses')
+                    ->leftJoin('regions', 'regions.id', '=', 'distribution_houses.regions_id')
+                    ->select('regions.id','regions.region_name as gname')
+                    ->where('distribution_houses.zones_id',Auth::user()->zones_id)
+                    ->groupBy('distribution_houses.regions_id')
+                    ->orderBy('regions.ordering')->get();
+            }
+            else if($type == 'territories')
+            {
+                $data['geographies'] = DB::table('distribution_houses')
+                    ->leftJoin('territories', 'territories.id', '=', 'distribution_houses.territories_id')
+                    ->select('territories.id','territories.territory_name as gname')
+                    ->where('distribution_houses.regions_id',Auth::user()->regions_id)
+                    ->groupBy('distribution_houses.territories_id')
+                    ->orderBy('territories.ordering')->get();
+            }
+            else if($type == 'area')
+            {
+                $data['geographies'] = DB::table('users')
+                    ->select('id','name as gname')
+                    ->where('territories_id',Auth::user()->territories_id)
+                    ->where('user_type','area')->get();
+            }
+            $data['baseData'] = $this->baseData($data['geographies']);
+
             $data['skues'] = DB::table('skues')
                 ->select('skues.*')
                 ->leftJoin('brands', 'brands.id', '=', 'skues.brands_id')
@@ -179,13 +212,42 @@ class SettingsController extends Controller
         $post = $request->all();
         $data['type'] = $post['target_type'];
         $data['target_month'] = $post['target_month'];
+        $data['targetType'] = 'new';
         $data['existingValue'] = array();
+        //$data['base'] = rand(10,555);
         if($post['target_type'] == 'zones')
         {
             $data['geographies'] = DB::table('zones')->select('id','zone_name as gname')->where('is_active',1)->orderBy('ordering')->get();
-            $data['baseData'] = $this->baseData($data['geographies']);
         }
-
+        else if($post['target_type'] == 'regions')
+        {
+            $data['geographies'] = DB::table('distribution_houses')
+                ->leftJoin('regions', 'regions.id', '=', 'distribution_houses.regions_id')
+                ->select('regions.id','regions.region_name as gname')
+                ->where('distribution_houses.zones_id',Auth::user()->zones_id)
+                ->groupBy('distribution_houses.regions_id')
+                ->orderBy('regions.ordering')->get();
+        }
+        else if($post['target_type'] == 'territories')
+        {
+            $data['geographies'] = DB::table('distribution_houses')
+                ->leftJoin('territories', 'territories.id', '=', 'distribution_houses.territories_id')
+                ->select('territories.id','territories.territory_name as gname')
+                ->where('distribution_houses.regions_id',Auth::user()->regions_id)
+                ->groupBy('distribution_houses.territories_id')
+                ->orderBy('territories.ordering')->get();
+//            debug(DB::getQueryLog(),1);
+        }
+        else if($post['target_type'] == 'area')
+        {
+            $data['geographies'] = DB::table('users')
+                ->select('id','name as gname')
+                ->where('territories_id',Auth::user()->territories_id)
+                ->where('user_type','area')->get();
+        }
+        $data['baseData'] = $this->baseData($data['geographies']);
+        $data['base'] = $this->totalBaseData($data['baseData']);
+        //debug($totalBasedata,1);
         $data['skues'] = DB::table('skues')
             ->select('skues.*')
             ->leftJoin('brands', 'brands.id', '=', 'skues.brands_id')
@@ -231,10 +293,30 @@ class SettingsController extends Controller
         return $data;
     }
 
+    public function totalBaseData($baseData)
+    {
+        $totalbase = array();
+        foreach($baseData as $geography)
+        {
+            foreach($geography as $brand)
+            {
+                foreach($brand as $sk=>$sv)
+                {
+                    $totalbase[$sk][] = $sv;
+                }
+            }
+        }
+        //debug($baseData);
+        //debug($totalbase);
+        //debug(array_sum($totalbase[2]),1);
+        return $totalbase;
+    }
+
     public function target_submit(Request $request)
     {
         $post = $request->all();
-//        dd($post);
+
+//        debug($post['base_distribute'],1);
         $insertData['target_type'] = $post['target_type'];
         $insertData['target_month'] = $post['target_month'];
         $insertData['base_date'] = $post['base_date'];
@@ -246,7 +328,8 @@ class SettingsController extends Controller
                 ->where('target_month',$post['target_month'])->delete();
         }
 
-        foreach($post['geography_id'] as $geography)
+//        foreach($post['geography_id'] as $geography)
+        foreach($post['base_distribute'] as $geography=>$value)
         {
             $insertData['type_id'] = $geography;
             $baseValue = array();
@@ -269,10 +352,12 @@ class SettingsController extends Controller
             }
             $insertData['target_value'] = json_encode($targetValue);
             $insertData['created_by'] = Auth::id();
-            DB::table('targets')->insert($insertData);
-        }
 
-        return redirect('targetSet/zones')->with('success', 'Information has been added.');
+            DB::table('targets')->insert($insertData);
+//            dd($insertData);
+        }
+//        debug($insertData,1);
+        return redirect('targetSet/'.$post['target_type'])->with('success', 'Information has been added.');
     }
 
     public function remove_target($type,$target_month)

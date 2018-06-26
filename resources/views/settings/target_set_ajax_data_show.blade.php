@@ -10,7 +10,7 @@
         <th>sku</th>
         @foreach($skues as $skue)
             <?php
-                $base = rand(10,555);
+
                 echo "
                     <script>
                         var dClass = '".$skue->brands_id.'_'.$skue->id."';
@@ -28,15 +28,37 @@
                         });
                     </script>
                 ";
+            if($targetType == 'edit')
+            {
+                $existing = targetHelper::totalJsonValue($type,$skue->id,$target_month,$existingValue);
+            }
+            else
+            {
+                $existingTarget = targetHelper::totalExistingJsonValue($type,$skue->id,$target_month);
+            }
+
+//            debug($target_month,1);
+
             ?>
             <td style="text-align: center">
                 <?php echo str_replace(' ',"&nbsp;",$skue->sku_name);?>
                 <div style="width: 150px; overflow: hidden;">
                     <div style="float: left;">
-                        <input class="base_total {{'base_'.$skue->brands_id.'_'.$skue->id}}" style="width: 75px;" type="text" placeholder="Base" value="{{$base}}">
+                        <input
+                                class="base_total {{'base_'.$skue->brands_id.'_'.$skue->id}}"
+                                style="width: 75px;"
+                                type="text"
+                                placeholder="Base"
+                                value="<?php echo (($targetType == 'edit')?$existing['base']:array_sum($base[$skue->id]));?>">
                     </div>
                     <div style="float: left;">
-                        <input unique_ref="{{$skue->brands_id.'_'.$skue->id}}" class="{{'target_'.$skue->brands_id.'_'.$skue->id}}" style="width: 75px;" type="text" placeholder="Target">
+                        <input
+                                unique_ref="{{$skue->brands_id.'_'.$skue->id}}"
+                                class="{{'target_'.$skue->brands_id.'_'.$skue->id}}"
+                                style="width: 75px;"
+                                type="text"
+                                placeholder="Target"
+                                value="<?php echo (($targetType == 'edit')?$existing['target']:$existingTarget['target']);?>">
                     </div>
                 </div>
                 {{--<input type="text" placeholder="Target">--}}
@@ -53,8 +75,8 @@
             </th>
             @foreach($skues as $skue)
                 <?php
-                    $existing = commonHelper::getTargetJsonValue($type,$geography->id,$target_month,$existingValue);
-                   // dd($existing['target'][$geography->id]);
+                    $existing = targetHelper::getTargetJsonValue($type,$geography->id,$target_month,$existingValue);
+                    $existingTarget = targetHelper::totalExistingJsonValue($type,$skue->id,$target_month);
                 ?>
                 <td style="text-align: center">
                     <input
@@ -70,10 +92,11 @@
                             style="width: 50px;"
                             type="text"
                             {{--value="0">--}}
-                            value="<?php echo (($existing)?$existing['target'][$skue->id]:0); ?>">
+                            value="<?php echo (($existing)?$existing['target'][$skue->id]:round((((($baseData[$geography->id][$skue->brands_id][$skue->id]*100)/array_sum($base[$skue->id]))*$existingTarget['target'])/100))); ?>">
                 </td>
             @endforeach
         </tr>
+
     @endforeach
     </tbody>
 </table>

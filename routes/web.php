@@ -55,6 +55,12 @@ Route::get('targetRemove/{type}/{target_month}','SettingsController@remove_targe
 //Route::get('showExistingSetting/{target_type}/{target_month}','SettingsController@show_existing_setting');
 /* End setting routings */
 
+
+/* Settings routing */
+Route::get('order_list','ReportsController@order_list');
+Route::post('orderListAjax','ReportsController@order_list_ajax');
+/* End setting routings */
+
 Route::group(
 [
     'prefix' => 'product_brands',

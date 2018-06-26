@@ -1,3 +1,24 @@
+function myConfiguration()
+{
+    $('#dataTableId').dataTable({
+        bPaginate: true,
+        dom: 'Bfrtip',
+        responsive: true,
+        "lengthMenu": [[50, 25, 50, 100, -1], [50, 25, 50, 100, "All"]],
+        "pageLength": 50,
+        buttons: ['excel','print', 'pageLength']
+    });
+    $('#dataTableId_withoutPaginate').dataTable({
+        bPaginate: false,
+        dom: 'Bfrtip',
+        responsive: true,
+        "lengthMenu": [[50, 25, 50, 100, -1], [50, 25, 50, 100, "All"]],
+        "pageLength": 50,
+        buttons: ['excel','print', 'pageLength']
+    });
+}
+
+
 $('.monthpicker').datetimepicker({
     weekStart: 1,
     todayBtn:  1,
@@ -14,7 +35,7 @@ $('.monthpicker').datetimepicker({
 $(document).ready(function () {
     $(".date_range").daterangepicker({
         "locale":{
-            format:"MM/DD/MM/YYYY"
+            format:"DD/MM/YYYY"
         },
         "autoApply": true,
         "showDropdowns": true,

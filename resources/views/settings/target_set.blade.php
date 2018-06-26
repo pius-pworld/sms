@@ -45,7 +45,7 @@
                                         <div class="form-group ">
                                             <label for="category_name" class="col-md-3 control-label">Base Date</label>
                                             <div class="col-md-9">
-                                                <input class="form-control date_range" type="text" id="base_date" name="base_date" value="">
+                                                <input class="form-control date_range" type="text" id="base_date" name="base_date" value="<?php echo (($target_month)?$existingValue[0]->base_date:''); ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -66,7 +66,13 @@
 
                                 </div>
                                 <div class="col-xs-12" style="text-align: right">
-                                    <a class="btn btn-danger" href="{{URL::to('targetRemove/'.$type.'/'.$target_month)}}">Remove This Configuration</a>
+                                    <?php
+                                        if($target_month)
+                                        { ?>
+                                        <a class="btn btn-danger" href="{{URL::to('targetRemove/'.$type.'/'.$target_month)}}">Remove This Configuration</a>
+                                        <?php }
+                                    ?>
+
                                     <input type="submit" value="Confirm" class="btn btn-primary">
                                 </div>
                             </form>
@@ -104,7 +110,7 @@
                             {
                                 $('.target_set_ajax_data_show').html(data);
                                 $('#d_table').DataTable( {
-                                    scrollY: "250px",
+                                    scrollY: "calc(100vh - 380px)",
                                     scrollX: true,
                                     scrollCollapse: true,
                                     paging: false,
@@ -125,7 +131,7 @@
                 }
             });
             $('#d_table').DataTable( {
-                scrollY: "250px",
+                scrollY: "calc(100vh - 380px)",
                 scrollX: true,
                 scrollCollapse: true,
                 paging: false,
