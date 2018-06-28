@@ -8,6 +8,7 @@ function myConfiguration()
         "pageLength": 50,
         buttons: ['excel','print', 'pageLength']
     });
+
     $('#dataTableId_withoutPaginate').dataTable({
         bPaginate: false,
         dom: 'Bfrtip',

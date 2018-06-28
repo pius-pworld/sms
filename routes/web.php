@@ -59,6 +59,9 @@ Route::get('targetRemove/{type}/{target_month}','SettingsController@remove_targe
 /* Settings routing */
 Route::get('order_list','ReportsController@order_list');
 Route::post('orderListAjax','ReportsController@order_list_ajax');
+
+Route::get('sales_list','ReportsController@salesList');
+Route::post('salesListAjax','ReportsController@sales_list_ajax');
 /* End setting routings */
 
 Route::group(

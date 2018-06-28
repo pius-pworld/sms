@@ -21,6 +21,7 @@ class ReportsController extends Controller
     public function order_list()
     {
         $data['ajaxUrl'] = URL::to('orderListAjax');
+        $data['searching_options'] = 'reports.order_list_search';
 
         $data['orders'] = DB::table('orders')->get();
 
@@ -70,5 +71,15 @@ class ReportsController extends Controller
         $data['orders'] = $query->get();
         //debug(DB::getQueryLog(),1);
         return view('reports.order_list_ajax',$data);
+    }
+
+
+    public function salesList()
+    {
+        $data['ajaxUrl'] = URL::to('salesListAjax');
+        $data['searching_options'] = 'reports.sales_list_search';
+
+        $data['sales'] = DB::table('sales')->get();
+        return view('reports.sales_list',$data);
     }
 }

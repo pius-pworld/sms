@@ -37,7 +37,7 @@
                 $existingTarget = targetHelper::totalExistingJsonValue($type,$skue->id,$target_month);
             }
 
-//            debug($target_month,1);
+            //debug($base,1);
 
             ?>
             <td style="text-align: center">
