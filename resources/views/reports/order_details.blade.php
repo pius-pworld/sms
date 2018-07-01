@@ -48,11 +48,11 @@
                                         <div class="col-lg-3">
                                             <div class="col-lg-12 text-bold">{{$order->brand_name.' '.$order->sku_name.'('.$order->short_name.')'}}</div>
                                             <div class="col-lg-6">
-                                                <div>Request Quantity</div>
+                                                <div>Request&nbsp;Quantity</div>
                                                 <input style="width: 100px;" type="text" value="{{$order->quantity}}">
                                             </div>
                                             <div class="col-lg-6">
-                                                <div>Order Quantity</div>
+                                                <div>Order&nbsp;Quantity</div>
                                                 <input type="hidden" name="short_name[]" value="{{$order->short_name}}">
                                                 <input style="width: 100px;" name="quantity[{{$order->short_name}}]" type="text" value="">
                                             </div>
