@@ -56,13 +56,20 @@ Route::get('targetRemove/{type}/{target_month}','SettingsController@remove_targe
 /* End setting routings */
 
 
-/* Settings routing */
-Route::get('order_list','ReportsController@order_list');
+/* Report routing */
+Route::get('order-list/{type?}','ReportsController@order_list');
 Route::post('orderListAjax','ReportsController@order_list_ajax');
 
 Route::get('sales_list','ReportsController@salesList');
 Route::post('salesListAjax','ReportsController@sales_list_ajax');
-/* End setting routings */
+
+Route::get('primary-order-details/{id}','ReportsController@primary_order_details');
+Route::post('primary-sales-create','ReportsController@primary_sales_create');
+/* End Report routings */
+
+
+//Route::get('test','SaleController@index');
+
 
 Route::group(
 [

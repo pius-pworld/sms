@@ -19,6 +19,8 @@ class Sale extends Model
      *
      * @var string
      */
+
+
     protected $primaryKey = 'id';
 
     /**

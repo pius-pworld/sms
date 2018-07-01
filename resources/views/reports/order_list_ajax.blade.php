@@ -9,6 +9,7 @@
         <th>Order Total</th>
         <th>House</th>
         <th>Order Date</th>
+        <th>Action</th>
     </tr>
     </thead>
     <tbody>
@@ -22,6 +23,9 @@
             <td>{{$order->order_total}}</td>
             <td>{{$order->dh_name}}</td>
             <td>{{$order->created_at}}</td>
+            <td>
+                <a href="{{URL::to('primary-order-details/'.$order->id)}}"><i class="fa fa-eye"></i></a>
+            </td>
         </tr>
     @endforeach
     </tbody>
