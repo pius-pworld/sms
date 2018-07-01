@@ -131,6 +131,8 @@ class ReportsController extends Controller
             $sales_details_data['created_by'] = Auth::id();
             DB::table('sale_details')->insert($sales_details_data);
         }
+        DB::table('orders')->where('id', $post['order_id'])->update(['order_status' => 'Processed']);
+
         return redirect('order-list/primary')->with('success', 'Information has been added.');
     }
 }

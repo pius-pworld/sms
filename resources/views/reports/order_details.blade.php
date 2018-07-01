@@ -40,6 +40,7 @@
                                     <input type="hidden" name="sender_phone" value="{{$orders_info->requester_phone}}">
                                     <input type="hidden" name="dh_name" value="{{$orders_info->dh_name}}">
                                     <input type="hidden" name="dh_phone" value="{{$orders_info->dh_phone}}">
+                                    <input type="hidden" name="order_id" value="{{$orders_info->id}}">
                                 </div>
                             </div>
                             <div class="row">

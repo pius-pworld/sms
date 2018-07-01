@@ -9,6 +9,7 @@
         <th>Order Total</th>
         <th>House</th>
         <th>Order Date</th>
+        <th>Status</th>
         <th>Action</th>
     </tr>
     </thead>
@@ -23,8 +24,13 @@
             <td>{{$order->order_total}}</td>
             <td>{{$order->dh_name}}</td>
             <td>{{$order->created_at}}</td>
+            <td>{{$order->order_status}}</td>
             <td>
-                <a href="{{URL::to('primary-order-details/'.$order->id)}}"><i class="fa fa-eye"></i></a>
+                @if($order->order_status == 'Pending')
+                    <a href="{{URL::to('primary-order-details/'.$order->id)}}"><i class="fa fa-eye"></i></a>
+                @else
+                    <i class="fa fa-eye"></i>
+                @endif
             </td>
         </tr>
     @endforeach
