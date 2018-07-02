@@ -15,6 +15,7 @@ class ReportsController extends Controller
 {
     public function __construct()
     {
+        $this->middleware('auth');
         DB::enableQueryLog();
     }
 
@@ -111,6 +112,7 @@ class ReportsController extends Controller
         //debug($post,1);
         $salesdata = array(
             'asm_rsm_id'=>$post['asm_rsm_id'],
+            'order_date'=>$post['order_date'],
             'sale_date'=>date('Y-m-d'),
             'sender_name'=>$post['sender_name'],
             'sender_phone'=>$post['sender_phone'],
@@ -134,5 +136,30 @@ class ReportsController extends Controller
         DB::table('orders')->where('id', $post['order_id'])->update(['order_status' => 'Processed']);
 
         return redirect('order-list/primary')->with('success', 'Information has been added.');
+    }
+
+    public function order_vs_sale_primary()
+    {
+        $data['ajaxUrl'] = URL::to('salesListAjax');
+        $data['searching_options'] = 'reports.sales_list_search';
+
+        $data['ordervssale'] = DB::table('order_details')
+                            ->select('orders.id as oid','orders.requester_name','orders.order_date','orders.dh_name','orders.order_date','brands.brand_name','skues.sku_name','order_details.short_name','order_details.quantity','sales.sale_date','sale_details.quantity as salequantity')
+                            ->leftJoin('orders','orders.id','=','order_details.orders_id')
+                            ->leftJoin('sales',function($join){
+                                $join->on('sales.asm_rsm_id','=','orders.asm_rsm_id')
+                                    ->on('sales.order_date','=','orders.order_date');
+                                })
+                            ->leftJoin('sale_details',function ($join){
+                                $join->on('sale_details.sales_id','=','sales.id')
+                                    ->on('sale_details.short_name','=','order_details.short_name');
+                            })
+                            ->leftJoin('skues','skues.short_name','=','order_details.short_name')
+                            ->leftJoin('brands','brands.id','=','skues.brands_id')
+                            ->where('orders.order_type','Primary')
+                            ->orderBy('orders.id', 'DESC')->get();
+        //dd(DB::getQueryLog());
+//        debug($data['ordervssale'],1);
+        return view('reports.order_vs_sale_primary',$data);
     }
 }

@@ -41,6 +41,7 @@
                                     <input type="hidden" name="dh_name" value="{{$orders_info->dh_name}}">
                                     <input type="hidden" name="dh_phone" value="{{$orders_info->dh_phone}}">
                                     <input type="hidden" name="order_id" value="{{$orders_info->id}}">
+                                    <input type="hidden" name="order_date" value="{{$orders_info->order_date}}">
                                 </div>
                             </div>
                             <div class="row">
