@@ -1,14 +1,14 @@
 <table id="dataTableId" class="table table-bordered table-striped dataTable no-footer" role="grid" aria-describedby="example2_info">
     <thead>
     <tr>
-        <th>ASO</th>
-        <th>ASO Phone</th>
-        <th>Route</th>
-        <th>Total Outlet</th>
-        <th>Order Type</th>
-        <th>Order Total</th>
-        <th>House</th>
+        <th>House Name</th>
+        <th>ASM/RSM</th>
+        <th>ASM/RSM Phone</th>
+        <th>Total SKU Quantity</th>
         <th>Order Date</th>
+        <th>Deposite Amount</th>
+        <th>Current Balance</th>
+        <th>Order Amount</th>
         <th>Status</th>
         <th>Action</th>
     </tr>
@@ -16,14 +16,14 @@
     <tbody>
     @foreach($orders as $order)
         <tr>
+            <td>{{$order->dh_name}}</td>
             <td>{{$order->requester_name}}</td>
             <td>{{$order->requester_phone}}</td>
-            <td>{{$order->route_name}}</td>
-            <td>{{$order->total_outlet}}</td>
-            <td>{{$order->order_type}}</td>
             <td>{{$order->order_total}}</td>
-            <td>{{$order->dh_name}}</td>
-            <td>{{$order->created_at}}</td>
+            <td>{{date('d-m-Y',strtotime($order->created_at))}}</td>
+            <td>{{$order->order_da}}</td>
+            <td>Current balance</td>
+            <td>{{$order->order_amount}}</td>
             <td>{{$order->order_status}}</td>
             <td>
                 @if($order->order_status == 'Pending')
