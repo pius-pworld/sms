@@ -67,6 +67,9 @@ Route::get('primary-order-details/{id}','ReportsController@primary_order_details
 Route::post('primary-sales-create','ReportsController@primary_sales_create');
 
 Route::get('order-vs-sale-primary','ReportsController@order_vs_sale_primary');
+
+Route::get('current-stock','ReportsController@currentStock');
+Route::post('current-stock-search','ReportsController@currentStockSearch');
 /* End Report routings */
 
 

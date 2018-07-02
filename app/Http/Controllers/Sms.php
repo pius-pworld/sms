@@ -101,7 +101,7 @@ class Sms extends Controller
         if (!$validator->isValid()) {
             foreach ($validator->getErrors() as $error) {
                 $error_message = sprintf("%s %s in $identifier SMS \n", $error['property'], $error['constraint']);
-                SmsOutboxesController::writeOutbox($number,$error_message,['order_type'=>$identifier,'priority'=>3]);
+                SmsOutboxesController::writeOutbox($additionals['sender'],$error_message,['order_type'=>$identifier,'priority'=>3]);
                 return ['status' => false, 'message' => $error_message];
             }
         } else {
