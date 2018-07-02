@@ -393,6 +393,10 @@ class SmsInboxesController extends Controller
         }
     }
 
+    private function modifyStock($requested_skues){
+
+    }
+
     /**
      * process sell
      * @param $id
@@ -409,6 +413,7 @@ class SmsInboxesController extends Controller
                     "quantity"   => (int)explode(',',$value)[0],
                     "created_by" =>1
                 ];
+                $this->modifyStock($key);
             }
 
             if (Sale::insertSale($sale_information['order'], $sale_information['order_details'])) {

@@ -162,4 +162,25 @@ class ReportsController extends Controller
 //        debug($data['ordervssale'],1);
         return view('reports.order_vs_sale_primary',$data);
     }
+
+    public function  currentStock(){
+        $data['ajaxUrl'] = URL::to('current-stock-search');
+        $data['searching_options'] = 'reports.sales_list_search';
+
+        $data['current_stocks'] = DB::table('stocks')
+            ->select('stocks.quantity','distribution_houses.market_name','skues.sku_name','brands.brand_name')
+            ->leftJoin('distribution_houses','distribution_houses.id','=','stocks.distributions_house_id')
+            ->leftJoin('skues','skues.id','=','stocks.sku_id')
+            ->leftJoin('brands','brands.id','=','skues.brands_id')->get();
+        return view('reports.current_stock',$data);
+    }
+
+    public function currentStockSearch(Request $request){
+        $data['current_stocks'] = DB::table('stocks')
+            ->select('stocks.quantity','distribution_houses.market_name','skues.sku_name','brands.brand_name')
+            ->leftJoin('distribution_houses','distribution_houses.id','=','stocks.distributions_house_id')
+            ->leftJoin('skues','skues.id','=','stocks.sku_id')
+            ->leftJoin('brands','brands.id','=','skues.brands_id')->get();
+        return view('reports.current_stock_ajax',$data);
+    }
 }
