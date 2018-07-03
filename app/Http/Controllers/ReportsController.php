@@ -57,6 +57,7 @@ class ReportsController extends Controller
     public function check_distribution_balack(Request $request)
     {
         $post = $request->all();
+//        debug($post,1);
         $price = reportsHelper::getDistributorCurrentBalance($post);
         echo $price;
     }
@@ -148,6 +149,7 @@ class ReportsController extends Controller
             $sales_details_data['sales_id'] = $sale_id;
             $sales_details_data['short_name'] = $k;
             $sales_details_data['quantity'] = $q;
+            $sales_details_data['price'] = $post['price'][$k];
             $sales_details_data['created_by'] = Auth::id();
             DB::table('sale_details')->insert($sales_details_data);
         }

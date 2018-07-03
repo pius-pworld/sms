@@ -52,7 +52,7 @@ class ReportsHelper
 
     public static function getDistributorCurrentBalance($post)
     {
-        $result = DB::table('skues')->select('short_name','price')->whereIn('short_name',$post['short_name'])->get();
+        $result = DB::table('order_details')->select('short_name','price')->whereIn('short_name',$post['short_name'])->where('orders_id',$post['order_id'])->get();
         $total = 0;
         foreach($result as $k=>$value)
         {
