@@ -111,4 +111,26 @@
         $html .= '</ol>';
         return $html;
     }
+
+    if(!function_exists('memoStructure')){
+        function memoStructure($brands=[],$skues=[]){
+            $result =[];
+            $selected_brands=\App\Models\Brand::orderBy('ordering', 'ASC');
+                if(count($brands) > 0){
+                  $selected_brands->whereIn('id',$brands);
+                }
+            $selected_brands = $selected_brands->get()->toArray();
+            foreach ($selected_brands as $brand){
+                $selected_skues = \App\Models\Skue::orderBy('ordering','ASC')->where('brands_id',$brand['id']);
+                if(count($skues) > 0){
+                    $selected_skues->whereIn('id',$skues);
+                }
+                $selected_skues= $selected_skues->get()->toArray();
+                foreach ($selected_skues as $key=>$value){
+                    $result[$brand['brand_name']][$value['id']] = $value['sku_name'];
+                }
+            }
+            return $result;
+        }
+    }
 ?>
