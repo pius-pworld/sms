@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DistributionHouse;
 use App\Models\Order;
 use App\Models\Order_Detail;
 use App\Models\OrderDetail;
 use App\Models\Sale;
 use App\Models\SmsInbox;
+use App\Models\Stocks;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sms;
@@ -393,7 +395,20 @@ class SmsInboxesController extends Controller
         }
     }
 
-    private function modifyStock($requested_skues){
+    private function modifyStock($requested_skues,$amount,$order_information){
+        $distribution_house_info = DB::table('users')
+            ->select('users.distribution_house_id')
+            ->where('users.id',$order_information['aso_id'])
+            ->first();
+        $sku_id = DB::table('skues')
+            ->select('skues.id')
+            ->where('skues.short_name',$requested_skues)
+            ->first()->id;
+        $distribution_house=Stocks::where('distributions_house_id',$distribution_house_info->distribution_house_id)->where('sku_id',$sku_id)->first();
+        if (count($distribution_house)){
+            $distribution_house->quantity=$distribution_house->quantity-$amount;
+            $distribution_house->save();
+        }
 
     }
 
@@ -413,7 +428,8 @@ class SmsInboxesController extends Controller
                     "quantity"   => (int)explode(',',$value)[0],
                     "created_by" =>1
                 ];
-                $this->modifyStock($key);
+                $order_information = Order::all()->where('aso_id',$sale_information['order']['aso_id'])->where('order_date',$sale_information['order']['sale_date'])->last()->toArray();
+                $this->modifyStock($key,(int)explode(',',$value)[0],$order_information);
             }
 
             if (Sale::insertSale($sale_information['order'], $sale_information['order_details'])) {
