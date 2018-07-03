@@ -99,18 +99,19 @@ class ReportsController extends Controller
 
         //debug($data['orders'],1);
 
-        $memo=memoStructure();
+        $data['memo'] = memoStructure();
+        //debug($memo,1);
         $object_info = collect($data['orders'])->toArray();
 
-        foreach ($memo as $k=>$mem){
-             foreach ($mem['sku_name'] as $kk=>$m){
-                 $key = array_search($kk, array_column($object_info, 'sid'));
-                 $memo[$k]['quantity'][$kk] =$object_info[$key]->quantity;
-                 $memo[$k]['short_name'][$kk] =$object_info[$key]->short_name;
-             }
-        }
-
-        $data['memo'] = $memo;
+//        foreach ($memo as $k=>$mem){
+//             foreach ($mem['sku_name'] as $kk=>$m){
+//                 $key = array_search($kk, array_column($object_info, 'sid'));
+//                 $memo[$k]['quantity'][$kk] =$object_info[$key]->quantity;
+//                 $memo[$k]['short_name'][$kk] =$object_info[$key]->short_name;
+//             }
+//        }
+//
+//        $data['memo'] = $memo;
 
 
         if($type == 'primary')
@@ -126,6 +127,7 @@ class ReportsController extends Controller
     public function primary_sales_create(Request $request)
     {
         $post = $request->all();
+//        debug($post,1);
         $salesdata = array(
             'asm_rsm_id'=>$post['asm_rsm_id'],
             'order_date'=>$post['order_date'],

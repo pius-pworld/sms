@@ -79,34 +79,76 @@
                                     {{--</tbody>--}}
                                 {{--</table>--}}
 
-                                <table border="1">
-                                   @foreach($memo as $key=>$value)
-                                            <tr>
-                                                <td>{{$key}}</td>
-                                                <td>
-                                                    <table border="1">
-                                                      @foreach($value['sku_name'] as $k=>$v)
-                                                          <tr>
-                                                              <td>{{$v}}</td>
-                                                              <td>{{$value['quantity'][$k]}}</td>
-                                                              <td>
-                                                              <td>
-                                                                  <input type="hidden" name="short_name[]" value="{{$value['short_name'][$k]}}">
-                                                                  <input
-                                                                          class="order_quantity"
-                                                                          style="width: 100px;"
-                                                                          name="quantity[{{$value['short_name'][$k]}}]"
-                                                                          type="number"
-                                                                          oldValue="{{$value['quantity'][$k]}}"
-                                                                          value="{{$value['quantity'][$k]}}">
-                                                              </td></td>
-                                                          </tr>
-                                                      @endforeach
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                    @endforeach
+
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <th colspan="2" style="text-align: center">Product Details</th>
+                                        <th style="text-align: center">Request Quantity</th>
+                                        <th style="text-align: center">Order Quantity</th>
+                                    </thead>
+                                    <tbody>
+                                    <?php
+                                        foreach($memo as $k=>$v)
+                                        {
+                                            $sl = 0;
+                                            foreach($v as $vk=>$vv)
+                                            {
+                                                if($sl == 0)
+                                                {
+                                                    echo '<tr><td rowspan="'.count($v).'" style="text-align: left; vertical-align: middle;">'.$k.'</td><td>'.$vv.'</td>';
+                                                }
+                                                else
+                                                {
+                                                    echo '<tr><td>'.$vv.'('.$vk.')'.'</td>';
+                                                }
+                                                $convertArrayOrder = collect($orders)->toArray();
+                                                $key = array_search($vk, array_column($convertArrayOrder, 'short_name'));
+                                                echo '<td class="request_quantity">'.$convertArrayOrder[$key]->quantity.'</td>';
+                                                echo '<td>
+                                                            <input type="hidden" name="short_name[]" value="'.$convertArrayOrder[$key]->short_name.'">
+                                                            <input
+                                                                class="order_quantity"
+                                                                style="width: 100px;"
+                                                                name="quantity['.$convertArrayOrder[$key]->short_name.']"
+                                                                type="number"
+                                                                oldValue="'.$convertArrayOrder[$key]->quantity.'"
+                                                                value="'.$convertArrayOrder[$key]->quantity.'"></td>';
+                                                echo '</tr>';
+                                                $sl++;
+                                            }
+                                        }
+                                    ?>
+                                    </tbody>
                                 </table>
+
+                                {{--<table border="1">--}}
+                                   {{--@foreach($memo as $key=>$value)--}}
+                                            {{--<tr>--}}
+                                                {{--<td>{{$key}}</td>--}}
+                                                {{--<td>--}}
+                                                    {{--<table border="1">--}}
+                                                      {{--@foreach($value['sku_name'] as $k=>$v)--}}
+                                                          {{--<tr>--}}
+                                                              {{--<td>{{$v}}</td>--}}
+                                                              {{--<td>{{$value['quantity'][$k]}}</td>--}}
+                                                              {{--<td>--}}
+                                                              {{--<td>--}}
+                                                                  {{--<input type="hidden" name="short_name[]" value="{{$value['short_name'][$k]}}">--}}
+                                                                  {{--<input--}}
+                                                                          {{--class="order_quantity"--}}
+                                                                          {{--style="width: 100px;"--}}
+                                                                          {{--name="quantity[{{$value['short_name'][$k]}}]"--}}
+                                                                          {{--type="number"--}}
+                                                                          {{--oldValue="{{$value['quantity'][$k]}}"--}}
+                                                                          {{--value="{{$value['quantity'][$k]}}">--}}
+                                                              {{--</td></td>--}}
+                                                          {{--</tr>--}}
+                                                      {{--@endforeach--}}
+                                                    {{--</table>--}}
+                                                {{--</td>--}}
+                                            {{--</tr>--}}
+                                    {{--@endforeach--}}
+                                {{--</table>--}}
                             </div>
                             <div class="col-lg-12 text-right">
                                 <input class="btn btn-primary" type="submit" value="Save">
