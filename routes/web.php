@@ -58,7 +58,8 @@ Route::get('targetRemove/{type}/{target_month}','SettingsController@remove_targe
 
 /* Report routing */
 Route::get('order-list/{type?}','ReportsController@order_list');
-Route::post('orderListAjax','ReportsController@order_list_ajax');
+Route::post('orderListAjax/{type?}','ReportsController@order_list_ajax');
+Route::post('check-distribution-balack','ReportsController@check_distribution_balack');
 
 Route::get('sales_list','ReportsController@salesList');
 Route::post('salesListAjax','ReportsController@sales_list_ajax');

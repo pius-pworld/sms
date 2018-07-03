@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Auth;
 use DB;
 use Illuminate\Support\Facades\URL;
+use reportsHelper;
+use Symfony\Component\Console\Helper\Helper;
+
 //use Carbon\Carbon;
 
 //use URL;
@@ -21,17 +24,20 @@ class ReportsController extends Controller
 
     public function order_list($type=null)
     {
-        $data['ajaxUrl'] = URL::to('orderListAjax');
+        $data['type'] = $type;
+        if($type == 'primary')
+        {
+            $data['pageTitle'] = 'Primary Order List';
+        }
+        else if($type == 'secondary')
+        {
+            $data['pageTitle'] = 'Secondary Order List';
+        }
+        $data['ajaxUrl'] = URL::to('orderListAjax/'.$type);
         $data['searching_options'] = 'reports.order_list_search';
 
-        $query = DB::table('orders');
-        if($type)
-        {
-            $query->where('order_type',ucfirst($type));
-        }
 
-        $data['orders'] = $query->get();
-        //debug(DB::getQueryLog(),1);
+        $data['orders'] = reportsHelper::order_list_query($type,array());
         $data['aso_name'] = DB::table('orders')
             ->select('requester_name')
             ->groupBy('requester_name')->get();
@@ -43,40 +49,23 @@ class ReportsController extends Controller
         $data['routes'] = DB::table('orders')
             ->select('route_name')
             ->groupBy('route_name')->get();
-        //debug($data['ajaxUrl'],1);
 
         return view('reports.order_list',$data);
     }
 
-    public function order_list_ajax(Request $request)
+    public function check_distribution_balack(Request $request)
     {
         $post = $request->all();
-        //debug($post,1);
-        $dateselect = explode(' - ', $post['created_at']);
-        //$date = Carbon::parse('25/06/2018');
-        //debug($date->format('d-m-Y'),1);
-        //debug(date('Y-m-d',mktime(strtotime($dateselect[0]))),1);
-        $query = DB::table('orders');
-        if($post['requester_name'])
-        {
-            $query->where('requester_name',$post['requester_name']);
-        }
-        if($post['dh_name'])
-        {
-            $query->where('dh_name',$post['requester_name']);
-        }
-        if($post['route_name'])
-        {
-            $query->where('route_name',$post['route_name']);
-        }
-        if($post['created_at'])
-        {
-            $query->where('created_at','>=',date('Y-m-d',mktime(strtotime($dateselect[0]))));
-            $query->where('created_at','<=',date('Y-m-d',mktime(strtotime($dateselect[1]))));
-        }
-        //debug($query,1);
-        $data['orders'] = $query->get();
-        //debug(DB::getQueryLog(),1);
+        $price = reportsHelper::getDistributorCurrentBalance($post);
+        echo $price;
+    }
+
+    public function order_list_ajax(Request $request,$type=null)
+    {
+        $post = $request->all();
+        $data['type'] = $type;
+        $data['orders'] = reportsHelper::order_list_query($type,$post);
+//        debug(DB::getQueryLog(),1);
         return view('reports.order_list_ajax',$data);
     }
 
@@ -93,7 +82,8 @@ class ReportsController extends Controller
     public function primary_order_details($id)
     {
         $data['orders_info'] = DB::table('orders')
-                        ->select('orders.*')
+                        ->select('orders.*','distribution_houses.current_balance','distribution_houses.market_name','distribution_houses.point_name','distribution_houses.current_balance')
+                        ->leftJoin('distribution_houses','distribution_houses.id','=','orders.dbid')
                         ->where('orders.id',$id)->first();
 
         $data['orders'] = DB::table('order_details')
@@ -183,4 +173,6 @@ class ReportsController extends Controller
             ->leftJoin('brands','brands.id','=','skues.brands_id')->get();
         return view('reports.current_stock_ajax',$data);
     }
+
+
 }

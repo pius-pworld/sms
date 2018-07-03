@@ -213,6 +213,7 @@ return [
 		'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'targetHelper' => App\Helper\TargetHelper::class,
+        'reportsHelper' => App\Helper\ReportsHelper::class,
 
     ],
 
