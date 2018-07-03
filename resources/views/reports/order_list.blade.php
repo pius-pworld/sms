@@ -6,7 +6,7 @@
 
         <section class="content-header">
             <h1>
-                Order List
+                {{$pageTitle}}
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -21,7 +21,7 @@
             <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header" style="overflow: hidden">
-                        <span class="box-title" style="float: left;">Order List</span>
+                        <span class="box-title" style="float: left;">{{$pageTitle}}</span>
                         <span class="advanchedSearchToggle" style="float: right;">
                             <button
                                     type="button"
@@ -31,7 +31,7 @@
                             </button>
                         </span>
                     </div>
-                    <div class="box-body showSearchDataUnique">
+                    <div class="box-body showSearchDataUnique" style="overflow: scroll">
                         @include('reports.order_list_ajax')
                     </div>
 

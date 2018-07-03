@@ -17,7 +17,6 @@ class ReportsHelper
         {
             $dateselect = explode(' - ', $post['created_at']);
         }
-//        debug($dateselect,1);
         $query = DB::table('orders');
         $query->select('orders.*','distribution_houses.opening_balance');
         $query->leftJoin('distribution_houses','distribution_houses.id','=','orders.dbid');
@@ -30,25 +29,35 @@ class ReportsHelper
         {
             if($post['requester_name'])
             {
-                $query->where('requester_name',$post['requester_name']);
+                $query->where('orders.requester_name',$post['requester_name']);
             }
             if($post['dh_name'])
             {
-                $query->where('dh_name',$post['requester_name']);
+                $query->where('orders.dh_name',$post['requester_name']);
             }
             if($post['route_name'])
             {
-                $query->where('route_name',$post['route_name']);
+                $query->where('orders.route_name',$post['route_name']);
             }
             if($post['created_at'])
             {
-                $query->where('created_at','>=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[0]))));
-                $query->where('created_at','<=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[1]))));
+                $query->where('orders.created_at','>=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[0]))));
+                $query->where('orders.created_at','<=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[1]))));
             }
         }
 
         $result = $query->get();
-//        debug($result,1);
         return $result;
+    }
+
+    public static function getDistributorCurrentBalance($post)
+    {
+        $result = DB::table('skues')->select('short_name','price')->whereIn('short_name',$post['short_name'])->get();
+        $total = 0;
+        foreach($result as $k=>$value)
+        {
+            $total = $total+($post['quantity'][$value->short_name]*$value->price);
+        }
+        return $total;
     }
 }

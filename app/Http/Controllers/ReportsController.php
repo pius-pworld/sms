@@ -24,6 +24,15 @@ class ReportsController extends Controller
 
     public function order_list($type=null)
     {
+        $data['type'] = $type;
+        if($type == 'primary')
+        {
+            $data['pageTitle'] = 'Primary Order List';
+        }
+        else if($type == 'secondary')
+        {
+            $data['pageTitle'] = 'Secondary Order List';
+        }
         $data['ajaxUrl'] = URL::to('orderListAjax/'.$type);
         $data['searching_options'] = 'reports.order_list_search';
 
@@ -44,9 +53,17 @@ class ReportsController extends Controller
         return view('reports.order_list',$data);
     }
 
+    public function check_distribution_balack(Request $request)
+    {
+        $post = $request->all();
+        $price = reportsHelper::getDistributorCurrentBalance($post);
+        echo $price;
+    }
+
     public function order_list_ajax(Request $request,$type=null)
     {
         $post = $request->all();
+        $data['type'] = $type;
         $data['orders'] = reportsHelper::order_list_query($type,$post);
 //        debug(DB::getQueryLog(),1);
         return view('reports.order_list_ajax',$data);
@@ -65,7 +82,8 @@ class ReportsController extends Controller
     public function primary_order_details($id)
     {
         $data['orders_info'] = DB::table('orders')
-                        ->select('orders.*')
+                        ->select('orders.*','distribution_houses.current_balance','distribution_houses.market_name','distribution_houses.point_name','distribution_houses.current_balance')
+                        ->leftJoin('distribution_houses','distribution_houses.id','=','orders.dbid')
                         ->where('orders.id',$id)->first();
 
         $data['orders'] = DB::table('order_details')
@@ -155,4 +173,6 @@ class ReportsController extends Controller
             ->leftJoin('brands','brands.id','=','skues.brands_id')->get();
         return view('reports.current_stock_ajax',$data);
     }
+
+
 }
