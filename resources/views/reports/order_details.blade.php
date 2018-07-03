@@ -54,35 +54,63 @@
                             </div>
                             <div class="showMessage"></div>
                             <div class="row">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <th>SKU</th>
-                                        <th>Request Quantity</th>
-                                        <th>Order Quantity</th>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($orders as $order)
-                                            @if($order->quantity > 0)
-                                                <tr>
-                                                    <td>{{$order->brand_name.' '.$order->sku_name.'('.$order->short_name.')'}}</td>
-                                                    <td class="request_quantity">{{$order->quantity}}</td>
-                                                    <td>
-                                                        <input type="hidden" name="short_name[]" value="{{$order->short_name}}">
-                                                        <input
-                                                                class="order_quantity"
-                                                                style="width: 100px;"
-                                                                name="quantity[{{$order->short_name}}]"
-                                                                type="number"
-                                                                oldValue="{{$order->quantity}}"
-                                                                value="{{$order->quantity}}">
-                                                    </td>
-                                                </tr>
+                                {{--<table class="table table-bordered">--}}
+                                    {{--<thead>--}}
+                                        {{--<th>SKU</th>--}}
+                                        {{--<th>Request Quantity</th>--}}
+                                        {{--<th>Order Quantity</th>--}}
+                                    {{--</thead>--}}
+                                    {{--<tbody>--}}
+                                        {{--@foreach($orders as $order)--}}
+                                            {{--@if($order->quantity > 0)--}}
+                                                {{--<tr>--}}
+                                                    {{--<td>{{$order->brand_name.' '.$order->sku_name.'('.$order->short_name.')'}}</td>--}}
+                                                    {{--<td class="request_quantity">{{$order->quantity}}</td>--}}
+                                                    {{--<td>--}}
+                                                        {{--<input type="hidden" name="short_name[]" value="{{$order->short_name}}">--}}
+                                                        {{--<input--}}
+                                                                {{--class="order_quantity"--}}
+                                                                {{--style="width: 100px;"--}}
+                                                                {{--name="quantity[{{$order->short_name}}]"--}}
+                                                                {{--type="number"--}}
+                                                                {{--oldValue="{{$order->quantity}}"--}}
+                                                                {{--value="{{$order->quantity}}">--}}
+                                                    {{--</td>--}}
+                                                {{--</tr>--}}
 
-                                            @endif
-                                        @endforeach
-                                    </tbody>
+                                            {{--@endif--}}
+                                        {{--@endforeach--}}
+                                    {{--</tbody>--}}
+                                {{--</table>--}}
+
+                                <table border="1">
+                                   @foreach($memo as $key=>$value)
+                                            <tr>
+                                                <td>{{$key}}</td>
+                                                <td>
+                                                    <table border="1">
+                                                      @foreach($value['sku_name'] as $k=>$v)
+                                                          <tr>
+                                                              <td>{{$v}}</td>
+                                                              <td>{{$value['quantity'][$k]}}</td>
+                                                              <td>
+                                                              <td>
+                                                                  <input type="hidden" name="short_name[]" value="{{$value['short_name'][$k]}}">
+                                                                  <input
+                                                                          class="order_quantity"
+                                                                          style="width: 100px;"
+                                                                          name="quantity[{{$value['short_name'][$k]}}]"
+                                                                          type="number"
+                                                                          oldValue="{{$value['quantity'][$k]}}"
+                                                                          value="{{$value['quantity'][$k]}}">
+                                                              </td></td>
+                                                          </tr>
+                                                      @endforeach
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                    @endforeach
                                 </table>
-
                             </div>
                             <div class="col-lg-12 text-right">
                                 <input class="btn btn-primary" type="submit" value="Save">

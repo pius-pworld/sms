@@ -87,12 +87,27 @@ class ReportsController extends Controller
                         ->where('orders.id',$id)->first();
 
         $data['orders'] = DB::table('order_details')
-                        ->select('order_details.*','skues.sku_name','brands.brand_name')
+                        ->select('skues.id as sid','order_details.*','skues.sku_name','brands.brand_name')
                         ->leftJoin('orders', 'orders.id', '=', 'order_details.orders_id')
                         ->leftJoin('skues', 'skues.short_name', '=', 'order_details.short_name')
                         ->leftJoin('brands','brands.id','=','skues.brands_id')
                         ->where('order_details.orders_id',$id)->get();
-//        debug($data['orders'],1);
+        //debug($data['orders'],1);
+
+        $memo=memoStructure();
+        $object_info = collect($data['orders'])->toArray();
+
+        foreach ($memo as $k=>$mem){
+             foreach ($mem['sku_name'] as $kk=>$m){
+                 $key = array_search($kk, array_column($object_info, 'sid'));
+                 $memo[$k]['quantity'][$kk] =$object_info[$key]->quantity;
+                 $memo[$k]['short_name'][$kk] =$object_info[$key]->short_name;
+             }
+        }
+
+        $data['memo'] = $memo;
+
+
         return view('reports.order_details',$data);
     }
 

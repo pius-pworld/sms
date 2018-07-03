@@ -112,7 +112,7 @@
                 }
                 $selected_skues= $selected_skues->get()->toArray();
                 foreach ($selected_skues as $key=>$value){
-                    $result[$brand['brand_name']][$value['id']] = $value['sku_name'];
+                    $result[$brand['brand_name']]['sku_name'][$value['id']] = $value['sku_name'];
                 }
             }
             return $result;
