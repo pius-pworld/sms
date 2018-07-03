@@ -8,11 +8,7 @@
             <h1>
                 Order Details
             </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li><a href="#">Reports</a></li>
-                <li class="active">Order Details</li>
-            </ol>
+            {!! $breadcrumb !!}
         </section>
 
         <div class="row">

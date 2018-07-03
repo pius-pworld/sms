@@ -64,8 +64,9 @@ Route::post('check-distribution-balack','ReportsController@check_distribution_ba
 Route::get('sales_list','ReportsController@salesList');
 Route::post('salesListAjax','ReportsController@sales_list_ajax');
 
-Route::get('primary-order-details/{id}','ReportsController@primary_order_details');
+Route::get('primary-order-details/{type}/{id}','ReportsController@primary_order_details');
 Route::post('primary-sales-create','ReportsController@primary_sales_create');
+Route::post('update-secondary-order','ReportsController@updateSecondaryOrder');
 
 Route::get('order-vs-sale-primary','ReportsController@order_vs_sale_primary');
 

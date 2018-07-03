@@ -47,8 +47,10 @@
             <td>{{$order->order_amount}}</td>
             <td>{{$order->order_status}}</td>
             <td>
-                @if($order->order_status == 'Pending')
-                    <a href="{{URL::to('primary-order-details/'.$order->id)}}"><i class="fa fa-eye"></i></a>
+                @if(($order->order_status == 'Pending') && ($type == 'primary'))
+                    <a href="{{URL::to('primary-order-details/'.$type.'/'.$order->id)}}"><i class="fa fa-eye"></i></a>
+                @elseif($type == 'secondary')
+                    <a href="{{URL::to('primary-order-details/'.$type.'/'.$order->id)}}"><i class="fa fa-eye"></i></a>
                 @else
                     <i class="fa fa-eye"></i>
                 @endif
