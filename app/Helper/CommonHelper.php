@@ -94,6 +94,21 @@
             );
             return $json_data;
         }
+    }
 
+    function breadcrumb($data)
+    {
+        $html = '<ol class="breadcrumb">';
+        $html .= '<li class="bredlink"><a href="'.URL::to('home').'"><i class="fa fa-dashboard"></i> Home</a></li>';
+        foreach($data as $val=>$url)
+        {
+            if($val != 'active')
+            {
+                $html .= '<li class="bredlink"><a href="'.URL::to($url).'">'.$val.'</a></li>';
+            }
+        }
+        $html .= '<li class="active">'.$data['active'].'</li>';
+        $html .= '</ol>';
+        return $html;
     }
 ?>

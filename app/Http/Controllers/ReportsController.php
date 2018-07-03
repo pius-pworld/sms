@@ -33,6 +33,7 @@ class ReportsController extends Controller
         {
             $data['pageTitle'] = 'Secondary Order List';
         }
+        $data['breadcrumb'] = breadcrumb(array('active'=>ucfirst($type).' Order List'));
         $data['ajaxUrl'] = URL::to('orderListAjax/'.$type);
         $data['searching_options'] = 'reports.order_list_search';
 
@@ -79,8 +80,10 @@ class ReportsController extends Controller
         return view('reports.sales_list',$data);
     }
 
-    public function primary_order_details($id)
+    public function primary_order_details($type,$id)
     {
+        $data['type'] = $type;
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'order-list/'.$type,'active'=>ucfirst($type).' Order List'));
         $data['orders_info'] = DB::table('orders')
                         ->select('orders.*','distribution_houses.current_balance','distribution_houses.market_name','distribution_houses.point_name','distribution_houses.current_balance')
                         ->leftJoin('distribution_houses','distribution_houses.id','=','orders.dbid')
@@ -93,13 +96,19 @@ class ReportsController extends Controller
                         ->leftJoin('brands','brands.id','=','skues.brands_id')
                         ->where('order_details.orders_id',$id)->get();
 //        debug($data['orders'],1);
-        return view('reports.order_details',$data);
+        if($type == 'primary')
+        {
+            return view('reports.order_details',$data);
+        }
+        else if($type == 'secondary')
+        {
+            return view('reports.order_details_secondary',$data);
+        }
     }
 
     public function primary_sales_create(Request $request)
     {
         $post = $request->all();
-        //debug($post,1);
         $salesdata = array(
             'asm_rsm_id'=>$post['asm_rsm_id'],
             'order_date'=>$post['order_date'],
@@ -126,6 +135,19 @@ class ReportsController extends Controller
         DB::table('orders')->where('id', $post['order_id'])->update(['order_status' => 'Processed']);
 
         return redirect('order-list/primary')->with('success', 'Information has been added.');
+    }
+
+
+    public function updateSecondaryOrder(Request $request)
+    {
+        $post = $request->all();
+        foreach($post['quantity'] as $k=>$q)
+        {
+            DB::table('order_details')->where('orders_id', $post['order_id'])->where('short_name',$k)->update(['quantity' => $q]);
+        }
+        DB::table('orders')->where('id', $post['order_id'])->update(['order_status' => 'Edited']);
+
+        return redirect('order-list/secondary')->with('success', 'Information has been added.');
     }
 
     public function order_vs_sale_primary()
