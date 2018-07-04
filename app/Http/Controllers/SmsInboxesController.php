@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Order_Detail;
 use App\Models\OrderDetail;
 use App\Models\Sale;
+use App\Models\Skue;
 use App\Models\SmsInbox;
 use App\Models\Stocks;
 use Illuminate\Http\Request;
@@ -402,20 +403,35 @@ class SmsInboxesController extends Controller
             ->first();
         $present_data =[];
         $updated_data=[];
-        foreach ($sku_informations as $val){
-            $updated_data[$val['short_name']] = $val['quantity'];
-        }
+
         if($order_information['order_status'] == 'Processed' && $update){
             $order_details = DB::table('orders')
                 ->select('order_details.short_name','order_details.quantity')
                 ->where('orders.aso_id',$order_information['aso_id'])
                 ->join('order_details', 'order_details.orders_id', '=', 'orders.id')->get();
-
+            $total = 0;
             foreach ($order_details as $val){
-                $present_data[$val['short_name']] = $val['quantity'];
+                $unit=Skue::where('short_name',$val['short_name'])->first(['price']);
+                if(!empty($unit)){
+                    $unit = $unit->toArray();
+                    $total+= $unit['price'] * $val['quantity'];
+                    $present_data[$val['short_name']] = $val['quantity'];
+                }
             }
+            stock_update($distribution_house_info->distribution_house_id,$updated_data,$present_data,$total);
         }
-        stock_update($distribution_house_info->distribution_house_id,$updated_data,$present_data);
+        else{
+            $total = 0;
+            foreach ($sku_informations as $val){
+                $unit=Skue::where('short_name',$val['short_name'])->first(['price']);
+                if(!empty($unit)){
+                    $unit = $unit->toArray();
+                    $total+= $unit['price'] * $val['quantity'];
+                    $updated_data[$val['short_name']] = $val['quantity'];
+                }
+            }
+            stock_update($distribution_house_info->distribution_house_id,$updated_data,$present_data,$total);
+        }
 
 
     }
