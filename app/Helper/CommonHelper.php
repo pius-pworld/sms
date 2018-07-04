@@ -135,7 +135,7 @@
     }
 
     if(!function_exists('stock_update')){
-        function stock_update($house_id,$present_value=[],$previous_value=[],$stock=false,$total_amount=0){
+        function stock_update($house_id,$present_value=[],$previous_value=[],$total_amount=0,$stock=false){
 //            //stock release
             if(count($previous_value)>0){
                 foreach ($previous_value as $key => $value){
@@ -151,6 +151,15 @@
                         \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->update(['quantity'=>$update_quantity]);
                     }
 
+                }
+                $present_current_balance = \App\Models\DistributionHouse::where('id',$house_id)->first(['current_balance']);
+                if(!$stock){
+                    $update_current_balance = $present_current_balance['current_balance'] + $total_amount;
+                    \App\Models\DistributionHouse::where('id',$house_id)->update(['current_balance'=>$update_current_balance]);
+                }
+                else{
+                    $update_current_balance = $present_current_balance['current_balance'] + $total_amount;
+                    \App\Models\DistributionHouse::where('id',$house_id)->update(['current_balance'=>$update_current_balance]);
                 }
 
             }
@@ -168,6 +177,15 @@
                     \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->update(['quantity'=>$update_quantity]);
                 }
 
+            }
+            $present_current_balance = \App\Models\DistributionHouse::where('id',$house_id)->first(['current_balance']);
+            if(!$stock){
+                $update__current_balance = $present_current_balance['current_balance'] - $total_amount;
+                \App\Models\DistributionHouse::where('id',$house_id)->update(['current_balance'=>$update__current_balance]);
+            }
+            else{
+                $update__current_balance = $present_current_balance['current_balance'] + $total_amount;
+                \App\Models\DistributionHouse::where('id',$house_id)->update(['current_balance'=>$update__current_balance]);
             }
             return true;
         }
