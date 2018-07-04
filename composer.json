@@ -22,7 +22,9 @@
     },
     "autoload": {
         "files":[
-            "app/Helper/CommonHelper.php"
+            "app/Helper/CommonHelper.php",
+
+            "app/Helper/DropdownHelper.php"
         ],
         "classmap": [
             "database/seeds",

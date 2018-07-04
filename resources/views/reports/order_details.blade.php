@@ -42,6 +42,7 @@
                                     <input type="hidden" name="asm_rsm_id" value="{{$orders_info->asm_rsm_id}}">
                                     <input type="hidden" name="sender_name" value="{{$orders_info->requester_name}}">
                                     <input type="hidden" name="sender_phone" value="{{$orders_info->requester_phone}}">
+                                    <input type="hidden" name="dh_id" value="{{$orders_info->dbid}}">
                                     <input type="hidden" name="dh_name" value="{{$orders_info->dh_name}}">
                                     <input type="hidden" name="dh_phone" value="{{$orders_info->dh_phone}}">
                                     <input type="hidden" name="order_id" value="{{$orders_info->id}}">
@@ -85,14 +86,20 @@
                                         <th colspan="2" style="text-align: center">Product Details</th>
                                         <th>Request Quantity</th>
                                         <th>Order Quantity</th>
+                                        <th style="text-align: right">Rate</th>
+                                        <th style="text-align: right">Sub Total</th>
                                     </thead>
                                     <tbody>
                                     <?php
+                                        $grand_total = 0;
                                         foreach($memo as $k=>$v)
                                         {
                                             $sl = 0;
                                             foreach($v as $vk=>$vv)
                                             {
+                                                $convertArrayOrder = collect($orders)->toArray();
+                                                $key = array_search($vk, array_column($convertArrayOrder, 'short_name'));
+                                                $grand_total += ($convertArrayOrder[$key]->quantity*$convertArrayOrder[$key]->price);
                                                 if($sl == 0)
                                                 {
                                                     echo '<tr><td rowspan="'.count($v).'" style="text-align: left; vertical-align: middle;">'.$k.'</td><td>'.$vv.'</td>';
@@ -101,58 +108,44 @@
                                                 {
                                                     echo '<tr><td>'.$vv.'('.$vk.')'.'</td>';
                                                 }
-                                                $convertArrayOrder = collect($orders)->toArray();
-                                                $key = array_search($vk, array_column($convertArrayOrder, 'short_name'));
-                                                echo '<td class="request_quantity">'.$convertArrayOrder[$key]->quantity.'</td>';
+
+
+                                                echo '<td class="request_quantity">'.floor($convertArrayOrder[$key]->quantity).'</td>';
                                                 echo '<td>
                                                             <input type="hidden" name="short_name[]" value="'.$convertArrayOrder[$key]->short_name.'">
                                                             <input type="hidden" name="price['.$convertArrayOrder[$key]->short_name.']" value="'.$convertArrayOrder[$key]->price.'">
                                                             <input
+                                                                '.(($orders_info->order_status != 'Pending')?"readonly":"").'
                                                                 class="order_quantity"
                                                                 style="width: 100px;"
                                                                 name="quantity['.$convertArrayOrder[$key]->short_name.']"
                                                                 type="number"
-                                                                oldValue="'.$convertArrayOrder[$key]->quantity.'"
-                                                                value="'.$convertArrayOrder[$key]->quantity.'"></td>';
+                                                                oldValue="'.floor($convertArrayOrder[$key]->quantity).'"
+                                                                value="'.floor($convertArrayOrder[$key]->quantity).'"></td>';
+                                                echo '<td style="text-align: right" class="price_rate">'.$convertArrayOrder[$key]->price.'</td>';
+                                                echo '<td style="text-align: right" class="sub_total">'.($convertArrayOrder[$key]->price*$convertArrayOrder[$key]->quantity).'</td>';
                                                 echo '</tr>';
                                                 $sl++;
                                             }
                                         }
                                     ?>
+                                        <tr>
+                                            <th style="text-align: right">Total</th>
+                                            <th>&nbsp;</th>
+                                            <th class="total_quantity">{{$orders_info->order_total}}</th>
+                                            <th class="total_order_quantity">{{$orders_info->order_total}}</th>
+                                            <th>&nbsp;</th>
+                                            <th class="grand_total" style="text-align: right">
+                                                {{$grand_total}}
+                                            </th>
+                                        </tr>
                                     </tbody>
                                 </table>
-
-                                {{--<table border="1">--}}
-                                   {{--@foreach($memo as $key=>$value)--}}
-                                            {{--<tr>--}}
-                                                {{--<td>{{$key}}</td>--}}
-                                                {{--<td>--}}
-                                                    {{--<table border="1">--}}
-                                                      {{--@foreach($value['sku_name'] as $k=>$v)--}}
-                                                          {{--<tr>--}}
-                                                              {{--<td>{{$v}}</td>--}}
-                                                              {{--<td>{{$value['quantity'][$k]}}</td>--}}
-                                                              {{--<td>--}}
-                                                              {{--<td>--}}
-                                                                  {{--<input type="hidden" name="short_name[]" value="{{$value['short_name'][$k]}}">--}}
-                                                                  {{--<input--}}
-                                                                          {{--class="order_quantity"--}}
-                                                                          {{--style="width: 100px;"--}}
-                                                                          {{--name="quantity[{{$value['short_name'][$k]}}]"--}}
-                                                                          {{--type="number"--}}
-                                                                          {{--oldValue="{{$value['quantity'][$k]}}"--}}
-                                                                          {{--value="{{$value['quantity'][$k]}}">--}}
-                                                              {{--</td></td>--}}
-                                                          {{--</tr>--}}
-                                                      {{--@endforeach--}}
-                                                    {{--</table>--}}
-                                                {{--</td>--}}
-                                            {{--</tr>--}}
-                                    {{--@endforeach--}}
-                                {{--</table>--}}
                             </div>
                             <div class="col-lg-12 text-right">
-                                <input class="btn btn-primary" type="submit" value="Save">
+                                @if($orders_info->order_status == 'Pending')
+                                    <input class="btn btn-primary" type="submit" value="Process">
+                                @endif
                             </div>
                         </form>
                     </div>
@@ -170,6 +163,23 @@
                 var oldValue = parseInt($(this).attr('oldValue'));
                 var request_quantity = parseInt($(this).parent().parent().find('.request_quantity').text());
                 var current_balance = parseInt($('.current_balance').text());
+
+                var rate = parseInt($(this).parent().parent().find('.price_rate').text());
+                var sub_total =order_quentity*rate;
+                $(this).parent().parent().find('.sub_total').text(sub_total);
+
+                var grand_total = 0;
+                var total_order_quantity = 0;
+                $('.order_quantity').each(function(){
+                    var get_sub_total = parseInt($(this).parent().parent().find('.sub_total').text());
+//                    alert(get_sub_total);
+                    var get_total_quantity = parseInt($(this).val());
+                    grand_total = grand_total+get_sub_total;
+                    total_order_quantity = total_order_quantity+get_total_quantity;
+                });
+                $('.grand_total').text(grand_total);
+                $('.total_order_quantity').text(total_order_quantity);
+//
                 var t = $(this);
                 $.ajax({
                     url:'{{URL::to("check-distribution-balack")}}',
@@ -179,7 +189,6 @@
                         var htm = '<div class="alert alert-danger alert-dismissible">';
                             htm += '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
 
-
                         var current_value = parseInt(data);
                         if(data > current_balance)
                         {
@@ -188,7 +197,6 @@
                         if(order_quentity > request_quantity)
                         {
                             htm += 'You can not exit the request quantity.';
-                            //t.val(oldValue);
                         }
                         htm += '</div>';
                         $('.showMessage').html(htm);
