@@ -133,4 +133,43 @@
             return $result;
         }
     }
+
+    if(!function_exists('stock_update')){
+        function stock_update($house_id,$present_value=[],$previous_value=[],$stock=false){
+//            //stock release
+            if(count($previous_value)>0){
+                foreach ($previous_value as $key => $value){
+                    $present_quantity = \App\Models\Stocks::where('distributions_house_id',$house_id)->where('sku_id',$key)->first(['quantity']);
+                    if(!empty($present_quantity)){
+                        $present_quantity = $present_quantity->toArray();
+                        if(!$stock){
+                            $update_quantity = $present_quantity['quantity'] + $value;
+                        }
+                        else{
+                            $update_quantity = $present_quantity['quantity'] - $value;
+                        }
+                        \App\Models\Stocks::where('distributions_house_id',$house_id)->where('sku_id',$key)->update(['quantity'=>$update_quantity]);
+                    }
+
+                }
+
+            }
+            //update quantity
+            foreach ($present_value as $key=>$value){
+                $present_quantity = \App\Models\Stocks::where('distributions_house_id',$house_id)->where('sku_id',$key)->first(['quantity']);
+                if(!empty($present_quantity)){
+                    $present_quantity = $present_quantity->toArray();
+                    if(!$stock){
+                        $update_quantity = $present_quantity['quantity'] - $value;
+                    }
+                    else{
+                        $update_quantity = $present_quantity['quantity'] + $value;
+                    }
+                    \App\Models\Stocks::where('distributions_house_id',$house_id)->where('sku_id',$key)->update(['quantity'=>$update_quantity]);
+                }
+
+            }
+            return true;
+        }
+    }
 ?>
