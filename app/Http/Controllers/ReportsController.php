@@ -144,8 +144,10 @@ class ReportsController extends Controller
         $sale_id = DB::table('sales')->insertGetId($salesdata);
 
         $sales_details_data = array();
+        $total_order = 0;
         foreach($post['quantity'] as $k=>$q)
         {
+            $total_order = $total_order+($q*$post['price'][$k]);
             $sales_details_data['sales_id'] = $sale_id;
             $sales_details_data['short_name'] = $k;
             $sales_details_data['quantity'] = $q;
@@ -154,6 +156,8 @@ class ReportsController extends Controller
             DB::table('sale_details')->insert($sales_details_data);
         }
         DB::table('orders')->where('id', $post['order_id'])->update(['order_status' => 'Processed']);
+
+        stock_update($post['dh_id'],$post['quantity'],array(),0,$total_order);
 
         return redirect('order-list/primary')->with('success', 'Information has been added.');
     }
