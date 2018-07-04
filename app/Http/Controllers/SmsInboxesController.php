@@ -395,20 +395,28 @@ class SmsInboxesController extends Controller
         }
     }
 
-    private function modifyStock($requested_skues,$amount,$order_information){
+    private function modifyStock($sku_informations,$order_information,$update=false){
         $distribution_house_info = DB::table('users')
             ->select('users.distribution_house_id')
             ->where('users.id',$order_information['aso_id'])
             ->first();
-        $sku_id = DB::table('skues')
-            ->select('skues.id')
-            ->where('skues.short_name',$requested_skues)
-            ->first()->id;
-        $distribution_house=Stocks::where('distributions_house_id',$distribution_house_info->distribution_house_id)->where('sku_id',$sku_id)->first();
-        if (count($distribution_house)){
-            $distribution_house->quantity=$distribution_house->quantity-$amount;
-            $distribution_house->save();
+        $present_data =[];
+        $updated_data=[];
+        foreach ($sku_informations as $val){
+            $updated_data[$val['short_name']] = $val['quantity'];
         }
+        if($order_information['order_status'] == 'Processed' && $update){
+            $order_details = DB::table('orders')
+                ->select('order_details.short_name','order_details.quantity')
+                ->where('orders.aso_id',$order_information['aso_id'])
+                ->join('order_details', 'order_details.orders_id', '=', 'orders.id')->get();
+
+            foreach ($order_details as $val){
+                $present_data[$val['short_name']] = $val['quantity'];
+            }
+        }
+        stock_update($distribution_house_info->distribution_house_id,$updated_data,$present_data);
+
 
     }
 
@@ -428,9 +436,9 @@ class SmsInboxesController extends Controller
                     "quantity"   => (int)explode(',',$value)[0],
                     "created_by" =>1
                 ];
-                $order_information = Order::all()->where('aso_id',$sale_information['order']['aso_id'])->where('order_date',$sale_information['order']['sale_date'])->last()->toArray();
-                $this->modifyStock($key,(int)explode(',',$value)[0],$order_information);
             }
+            $order_information = Order::all()->where('aso_id',$sale_information['order']['aso_id'])->where('order_date',$sale_information['order']['sale_date'])->last()->toArray();
+            $this->modifyStock($sale_information['order_details'],$order_information);
 
             if (Sale::insertSale($sale_information['order'], $sale_information['order_details'])) {
                 SmsInbox::find($id)->update(['sms_status' => 'Processed']);
