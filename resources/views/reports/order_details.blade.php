@@ -83,8 +83,8 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <th colspan="2" style="text-align: center">Product Details</th>
-                                        <th style="text-align: center">Request Quantity</th>
-                                        <th style="text-align: center">Order Quantity</th>
+                                        <th>Request Quantity</th>
+                                        <th>Order Quantity</th>
                                     </thead>
                                     <tbody>
                                     <?php
@@ -106,6 +106,7 @@
                                                 echo '<td class="request_quantity">'.$convertArrayOrder[$key]->quantity.'</td>';
                                                 echo '<td>
                                                             <input type="hidden" name="short_name[]" value="'.$convertArrayOrder[$key]->short_name.'">
+                                                            <input type="hidden" name="price['.$convertArrayOrder[$key]->short_name.']" value="'.$convertArrayOrder[$key]->price.'">
                                                             <input
                                                                 class="order_quantity"
                                                                 style="width: 100px;"
