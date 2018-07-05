@@ -72,6 +72,10 @@ Route::get('order-vs-sale-primary','ReportsController@order_vs_sale_primary');
 
 Route::get('current-stock','ReportsController@currentStock');
 Route::post('current-stock-search','ReportsController@currentStockSearch');
+
+//Reports
+Route::get('house-lifting','ReportsController@houseLifting');
+Route::post('house-lifting-search','ReportsController@houseLiftingSearch');
 /* End Report routings */
 
 

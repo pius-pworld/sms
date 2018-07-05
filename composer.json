@@ -24,7 +24,8 @@
         "files":[
             "app/Helper/CommonHelper.php",
 
-            "app/Helper/DropdownHelper.php"
+            "app/Helper/DropdownHelper.php",
+            "app/Helper/ReportsDataHelper.php"
         ],
         "classmap": [
             "database/seeds",

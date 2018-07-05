@@ -7,7 +7,7 @@
         foreach ($data_info as $value){
             $res[] = collect($value)->toArray();
         }
-        $html = '<select class="form-control '.$dd_info->selector_class.'" name="'.$dd_info->field_name.'">';
+        $html = '<select class="form-control '.$dd_info->selector_class.'" name="'.$dd_info->field_name.'[]">';
         $html .= '<option value="">Select One</option>';
         foreach($res as $k=>$v)
         {

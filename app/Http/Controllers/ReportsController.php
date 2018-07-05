@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 //use App\Models\Ordering;
+use App\Models\DistributionHouse;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
@@ -220,6 +221,50 @@ class ReportsController extends Controller
             ->leftJoin('skues','skues.id','=','stocks.sku_id')
             ->leftJoin('brands','brands.id','=','skues.brands_id')->get();
         return view('reports.current_stock_ajax',$data);
+    }
+
+
+    public function houseLifting(Request $request){
+        $data['ajaxUrl'] = URL::to('house-lifting-search');
+        $data['searching_options'] = 'grid.search_elements_all';
+        return view('reports.house_lifting',$data);
+    }
+
+    public function houseLiftingSearch(Request $request){
+        $post= $request->all();
+        unset($post['_token']);
+        $request_data = filter_array($post);
+        $zone_ids=array_key_exists('zones_id',$request_data) ? $request_data['zones_id'] : [];
+        $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
+        $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
+        $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
+        $get_info=getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+        $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
+        $house_stock_list=[];
+        foreach ($selected_houses as $h){
+            $house=DistributionHouse::where('id',$h)->first()->toArray();
+            $house_stock_list[$house['market_name']]= getHouseStockInfo([$h]);
+        }
+
+        //memeo structure
+        $categorie_ids =array_key_exists('category_id',$request_data) ? $request_data['category_id'] : [];
+        $brand_ids =array_key_exists('brands_id',$request_data) ? $request_data['brands_id'] : [];
+        $sku_ids =array_key_exists('skues_id',$request_data) ? $request_data['skues_id'] : [];
+        $memo = memoStructure($categorie_ids,$brand_ids,$sku_ids);
+        $result_arr=[];
+        foreach ($house_stock_list as $hkey => $hvalue) {
+            foreach ($memo as $key => $value) {
+                foreach ($value as $k => $v) {
+                    foreach ($v as $sk => $sv) {
+                        if (array_key_exists($sk, $house_stock_list[$hkey])) {
+                            $result_arr[$hkey][$key][$k][$sk] = $house_stock_list[$hkey][$sk];
+                          }
+                    }
+                }
+            }
+
+        }
+        dd($result_arr);
     }
 
 
