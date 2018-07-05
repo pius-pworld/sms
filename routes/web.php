@@ -78,6 +78,10 @@ Route::post('current-stock-search','ReportsController@currentStockSearch');
 //Route::get('test','SaleController@index');
 
 
+
+Route::get('test-url','ReportsController@test_url');
+
+
 Route::group(
 [
     'prefix' => 'product_brands',

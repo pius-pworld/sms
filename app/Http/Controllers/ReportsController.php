@@ -36,7 +36,7 @@ class ReportsController extends Controller
         $data['breadcrumb'] = breadcrumb(array('active'=>ucfirst($type).' Order List'));
         $data['ajaxUrl'] = URL::to('orderListAjax/'.$type);
 //        $data['searching_options'] = 'reports.order_list_search';
-        $data['searching_options'] = 'grid.search_elements_all';
+        $data['searching_options'] = 'grid.search_elements_all_single';
 
 
         $data['orders'] = reportsHelper::order_list_query($type,array());
@@ -66,13 +66,19 @@ class ReportsController extends Controller
     public function order_list_ajax(Request $request,$type=null)
     {
         $post = $request->all();
+//        $searchValue = getSearchDataAll($post);
+//        debug($searchValue,1);
+
         $data['type'] = $type;
         $data['orders'] = reportsHelper::order_list_query($type,$post);
-//        debug(DB::getQueryLog(),1);
+
         return view('reports.order_list_ajax',$data);
     }
 
-
+    public function test_url()
+    {
+        return view('test_view');
+    }
     public function salesList()
     {
         $data['ajaxUrl'] = URL::to('salesListAjax');
