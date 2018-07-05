@@ -60,13 +60,13 @@ Route::get('targetRemove/{type}/{target_month}','SettingsController@remove_targe
 Route::get('order-list/{type?}','ReportsController@order_list');
 Route::post('orderListAjax/{type?}','ReportsController@order_list_ajax');
 Route::post('check-distribution-balack','ReportsController@check_distribution_balack');
-
-Route::get('sales_list','ReportsController@salesList');
-Route::post('salesListAjax','ReportsController@sales_list_ajax');
-
 Route::get('primary-order-details/{type}/{id}','ReportsController@primary_order_details');
 Route::post('primary-sales-create','ReportsController@primary_sales_create');
 Route::post('update-secondary-order','ReportsController@updateSecondaryOrder');
+
+Route::get('sales_list/{type}','ReportsController@salesList');
+Route::post('salesListAjax/{type}','ReportsController@sales_list_ajax');
+Route::get('sales-details/{type}/{id}','ReportsController@salesDetails');
 
 Route::get('order-vs-sale-primary','ReportsController@order_vs_sale_primary');
 

@@ -123,29 +123,30 @@
         }
 
 
-        $squery = DB::table('skues')->select('skues.short_name');
-        $squery->leftJoin('brands','brands.id','=','skues.brands_id');
-        if($post['category_id'])
-        {
-            $squery->where('brands.categories_id',$post['category_id']);
-        }
-        if($post['brands_id'])
-        {
-            $squery->where('skues.brands_id',$post['brands_id']);
-        }
-        if($post['skues_id'])
-        {
-            $squery->where('skues.id',$post['skues_id']);
-        }
-        $s_value = $squery->get();
-
-        $short_name = array();
-        foreach ($s_value as $sv)
-        {
-            array_push($short_name,$sv->short_name);
-        }
-
-        $searchValue = array('house_id'=>$house_id,'short_name'=>$short_name);
+//        $squery = DB::table('skues')->select('skues.short_name');
+//        $squery->leftJoin('brands','brands.id','=','skues.brands_id');
+//        if($post['category_id'])
+//        {
+//            $squery->where('brands.categories_id',$post['category_id']);
+//        }
+//        if($post['brands_id'])
+//        {
+//            $squery->where('skues.brands_id',$post['brands_id']);
+//        }
+//        if($post['skues_id'])
+//        {
+//            $squery->where('skues.id',$post['skues_id']);
+//        }
+//        $s_value = $squery->get();
+//
+//        $short_name = array();
+//        foreach ($s_value as $sv)
+//        {
+//            array_push($short_name,$sv->short_name);
+//        }
+//
+//        $searchValue = array('house_id'=>$house_id,'short_name'=>$short_name);
+        $searchValue = array('house_id'=>$house_id);
         return $searchValue;
     }
 

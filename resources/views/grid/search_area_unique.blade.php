@@ -5,7 +5,9 @@
     </div>
     <div class="panel-body">
         <form id="grid_list_frm" action="" method="post">
-            @include($searching_options)
+            <div class="12">
+                @include($searching_options)
+            </div>
             <div class="col-lg-12 text-right">
                 <input class="btn btn-primary search_unique_submit" type="button" value="Search">
             </div>
