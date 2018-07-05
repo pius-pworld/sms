@@ -16,7 +16,7 @@ class ReportsHelper
         if($post)
         {
             $searchValue = getSearchDataAll($post);
-//            $dateselect = explode(' - ', $post['created_at']);
+            $dateselect = explode(' - ', $post['created_at']);
         }
         $query = DB::table('orders');
         $query->select('orders.*','distribution_houses.opening_balance');
@@ -30,11 +30,43 @@ class ReportsHelper
         {
             $query->whereIn('orders.dbid',$searchValue['house_id']);
 //            $query->whereIn('orders_details.short_name',$searchValue);
-//            if($post['created_at'])
-//            {
-//                $query->where('orders.created_at','>=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[0]))));
-//                $query->where('orders.created_at','<=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[1]))));
-//            }
+            if($post['created_at'])
+            {
+                $query->where('orders.created_at','>=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[0]))));
+                $query->where('orders.created_at','<=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[1]))));
+            }
+        }
+
+        $result = $query->get();
+        return $result;
+    }
+
+
+    public static function sales_list_query($type=null,$post)
+    {
+        if($post)
+        {
+            $searchValue = getSearchDataAll($post);
+            $dateselect = explode(' - ', $post['created_at']);
+        }
+        $query = DB::table('sales');
+        $query->select('sales.*','distribution_houses.current_balance','orders.order_total');
+        $query->leftJoin('distribution_houses','distribution_houses.id','=','sales.dbid');
+        $query->leftJoin('orders','orders.id','=','sales.order_id');
+        if($type)
+        {
+            $query->where('order_type',ucfirst($type));
+        }
+
+        if($post)
+        {
+            $query->whereIn('sales.dbid',$searchValue['house_id']);
+//            $query->whereIn('orders_details.short_name',$searchValue);
+            if($post['created_at'])
+            {
+                $query->where('sales.created_at','>=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[0]))));
+                $query->where('sales.created_at','<=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[1]))));
+            }
         }
 
         $result = $query->get();

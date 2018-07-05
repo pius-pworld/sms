@@ -59,7 +59,6 @@ class ReportsController extends Controller
     public function check_distribution_balack(Request $request)
     {
         $post = $request->all();
-//        debug($post,1);
         $price = reportsHelper::getDistributorCurrentBalance($post);
         echo $price;
     }
@@ -67,9 +66,6 @@ class ReportsController extends Controller
     public function order_list_ajax(Request $request,$type=null)
     {
         $post = $request->all();
-//        $searchValue = getSearchDataAll($post);
-//        debug($searchValue,1);
-
         $data['type'] = $type;
         $data['orders'] = reportsHelper::order_list_query($type,$post);
 
@@ -80,13 +76,49 @@ class ReportsController extends Controller
     {
         return view('test_view');
     }
-    public function salesList()
+    public function salesList($type)
     {
-        $data['ajaxUrl'] = URL::to('salesListAjax');
-        $data['searching_options'] = 'reports.sales_list_search';
+        $data['pageTitle'] = ucfirst($type).' Sales List';
+        $data['type'] = $type;
+        $data['ajaxUrl'] = URL::to('salesListAjax/'.$type);
+//        $data['searching_options'] = 'reports.sales_list_search';
+        $data['searching_options'] = 'grid.search_elements_all_single';
+        $data['breadcrumb'] = breadcrumb(array('active'=>ucfirst($type).' Sales List'));
 
-        $data['sales'] = DB::table('sales')->get();
+        //$data['sales'] = DB::table('sales')->get();
+        $data['sales'] = reportsHelper::sales_list_query($type,array());
         return view('reports.sales_list',$data);
+    }
+
+    public function sales_list_ajax(Request $request,$type=null)
+    {
+        $post = $request->all();
+        $data['type'] = $type;
+        $data['sales'] = reportsHelper::sales_list_query($type,$post);
+
+        return view('reports.sales_list_ajax',$data);
+    }
+
+    public function salesDetails($type,$id)
+    {
+        $data['type'] = $type;
+        $data['pageTitle'] = ucfirst($type).' Sales Details';
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'sales-list/'.$type,'active'=>ucfirst($type).' Sales Details'));
+        $data['sales_info'] = DB::table('sales')
+            ->select('sales.*','distribution_houses.current_balance','distribution_houses.market_name','distribution_houses.point_name','distribution_houses.current_balance')
+            ->leftJoin('distribution_houses','distribution_houses.id','=','sales.dbid')
+            ->where('sales.id',$id)->first();
+
+        $data['sales'] = DB::table('sale_details')
+            ->select('skues.id as sid','sale_details.*','skues.sku_name','brands.brand_name')
+            ->leftJoin('sales', 'sales.id', '=', 'sale_details.sales_id')
+            ->leftJoin('skues', 'skues.short_name', '=', 'sale_details.short_name')
+            ->leftJoin('brands','brands.id','=','skues.brands_id')
+            ->where('sale_details.sales_id',$id)->get();
+
+        $data['memo'] = memoStructure();
+
+        return view('reports.sales_details',$data);
     }
 
     public function primary_order_details($type,$id)
@@ -104,24 +136,8 @@ class ReportsController extends Controller
                         ->leftJoin('skues', 'skues.short_name', '=', 'order_details.short_name')
                         ->leftJoin('brands','brands.id','=','skues.brands_id')
                         ->where('order_details.orders_id',$id)->get();
-//        debug($data['orders'],1);
-
-        //debug($data['orders'],1);
 
         $data['memo'] = memoStructure();
-        //debug($memo,1);
-        $object_info = collect($data['orders'])->toArray();
-
-//        foreach ($memo as $k=>$mem){
-//             foreach ($mem['sku_name'] as $kk=>$m){
-//                 $key = array_search($kk, array_column($object_info, 'sid'));
-//                 $memo[$k]['quantity'][$kk] =$object_info[$key]->quantity;
-//                 $memo[$k]['short_name'][$kk] =$object_info[$key]->short_name;
-//             }
-//        }
-//
-//        $data['memo'] = $memo;
-
 
         if($type == 'primary')
         {
@@ -139,6 +155,8 @@ class ReportsController extends Controller
 //        debug($post,1);
         $salesdata = array(
             'asm_rsm_id'=>$post['asm_rsm_id'],
+            'dbid'=>$post['dh_id'],
+            'order_id'=>$post['order_id'],
             'order_date'=>$post['order_date'],
             'sale_date'=>date('Y-m-d'),
             'sender_name'=>$post['sender_name'],
@@ -164,6 +182,7 @@ class ReportsController extends Controller
             DB::table('sale_details')->insert($sales_details_data);
         }
         DB::table('orders')->where('id', $post['order_id'])->update(['order_status' => 'Processed']);
+        DB::table('sales')->where('id', $sale_id)->update(['total_sale_amount' => $total_order]);
 
         stock_update($post['dh_id'],$post['quantity'],array(),$total_order,true);
 

@@ -6,13 +6,9 @@
 
         <section class="content-header">
             <h1>
-                Order List
+                {{$pageTitle}}
             </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li><a href="#">Reports</a></li>
-                <li class="active">Sales</li>
-            </ol>
+            {!! $breadcrumb !!}
         </section>
 
         @include('grid.search_area_unique')
