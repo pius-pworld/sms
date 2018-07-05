@@ -82,6 +82,10 @@ Route::post('house-stock-search','ReportsController@houseStockSearch');
 //Route::get('test','SaleController@index');
 
 
+
+Route::get('test-url','ReportsController@test_url');
+
+
 Route::group(
 [
     'prefix' => 'product_brands',

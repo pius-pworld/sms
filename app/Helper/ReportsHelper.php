@@ -15,7 +15,8 @@ class ReportsHelper
     {
         if($post)
         {
-            $dateselect = explode(' - ', $post['created_at']);
+            $searchValue = getSearchDataAll($post);
+//            $dateselect = explode(' - ', $post['created_at']);
         }
         $query = DB::table('orders');
         $query->select('orders.*','distribution_houses.opening_balance');
@@ -27,23 +28,13 @@ class ReportsHelper
 
         if($post)
         {
-            if($post['requester_name'])
-            {
-                $query->where('orders.requester_name',$post['requester_name']);
-            }
-            if($post['dh_name'])
-            {
-                $query->where('orders.dh_name',$post['requester_name']);
-            }
-            if($post['route_name'])
-            {
-                $query->where('orders.route_name',$post['route_name']);
-            }
-            if($post['created_at'])
-            {
-                $query->where('orders.created_at','>=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[0]))));
-                $query->where('orders.created_at','<=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[1]))));
-            }
+            $query->whereIn('orders.dbid',$searchValue['house_id']);
+//            $query->whereIn('orders_details.short_name',$searchValue);
+//            if($post['created_at'])
+//            {
+//                $query->where('orders.created_at','>=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[0]))));
+//                $query->where('orders.created_at','<=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[1]))));
+//            }
         }
 
         $result = $query->get();
