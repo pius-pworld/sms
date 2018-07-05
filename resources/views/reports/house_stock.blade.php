@@ -31,7 +31,7 @@
                         </span>
                     </div>
                     <div class="box-body showSearchDataUnique">
-                        @include('reports.house_lifting_ajax')
+                        @include('reports.house_stock_ajax')
                     </div>
 
 

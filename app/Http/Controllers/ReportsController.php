@@ -224,13 +224,13 @@ class ReportsController extends Controller
     }
 
 
-    public function houseLifting(Request $request){
-        $data['ajaxUrl'] = URL::to('house-lifting-search');
+    public function houseStock(Request $request){
+        $data['ajaxUrl'] = URL::to('house-stock-search');
         $data['searching_options'] = 'grid.search_elements_all';
-        return view('reports.house_lifting',$data);
+        return view('reports.house_stock',$data);
     }
 
-    public function houseLiftingSearch(Request $request){
+    public function houseStockSearch(Request $request){
         $post= $request->all();
         unset($post['_token']);
         $request_data = filter_array($post);
@@ -240,6 +240,7 @@ class ReportsController extends Controller
         $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
         $get_info=getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
         $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
+        $selected_houses = array_filter($selected_houses);
         $house_stock_list=[];
         foreach ($selected_houses as $h){
             $house=DistributionHouse::where('id',$h)->first()->toArray();

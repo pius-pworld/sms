@@ -74,8 +74,8 @@ Route::get('current-stock','ReportsController@currentStock');
 Route::post('current-stock-search','ReportsController@currentStockSearch');
 
 //Reports
-Route::get('house-lifting','ReportsController@houseLifting');
-Route::post('house-lifting-search','ReportsController@houseLiftingSearch');
+Route::get('house-stock','ReportsController@houseStock');
+Route::post('house-stock-search','ReportsController@houseStockSearch');
 /* End Report routings */
 
 
