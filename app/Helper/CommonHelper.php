@@ -98,57 +98,6 @@
         }
     }
 
-    function getSearchDataAll($post)
-    {
-        $geography = array(
-            'zones_id'=>$post['zones_id'],
-            'regions_id'=>$post['regions_id'],
-            'territories_id'=>$post['territories_id'],
-            'id'=>$post['id']
-        );
-
-        $geography_value = array_filter($geography);
-
-        $dquery = DB::table('distribution_houses')->select('id');
-        if($geography)
-        {
-            $dquery->where($geography_value);
-        }
-        $d_value = $dquery->get();
-
-        $house_id = array();
-        foreach($d_value as $dv)
-        {
-            array_push($house_id,$dv->id);
-        }
-
-
-        $squery = DB::table('skues')->select('skues.short_name');
-        $squery->leftJoin('brands','brands.id','=','skues.brands_id');
-        if($post['category_id'])
-        {
-            $squery->where('brands.categories_id',$post['category_id']);
-        }
-        if($post['brands_id'])
-        {
-            $squery->where('skues.brands_id',$post['brands_id']);
-        }
-        if($post['skues_id'])
-        {
-            $squery->where('skues.id',$post['skues_id']);
-        }
-        $s_value = $squery->get();
-
-        $short_name = array();
-        foreach ($s_value as $sv)
-        {
-            array_push($short_name,$sv->short_name);
-        }
-
-        $searchValue = array('house_id'=>$house_id,'short_name'=>$short_name);
-        return $searchValue;
-    }
-
     function breadcrumb($data)
     {
         $html = '<ol class="breadcrumb">';
@@ -166,33 +115,23 @@
     }
 
     if(!function_exists('memoStructure')){
-        function memoStructure($categories=[],$brands=[],$skues=[]){
+        function memoStructure($brands=[],$skues=[]){
             $result =[];
-            $selected_categories = \App\Models\Category::orderBy('ordering', 'ASC');
-            if(count($categories) > 0){
-                $selected_categories->whereIn('id',$categories);
-            }
-            $selected_categories = $selected_categories->get()->toArray();
-
-            foreach ($selected_categories as $category){
-                $selected_brands=\App\Models\Brand::orderBy('ordering', 'ASC')->where('categories_id',$category['id']);
+            $selected_brands=\App\Models\Brand::orderBy('ordering', 'ASC');
                 if(count($brands) > 0){
-                    $selected_brands->whereIn('id',$brands);
+                  $selected_brands->whereIn('id',$brands);
                 }
-                $selected_brands = $selected_brands->get()->toArray();
-                foreach ($selected_brands as $brand){
-                    $selected_skues = \App\Models\Skue::orderBy('ordering','ASC')->where('brands_id',$brand['id']);
-                    if(count($skues) > 0){
-                        $selected_skues->whereIn('id',$skues);
-                    }
-                    $selected_skues= $selected_skues->get()->toArray();
-                    foreach ($selected_skues as $key=>$value){
-                        $result[$category['category_name']][$brand['brand_name']][$value['short_name']] = $value['sku_name'];
-                    }
+            $selected_brands = $selected_brands->get()->toArray();
+            foreach ($selected_brands as $brand){
+                $selected_skues = \App\Models\Skue::orderBy('ordering','ASC')->where('brands_id',$brand['id']);
+                if(count($skues) > 0){
+                    $selected_skues->whereIn('id',$skues);
+                }
+                $selected_skues= $selected_skues->get()->toArray();
+                foreach ($selected_skues as $key=>$value){
+                    $result[$brand['brand_name']][$value['short_name']] = $value['sku_name'];
                 }
             }
-
-
             return $result;
         }
     }
@@ -266,31 +205,32 @@
 if(!function_exists('repoStructure')){
     function repoStructure($categories=[],$brands=[],$skues=[]){
         $result =[];
-        $selected_categories= \App\Models\Category::orderBy('ordering', 'ASC');
+        $selected_categories = \App\Models\Category::orderBy('ordering', 'ASC');
         if(count($categories) > 0){
             $selected_categories->whereIn('id',$categories);
         }
         $selected_categories = $selected_categories->get()->toArray();
-        $selected_brands=\App\Models\Brand::orderBy('ordering', 'ASC');
-        if(count($brands) > 0){
-            $selected_brands->whereIn('id',$brands);
-        }
-        if(count($selected_categories) > 0){
-            $selected_brands->whereIn('categories_id',$selected_categories);
-        }
-        $selected_brands = $selected_brands->get()->toArray();
-        foreach ($selected_brands as $brand){
-            $selected_skues = \App\Models\Skue::orderBy('ordering','ASC')->where('brands_id',$brand['id']);
-            if(count($skues) > 0){
-                $selected_skues->whereIn('id',$skues);
+
+        foreach ($selected_categories as $category){
+            $selected_brands=\App\Models\Brand::orderBy('ordering', 'ASC')->where('categories_id',$category['id']);
+            if(count($brands) > 0){
+                $selected_brands->whereIn('id',$brands);
             }
-            $selected_skues= $selected_skues->get()->toArray();
-            foreach ($selected_skues as $key=>$value){
-                $result[$brand['brand_name']][$value['short_name']] = $value['sku_name'];
+            $selected_brands = $selected_brands->get()->toArray();
+            foreach ($selected_brands as $brand){
+                $selected_skues = \App\Models\Skue::orderBy('ordering','ASC')->where('brands_id',$brand['id']);
+                if(count($skues) > 0){
+                    $selected_skues->whereIn('id',$skues);
+                }
+                $selected_skues= $selected_skues->get()->toArray();
+                foreach ($selected_skues as $key=>$value){
+                    $result[$category['category_name']][$brand['brand_name']][$value['short_name']] = $value['sku_name'];
+                }
             }
         }
 
         return $result;
+
     }
 }
 ?>

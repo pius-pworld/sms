@@ -237,6 +237,9 @@ class ReportsController extends Controller
     }
 
     public function houseStockSearch(Request $request){
+
+        $data['ajaxUrl'] = URL::to('house-stock-search');
+        $data['searching_options'] = 'grid.search_elements_all';
         $post= $request->all();
         unset($post['_token']);
         $request_data = filter_array($post);
@@ -257,8 +260,10 @@ class ReportsController extends Controller
         $categorie_ids =array_key_exists('category_id',$request_data) ? $request_data['category_id'] : [];
         $brand_ids =array_key_exists('brands_id',$request_data) ? $request_data['brands_id'] : [];
         $sku_ids =array_key_exists('skues_id',$request_data) ? $request_data['skues_id'] : [];
-        $memo = memoStructure($categorie_ids,$brand_ids,$sku_ids);
+        $memo = repoStructure($categorie_ids,$brand_ids,$sku_ids);
+
         $result_arr=[];
+
         foreach ($house_stock_list as $hkey => $hvalue) {
             foreach ($memo as $key => $value) {
                 foreach ($value as $k => $v) {
@@ -271,7 +276,14 @@ class ReportsController extends Controller
             }
 
         }
-        dd($result_arr);
+//
+//        $data['list'] = $result_arr;
+        $data['memo_structure']= $result_arr;
+        $data['memo_structure1']= $memo;
+
+        //debug($memo,1);
+        return view('reports.house_stock_ajax',$data);
+
     }
 
 
