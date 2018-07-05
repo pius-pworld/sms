@@ -17,6 +17,8 @@
         }
     }
 
+
+
     function generateDataTables($sql = [], $columns=[], $search=[], $data_id_field = '')
     {
         $obj = new TargetHelper();

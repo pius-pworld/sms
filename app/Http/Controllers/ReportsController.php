@@ -35,7 +35,8 @@ class ReportsController extends Controller
         }
         $data['breadcrumb'] = breadcrumb(array('active'=>ucfirst($type).' Order List'));
         $data['ajaxUrl'] = URL::to('orderListAjax/'.$type);
-        $data['searching_options'] = 'reports.order_list_search';
+//        $data['searching_options'] = 'reports.order_list_search';
+        $data['searching_options'] = 'grid.search_elements_all';
 
 
         $data['orders'] = reportsHelper::order_list_query($type,array());
@@ -157,7 +158,7 @@ class ReportsController extends Controller
         }
         DB::table('orders')->where('id', $post['order_id'])->update(['order_status' => 'Processed']);
 
-        stock_update($post['dh_id'],$post['quantity'],array(),0,$total_order);
+        stock_update($post['dh_id'],$post['quantity'],array(),$total_order,true);
 
         return redirect('order-list/primary')->with('success', 'Information has been added.');
     }
