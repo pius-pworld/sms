@@ -252,6 +252,10 @@ class ReportsController extends Controller
     public function houseStock(Request $request){
         $data['ajaxUrl'] = URL::to('house-stock-search');
         $data['searching_options'] = 'grid.search_elements_all';
+        $memo = repoStructure();
+        $data['memo_structure']= $memo;
+        $data['level'] = 1;
+        $data['level_col_data'] =[];
         return view('reports.house_stock',$data);
     }
 
@@ -262,49 +266,31 @@ class ReportsController extends Controller
         $post= $request->all();
         unset($post['_token']);
         $request_data = filter_array($post);
-        $zone_ids=array_key_exists('zones_id',$request_data) ? $request_data['zones_id'] : [];
-        $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
-        $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
-        $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
-
-
-//        $get_info=getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
-//        $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
-//        $selected_houses = array_filter($selected_houses);
-//        $house_stock_list=[];
-//        foreach ($selected_houses as $h){
-//            $house=DistributionHouse::where('id',$h)->first()->toArray();
-//            $house_stock_list[$house['market_name']]= getHouseStockInfo([$h]);
-//        }
 
         //memeo structure
         $categorie_ids =array_key_exists('category_id',$request_data) ? $request_data['category_id'] : [];
         $brand_ids =array_key_exists('brands_id',$request_data) ? $request_data['brands_id'] : [];
         $sku_ids =array_key_exists('skues_id',$request_data) ? $request_data['skues_id'] : [];
 
-        //$memo = repoStructure($categorie_ids,$brand_ids,$sku_ids);
-
-        $result_arr=[];
-//
-//        foreach ($house_stock_list as $hkey => $hvalue) {
-//            foreach ($memo as $key => $value) {
-//                foreach ($value as $k => $v) {
-//                    foreach ($v as $sk => $sv) {
-//                        if (array_key_exists($sk, $house_stock_list[$hkey])) {
-//                            $result_arr[$hkey][$key][$k][$sk] = $house_stock_list[$hkey][$sk];
-//                          }
-//                    }
-//                }
-//            }
-//
-//        }
-//
-//        $data['list'] = $result_arr;
-
-        $data['memo_structure']= $result_arr;
+        $memo = repoStructure($categorie_ids,$brand_ids,$sku_ids);
+        $data['memo_structure']= $memo;
         //$data['memo_structure1']= $memo;
+        $data['level'] = 1;
+        $data['level_col_data'] =[];
 
-        $data['categories'] = get_categories($categorie_ids);
+        //Requested Information
+        $zone_ids=array_key_exists('zones_id',$request_data) ? $request_data['zones_id'] : [];
+        $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
+        $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
+        $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
+        $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+        $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
+        $selected_houses =array_filter($selected_houses);
+//        $house_stock_list =[];
+
+//        dd($house_stock_list);
+        $data['house_stock_list'] = getHouseStockInfo($selected_houses,$memo);
+
         return view('reports.house_stock_ajax',$data);
 
     }

@@ -276,7 +276,7 @@ if(!function_exists('repoStructure')){
                 }
                 $selected_skues= $selected_skues->get()->toArray();
                 foreach ($selected_skues as $key=>$value){
-                    $result[$category['category_name']][$brand['brand_name']][$value['short_name']] = $value['sku_name'];
+                    $result[$category['category_name']][$brand['brand_name']][ $value['sku_name']] = $value['short_name'];
                 }
             }
         }
@@ -286,16 +286,4 @@ if(!function_exists('repoStructure')){
     }
 }
 
-if(!function_exists('get_categories')){
-    function get_categories(array $ids){
-        $categories= DB::table('categories')
-                    ->select('brands.id','brands.brand_name','categories.category_name')
-                    ->join('brands','brands.categories_id',"=","categories.id")
-                    ->whereIn('categories.id',$ids)
-                    ->get()
-                    ->toArray();
-        dd($categories);
-        return $categories;
-    }
-}
 ?>

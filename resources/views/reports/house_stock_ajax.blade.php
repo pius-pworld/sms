@@ -1,35 +1,29 @@
-<table border="1">
+<table class="table-bordered table">
     <thead>
 
     <tr>
         <th rowspan="3" style="vertical-align: middle">House Name</th>
-        @if(count(categories)> 0)
-            {{--@foreach($memo_structure as $mk=>$mv)--}}
-                {{--@foreach($mv as $key=>$value)--}}
-                     {{--<th colspan="{{ array_sum(array_map("count", $value)) }}" style="text-align: center">{{$key}}</th>--}}
-                {{--@endforeach--}}
-            {{--@endforeach--}}
+        @if(isset($memo_structure))
+            @foreach($memo_structure as $category_key=>$category_value)
+                     <th colspan="{{ array_sum(array_map("count", $category_value)) * $level }}" style="text-align: center">{{$category_key}}</th>
+            @endforeach
         @endif
     </tr>
     <tr>
-        @if(isset($memo_structure1))
-            @foreach($memo_structure as $mk=>$mv)
-                @foreach($mv as $key=>$value)
-                    @foreach($value as $k=>$v)
-                        <th colspan="{{count($v)}}" style="text-align: center">{{$k}}</th>
-                    @endforeach
+        @if(isset($memo_structure))
+            @foreach($memo_structure as $category_key=>$category_value)
+                @foreach($category_value as $brand_key=>$brand_value)
+                        <th colspan="{{count($brand_value) * $level}}" style="text-align: center">{{$brand_key}}</th>
                 @endforeach
             @endforeach
         @endif
     </tr>
     <tr>
         @if(isset($memo_structure))
-            @foreach($memo_structure as $mk=>$mv)
-                @foreach($mv as $key=>$value)
-                    @foreach($value as $k=>$v)
-                        @foreach($v as $k1=>$v1)
-                          <th style="text-align: center">{{$k1}}</th>
-                        @endforeach
+            @foreach($memo_structure as $category_key=>$category_value)
+                @foreach($category_value as $brand_key=>$brand_value)
+                    @foreach($brand_value as $sku_key=>$sku_value)
+                          <th colspan="{{$level}}" style="text-align: center">{{$sku_key}}</th>
                     @endforeach
                 @endforeach
             @endforeach
@@ -37,25 +31,15 @@
     </tr>
     </thead>
     <tbody>
-
-
-            @if(isset($memo_structure))
-                @foreach($memo_structure as $mk=>$mv)
+            @if(isset($house_stock_list))
+                @foreach($house_stock_list as $house_key=> $house_value)
                     <tr>
-                    <th>{{$mk}}</th>
-                    @foreach($mv as $key=>$value)
-                        @foreach($value as $k=>$v)
-                            @foreach($v as $k1=>$v1)
-                                <th style="text-align: center">{{$v1}}</th>
-                            @endforeach
+                    <th>{{$house_key}}</th>
+                        @foreach($house_value as $key => $value)
+                              <td>{{$value}}</td>
                         @endforeach
-                    @endforeach
                     </tr>
-                @endforeach
+                 @endforeach
             @endif
-
-
-
-
     </tbody>
 </table>

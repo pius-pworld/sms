@@ -19,13 +19,34 @@ if(!function_exists('getInfo')){
     }
 }
 
+
+
 if(!function_exists('getHouseStockInfo')){
-    function getHouseStockInfo($id){
-        $result= \App\Models\Stocks::where('distributions_house_id',$id)->get()->toArray();
-        $res=[];
-        foreach ($result as $val){
-            $res[$val['short_name']]= $val['quantity'];
+    function getHouseStockInfo($ids,$selected_memo){
+        $house_stock_list=[];
+        foreach ($ids as $house_key=>$house_value){
+            $house=\App\Models\DistributionHouse::where('id',$house_value)->first()->toArray();
+            $sku_quantity=[];
+            foreach ($selected_memo as $cat_key=>$cat_val){
+               $selected_skue=array_values($cat_val);
+               $selected_skues=array_flatten($selected_skue);
+               foreach ($selected_skues as $key => $value){
+                  $data=\App\Models\Stocks::where('distributions_house_id',$house_value)->where('short_name',$value)->first()->toArray();
+                  if(!empty($data)){
+                      $sku_quantity[] = $data['quantity'];
+                  }
+
+               }
+            }
+
+            $house_stock_list[$house['market_name']]=$sku_quantity;
+            $sku_quantity=[];
+
         }
-        return $res;
+        return $house_stock_list;
+
     }
 }
+
+
+
