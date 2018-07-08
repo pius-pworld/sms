@@ -261,4 +261,46 @@
             }
         }
     }
+   if(!function_exists('filter_array')){
+       function filter_array($array){
+           $result=array_filter($array,function ($dt){
+               return array_filter($dt);
+           });
+           return $result;
+       }
+   }
+
+
+if(!function_exists('repoStructure')){
+    function repoStructure($categories=[],$brands=[],$skues=[]){
+        $result =[];
+        $selected_categories = \App\Models\Category::orderBy('ordering', 'ASC');
+        if(count($categories) > 0){
+            $selected_categories->whereIn('id',$categories);
+        }
+        $selected_categories = $selected_categories->get()->toArray();
+
+        foreach ($selected_categories as $category){
+            $selected_brands=\App\Models\Brand::orderBy('ordering', 'ASC')->where('categories_id',$category['id']);
+            if(count($brands) > 0){
+                $selected_brands->whereIn('id',$brands);
+            }
+            $selected_brands = $selected_brands->get()->toArray();
+            foreach ($selected_brands as $brand){
+                $selected_skues = \App\Models\Skue::orderBy('ordering','ASC')->where('brands_id',$brand['id']);
+                if(count($skues) > 0){
+                    $selected_skues->whereIn('id',$skues);
+                }
+                $selected_skues= $selected_skues->get()->toArray();
+                foreach ($selected_skues as $key=>$value){
+                    $result[$category['category_name']][$brand['brand_name']][ $value['sku_name']] = $value['short_name'];
+                }
+            }
+        }
+
+        return $result;
+
+    }
+}
+
 ?>
