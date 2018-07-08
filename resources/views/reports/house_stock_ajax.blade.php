@@ -1,4 +1,4 @@
-<table class="table-bordered table">
+<table id="dataTableId" class="table-bordered table dataTable">
     <thead>
 
     <tr>

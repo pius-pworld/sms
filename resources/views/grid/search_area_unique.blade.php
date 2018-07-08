@@ -16,4 +16,12 @@
 </div>
 
 
+
 @include('grid.grid_view_css_js')
+@if(isset($searchAreaShow) && $searchAreaShow == 1)
+    <script>
+        $(document).ready(function(){
+            $("#top_search").trigger('click');
+        });
+    </script>
+@endif
