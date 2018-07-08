@@ -33,9 +33,9 @@
             @foreach($memo_structure as $category_key=>$category_value)
                 @foreach($category_value as $brand_key=>$brand_value)
                     @foreach($brand_value as $sku_key=>$sku_value)
-                          @foreach($level_col_data as $val)
-                           <th colspan="1">{{$val}}</th>
-                          @endforeach
+                        @foreach($level_col_data as $val)
+                            <th colspan="1">{{$val}}</th>
+                        @endforeach
                     @endforeach
                 @endforeach
             @endforeach

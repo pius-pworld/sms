@@ -108,5 +108,15 @@ if(!function_exists('getHouseLifting')){
     }
 }
 
+if(!function_exists('routeWisePerformance')){
+    function routeWisePerformance($ids,$selected_memo){
+        foreach ($ids as $house_key=>$house_value){
+            $target = \App\Models\Target::all();
+            dd($target);
+        }
+
+    }
+}
+
 
 

@@ -5,7 +5,7 @@
 
     <section class="content-header">
         <h1>
-            House Wise Lifting
+            Route Wise Performance
         </h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -31,7 +31,7 @@
                         </span>
                 </div>
                 <div class="box-body showSearchDataUnique" style="overflow: scroll;">
-                    @include('reports.house_lifting_ajax')
+                    @include('reports.route_wise_performance_ajax')
                 </div>
 
 
