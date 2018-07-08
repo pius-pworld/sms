@@ -244,6 +244,23 @@
             return true;
         }
     }
+
+    if(!function_exists('get_module_name'))
+    {
+        function get_module_name($module_id=null)
+        {
+            $user_info = \App\Models\Module::where('id',$module_id)->first();
+//            debug($user_info->name,1);
+            if($user_info)
+            {
+                return $user_info->name;
+            }
+            else
+            {
+                return '';
+            }
+        }
+    }
    if(!function_exists('filter_array')){
        function filter_array($array){
            $result=array_filter($array,function ($dt){

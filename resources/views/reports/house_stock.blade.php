@@ -30,7 +30,7 @@
                             </button>
                         </span>
                     </div>
-                    <div class="box-body showSearchDataUnique">
+                    <div class="box-body showSearchDataUnique" style="overflow: scroll;">
                         @include('reports.house_stock_ajax')
                     </div>
 
@@ -46,4 +46,5 @@
                 myConfiguration();
             });
         </script>
+
 @endsection

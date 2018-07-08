@@ -234,7 +234,7 @@ class ReportsController extends Controller
         $data['current_stocks'] = DB::table('stocks')
             ->select('stocks.quantity','distribution_houses.market_name','skues.sku_name','brands.brand_name')
             ->leftJoin('distribution_houses','distribution_houses.id','=','stocks.distributions_house_id')
-            ->leftJoin('skues','skues.id','=','stocks.sku_id')
+            ->leftJoin('skues','skues.short_name','=','stocks.short_name')
             ->leftJoin('brands','brands.id','=','skues.brands_id')->get();
         return view('reports.current_stock',$data);
     }
@@ -243,7 +243,7 @@ class ReportsController extends Controller
         $data['current_stocks'] = DB::table('stocks')
             ->select('stocks.quantity','distribution_houses.market_name','skues.sku_name','brands.brand_name')
             ->leftJoin('distribution_houses','distribution_houses.id','=','stocks.distributions_house_id')
-            ->leftJoin('skues','skues.id','=','stocks.sku_id')
+            ->leftJoin('skues','skues.short_name','=','stocks.short_name')
             ->leftJoin('brands','brands.id','=','skues.brands_id')->get();
         return view('reports.current_stock_ajax',$data);
     }
@@ -252,6 +252,7 @@ class ReportsController extends Controller
     public function houseStock(Request $request){
         $data['ajaxUrl'] = URL::to('house-stock-search');
         $data['searching_options'] = 'grid.search_elements_all';
+        $data['searchAreaShow'] = 1;
         $memo = repoStructure();
         $data['memo_structure']= $memo;
         $data['level'] = 1;
