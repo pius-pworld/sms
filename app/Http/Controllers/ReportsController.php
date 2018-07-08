@@ -332,7 +332,9 @@ class ReportsController extends Controller
         $selected_houses =array_filter($selected_houses);
 
 
+
         $data['house_lifting_list'] = getHouseLifting($selected_houses, $data['memo_structure']);
+
 
         return view('reports.house_lifting_ajax',$data);
 

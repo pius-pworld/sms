@@ -47,6 +47,18 @@ if(!function_exists('getHouseStockInfo')){
     }
 }
 
+if(!function_exists('count_sku')){
+    function count_sku(array $skues){
+        $count=0;
+        foreach ($skues as $sku_val){
+            if(!is_null($sku_val)){
+                $count+=(int)$sku_val;
+            }
+        }
+        return $count;
+    }
+}
+
 if(!function_exists('getHouseLifting')){
     function getHouseLifting($ids,$selected_memo){
         $house_lifting_list=[];
@@ -54,8 +66,7 @@ if(!function_exists('getHouseLifting')){
             $house = \App\Models\DistributionHouse::where('id',$house_value)->first()->toArray();
             $sku_order_info=[];
             foreach ($selected_memo as $cat_key=>$cat_val){
-                $selected_skue=array_values($cat_val);
-                $selected_skues=array_flatten($selected_skue);
+                $selected_skues=array_flatten($cat_val);
                 foreach ($selected_skues as $key => $value){
                         $data = DB::table('order_details')
                             ->select('brands.brand_name','skues.sku_name','order_details.short_name','order_details.quantity as oquantity','sale_details.quantity as salequantity')
@@ -75,10 +86,16 @@ if(!function_exists('getHouseLifting')){
                             ->where('order_details.short_name',$value)
                             ->orderBy('orders.id', 'DESC');
                         if($data->exists()){
-                            $dt= $data->first();
+                            $dt= $data->get()->toArray();
+                            $order_quantity = count_sku(array_column($dt,'oquantity'));
+                            $saler_quantity = count_sku(array_column($dt,'salequantity'));
                             $sku_order_info[]=[
-                                $dt->oquantity,
-                                is_null($dt->salequantity) ? 'N/P': $dt->salequantity
+                                $order_quantity,
+                                $saler_quantity
+                            ];
+                        }else{
+                            $sku_order_info[]=[
+                                 'N/R','N/P'
                             ];
                         }
 
