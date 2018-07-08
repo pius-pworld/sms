@@ -316,7 +316,7 @@ class SettingsController extends Controller
     {
         $post = $request->all();
 
-//        debug($post['base_distribute'],1);
+//        debug($post,1);
         $insertData['target_type'] = $post['target_type'];
         $insertData['target_month'] = $post['target_month'];
         $insertData['base_date'] = $post['base_date'];
