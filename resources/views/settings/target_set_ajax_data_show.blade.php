@@ -30,11 +30,11 @@
                 ";
             if($targetType == 'edit')
             {
-                $existing = targetHelper::totalJsonValue($type,$skue->id,$target_month,$existingValue);
+                $existing = targetHelper::totalJsonValue($type,$skue->short_name,$target_month,$existingValue);
             }
             else
             {
-                $existingTarget = targetHelper::totalExistingJsonValue($type,$skue->id,$target_month);
+                $existingTarget = targetHelper::totalExistingJsonValue($type,$skue->short_name,$target_month);
             }
 
             //debug($base,1);
@@ -80,19 +80,19 @@
                 ?>
                 <td style="text-align: center">
                     <input
-                            name="base_distribute[<?php echo $geography->id; ?>][<?php echo $skue->brands_id; ?>][<?php echo $skue->id; ?>]"
+                            name="base_distribute[<?php echo $geography->id; ?>][<?php echo $skue->brands_id; ?>][<?php echo $skue->short_name; ?>]"
                             class="{{'base_distribute_'.$skue->brands_id.'_'.$skue->id}}"
                             readonly style="width: 50px;"
                             type="number"
                             {{--value="{{$baseData[$geography->id][$skue->brands_id][$skue->id]}}"--}}
-                            value="<?php echo (($existing)?$existing['base'][$skue->id]:$baseData[$geography->id][$skue->brands_id][$skue->id]); ?>">
+                            value="<?php echo (($existing)?$existing['base'][$skue->short_name]:$baseData[$geography->id][$skue->brands_id][$skue->id]); ?>">
                     <input
-                            name="target_distribute[<?php echo $geography->id; ?>][<?php echo $skue->brands_id; ?>][<?php echo $skue->id; ?>]"
+                            name="target_distribute[<?php echo $geography->id; ?>][<?php echo $skue->brands_id; ?>][<?php echo $skue->short_name; ?>]"
                             class="{{'target_distribute_'.$skue->brands_id.'_'.$skue->id}}"
                             style="width: 50px;"
                             type="text"
                             {{--value="0">--}}
-                            value="<?php echo (($existing)?$existing['target'][$skue->id]:round((((($baseData[$geography->id][$skue->brands_id][$skue->id]*100)/array_sum($base[$skue->id]))*$existingTarget['target'])/100))); ?>">
+                            value="<?php echo (($existing)?$existing['target'][$skue->short_name]:round((((($baseData[$geography->id][$skue->brands_id][$skue->id]*100)/array_sum($base[$skue->id]))*$existingTarget['target'])/100))); ?>">
                 </td>
             @endforeach
         </tr>

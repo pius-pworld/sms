@@ -21,7 +21,7 @@ class TargetHelper
         return false;
     }
 
-    public static function totalJsonValue($type,$skue_id,$target_month,$array)
+    public static function totalJsonValue($type,$short_name,$target_month,$array)
     {
         $totalBase = 0;
         $totalTarget = 0;
@@ -29,15 +29,15 @@ class TargetHelper
             if (($val->target_type == $type) && ($val->target_month == $target_month)) {
                 $base = json_decode($val->base_value,true);
                 $target = json_decode($val->target_value,true);
-                $totalBase = $totalBase+$base[$skue_id];
-                $totalTarget = $totalTarget+$target[$skue_id];
+                $totalBase = $totalBase+$base[$short_name];
+                $totalTarget = $totalTarget+$target[$short_name];
             }
         }
         $result = array('base'=>$totalBase,'target'=>$totalTarget);
         return $result;
     }
 
-    public static function totalExistingJsonValue($type,$skue_id,$target_month)
+    public static function totalExistingJsonValue($type,$short_name,$target_month)
     {
         if($type == 'zones')
         {
@@ -70,7 +70,7 @@ class TargetHelper
 //            debug(DB::getQueryLog(),1);
         }
         $target = json_decode(@$existingTarget->target_value,true);
-        $result = array('target'=>(($target)?$target[$skue_id]:0));
+        $result = array('target'=>(($target)?$target[$short_name]:0));
         return $result;
     }
 }
