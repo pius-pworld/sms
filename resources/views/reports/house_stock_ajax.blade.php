@@ -3,12 +3,12 @@
 
     <tr>
         <th rowspan="3" style="vertical-align: middle">House Name</th>
-        @if(isset($memo_structure))
-            @foreach($memo_structure as $mk=>$mv)
-                @foreach($mv as $key=>$value)
-                     <th colspan="{{ array_sum(array_map("count", $value)) }}" style="text-align: center">{{$key}}</th>
-                @endforeach
-            @endforeach
+        @if(count(categories)> 0)
+            {{--@foreach($memo_structure as $mk=>$mv)--}}
+                {{--@foreach($mv as $key=>$value)--}}
+                     {{--<th colspan="{{ array_sum(array_map("count", $value)) }}" style="text-align: center">{{$key}}</th>--}}
+                {{--@endforeach--}}
+            {{--@endforeach--}}
         @endif
     </tr>
     <tr>
