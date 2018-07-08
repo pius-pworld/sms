@@ -233,7 +233,7 @@ class ReportsController extends Controller
         $data['current_stocks'] = DB::table('stocks')
             ->select('stocks.quantity','distribution_houses.market_name','skues.sku_name','brands.brand_name')
             ->leftJoin('distribution_houses','distribution_houses.id','=','stocks.distributions_house_id')
-            ->leftJoin('skues','skues.id','=','stocks.sku_id')
+            ->leftJoin('skues','skues.short_name','=','stocks.short_name')
             ->leftJoin('brands','brands.id','=','skues.brands_id')->get();
         return view('reports.current_stock',$data);
     }
@@ -242,7 +242,7 @@ class ReportsController extends Controller
         $data['current_stocks'] = DB::table('stocks')
             ->select('stocks.quantity','distribution_houses.market_name','skues.sku_name','brands.brand_name')
             ->leftJoin('distribution_houses','distribution_houses.id','=','stocks.distributions_house_id')
-            ->leftJoin('skues','skues.id','=','stocks.sku_id')
+            ->leftJoin('skues','skues.short_name','=','stocks.short_name')
             ->leftJoin('brands','brands.id','=','skues.brands_id')->get();
         return view('reports.current_stock_ajax',$data);
     }

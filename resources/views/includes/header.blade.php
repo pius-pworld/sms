@@ -2,9 +2,9 @@
     <!-- Logo -->
     <a href="#" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>A</b>S</span>
+      <span class="logo-mini"><img style="width: 42px;" src="{{URL::to('public/dist/img/g-logo.png')}}"></span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Apsis</b>Solutions</span>
+      <span class="logo-lg">GLOBE<img style="width: 53px; margin-left: 7px; margin-bottom: 5px;" src="{{URL::to('public/dist/img/g-logo.png')}}"></span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -216,18 +216,30 @@
           <li class="dropdown tasks-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-recycle"></i>
+              <?php
+                if(isset(session()->all()['selected_module']))
+                {
+                    $selectedModuleId = session()->all()['selected_module'];
+                }
+                else
+                {
+                    $selectedModuleId = session()->all()['selected_module'] = null;
+                }
+//                debug(get_module_name($selectedModuleId),1);
+                echo get_module_name($selectedModuleId);
+              ?>
               
             </a>
             <ul class="dropdown-menu">
               
               <li>
                 <!-- inner menu: contains the actual data -->
-                <ul class="menu">
+                <ul class="menu" style="background: #3C8DBC;">
                      @inject('module', 'App\Http\Controllers\ModuleController')
                      
                     @foreach ($module->getModuleList() as $val)
                        <li>
-                           <a href="{{URL::to("/moduleChanger/".encrypt($val['id']))}}"><i class="{{ $val['modules_icon'] }}"  style="font-size:10px"></i> &nbsp;{{ $val['name'] }}</a>
+                           <a style="color: #fff;" href="{{URL::to("/moduleChanger/".encrypt($val['id']))}}"><i class="{{ $val['modules_icon'] }}"  style="font-size:10px;"></i> &nbsp;{{ $val['name'] }}</a>
                       </li>
                     @endforeach
                 </ul>
@@ -238,34 +250,34 @@
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-              <span class="hidden-xs">Alexander Pierce</span>
+              <?php //debug(Auth::user(),1); ?>
+              <img src="{{URL::to('public/'.Auth::user()->user_image)}}" class="user-image" alt="User Image">
+              <span class="hidden-xs"><?php echo Auth::user()->username; ?></span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                <img src="{{URL::to('public/'.Auth::user()->user_image)}}" class="img-circle" alt="User Image">
 
                 <p>
-                  Alexander Pierce - Web Developer
-                  <small>Member since Nov. 2012</small>
+                    <?php echo Auth::user()->username; ?>
                 </p>
               </li>
               <!-- Menu Body -->
-              <li class="user-body">
-                <div class="row">
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Followers</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Sales</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Friends</a>
-                  </div>
-                </div>
-                <!-- /.row -->
-              </li>
+              {{--<li class="user-body">--}}
+                {{--<div class="row">--}}
+                  {{--<div class="col-xs-4 text-center">--}}
+                    {{--<a href="#">Followers</a>--}}
+                  {{--</div>--}}
+                  {{--<div class="col-xs-4 text-center">--}}
+                    {{--<a href="#">Sales</a>--}}
+                  {{--</div>--}}
+                  {{--<div class="col-xs-4 text-center">--}}
+                    {{--<a href="#">Friends</a>--}}
+                  {{--</div>--}}
+                {{--</div>--}}
+                {{--<!-- /.row -->--}}
+              {{--</li>--}}
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
@@ -278,10 +290,17 @@
             </ul>
           </li>
           <!-- Control Sidebar Toggle Button -->
-          <li>
-            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-          </li>
+          {{--<li>--}}
+            {{--<a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>--}}
+          {{--</li>--}}
         </ul>
       </div>
     </nav>
   </header>
+
+<style>
+  .menu>li>a:hover
+  {
+    background: #ccc !important;
+  }
+</style>

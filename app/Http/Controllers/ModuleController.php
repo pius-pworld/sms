@@ -119,7 +119,7 @@ class ModuleController extends Controller
     }
     public  function moduleChanger(Request $request,$id){
         $moduleid= decrypt($id);
-        
+//        debug(session()->all()['selected_module'],1);
         //session('selected_module', $moduleid);
         $request->session()->forget('selected_module');
         $request->session()->put('selected_module', $moduleid);
