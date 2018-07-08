@@ -31,7 +31,7 @@
                         </span>
                 </div>
                 <div class="box-body showSearchDataUnique" style="overflow: scroll;">
-                    @include('reports.route_wise_performance_ajax')
+                    @include('reports.db_wise_performance_ajax')
                 </div>
 
 

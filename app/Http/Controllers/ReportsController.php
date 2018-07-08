@@ -321,7 +321,7 @@ class ReportsController extends Controller
 
         $data['memo_structure']= repoStructure($categorie_ids,$brand_ids,$sku_ids);
         $data['level'] = 2;
-        $data['level_col_data'] =['Requested','Delivery'];
+        $data['level_col_data'] =['Req','Del'];
 
 
         //Requested Information
@@ -343,18 +343,18 @@ class ReportsController extends Controller
     }
 
     public function routeWisePerformance(Request $request){
-        $data['ajaxUrl'] = URL::to('route-wise-performance-search');
+        $data['ajaxUrl'] = URL::to('db-wise-performance-search');
         $data['searching_options'] = 'grid.search_elements_all';
         $data['searchAreaShow'] = 1;
         $memo = repoStructure();
         $data['level'] = 3;
         $data['level_col_data'] =['Target','Sales','Ach%'];
         $data['memo_structure']= $memo;
-        return view('reports.route_wise_performance',$data);
+        return view('reports.db_wise_performance',$data);
     }
 
     public function routeWisePerformanceSearch(Request $request){
-        $data['ajaxUrl'] = URL::to('house-lifting-search');
+        $data['ajaxUrl'] = URL::to('db-wise-performance-search');
         $data['searching_options'] = 'grid.search_elements_all';
 
         //request data
@@ -380,9 +380,9 @@ class ReportsController extends Controller
         $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
         $selected_houses =array_filter($selected_houses);
 
-        $data['house_wise_performance'] = routeWisePerformance($selected_houses, $data['memo_structure']);
+        $data['house_wise_performance'] = houseWisePerformance($selected_houses, $data['memo_structure']);
 
-        return view('reports.route_wise_performance_ajax',$data);
+        return view('reports.db_wise_performance_ajax',$data);
     }
 
 

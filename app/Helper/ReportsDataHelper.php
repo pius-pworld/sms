@@ -108,11 +108,10 @@ if(!function_exists('getHouseLifting')){
     }
 }
 
-if(!function_exists('routeWisePerformance')){
-    function routeWisePerformance($ids,$selected_memo){
+if(!function_exists('houseWisePerformance')){
+    function houseWisePerformance($ids,$selected_memo){
         foreach ($ids as $house_key=>$house_value){
-            $target = \App\Models\Target::all();
-            dd($target);
+           $selected_tso = \App\Models\Territorie::where('id',$house_value)->get()->toArray();
         }
 
     }
