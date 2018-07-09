@@ -342,7 +342,7 @@ class ReportsController extends Controller
 
     }
 
-    public function routeWisePerformance(Request $request){
+    public function houseWisePerformance(Request $request){
         $data['ajaxUrl'] = URL::to('db-wise-performance-search');
         $data['searching_options'] = 'grid.search_elements_all';
         $data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
@@ -353,7 +353,7 @@ class ReportsController extends Controller
         return view('reports.db_wise_performance',$data);
     }
 
-    public function routeWisePerformanceSearch(Request $request){
+    public function houseWisePerformanceSearch(Request $request){
         $data['ajaxUrl'] = URL::to('db-wise-performance-search');
         $data['searching_options'] = 'grid.search_elements_all';
 

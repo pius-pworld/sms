@@ -80,8 +80,8 @@ Route::post('house-stock-search','ReportsController@houseStockSearch');
 Route::get('house-lifting','ReportsController@houseLifting');
 Route::post('house-lifting-search','ReportsController@houseLiftingSearch');
 
-Route::get('db-wise-performance','ReportsController@routeWisePerformance');
-Route::post('db-wise-performance-search','ReportsController@routeWisePerformanceSearch');
+Route::get('db-wise-performance','ReportsController@houseWisePerformance');
+Route::post('db-wise-performance-search','ReportsController@houseWisePerformanceSearch');
 
 
 /* End Report routings */
