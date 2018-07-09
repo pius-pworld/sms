@@ -379,8 +379,8 @@ class ReportsController extends Controller
         $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
         $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
         $selected_houses =array_filter($selected_houses);
-
         $data['house_wise_performance'] = houseWisePerformance($selected_houses, $data['memo_structure']);
+
 
         return view('reports.db_wise_performance_ajax',$data);
     }

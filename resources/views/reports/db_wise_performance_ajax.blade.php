@@ -1,4 +1,4 @@
-<table id="dataTableId" class="table-bordered table dataTable">
+<table border="1">
     <thead>
     <tr>
         <th rowspan="4" style="vertical-align: middle">House Name</th>
@@ -43,15 +43,17 @@
     </tr>
     </thead>
     <tbody>
-    @if(isset($house_wise_performance) && count($house_wise_performance) > 0)
-        @foreach($house_wise_performance as $house_key=> $house_info)
-            <tr>
-                <th>{{$house_key}}</th>
-                @foreach($house_info as $key => $value)
-                        <td>{{$value}}</td>
-                @endforeach
-            </tr>
-        @endforeach
-    @endif
+        @if(isset($house_wise_performance) && count($house_wise_performance) > 0)
+            @foreach($house_wise_performance as $house_key=> $house_info)
+                <tr>
+                    <th>{{$house_key}}</th>
+                    @foreach($house_info as $key => $value)
+                        @for($i=0;$i<$level;$i++)
+                            <td>{{$value[$i]}}</td>
+                        @endfor
+                    @endforeach
+                </tr>
+            @endforeach
+        @endif
     </tbody>
 </table>

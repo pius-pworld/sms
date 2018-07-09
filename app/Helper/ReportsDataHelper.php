@@ -110,34 +110,61 @@ if(!function_exists('getHouseLifting')){
 
 if(!function_exists('achievement')){
     function achievement($target,$sale){
-        return $target* $sale;
+        return $target > 0 ? number_format(((int)$sale/ $target) * 100,2,'.','')."%"  : 0;
     }
+}
+
+if(!function_exists('get_sale_by_month')){
+      function get_sale_by_month($db_id,$sku_name,$month){
+          $date = date_parse($month);
+
+          $data =  DB::table('sales')
+                  ->select('sales.id','sale_details.quantity')
+                  ->join('sale_details','sales_id','=','sales.id')
+                  ->where('sale_details.short_name',$sku_name)
+                  ->where('sales.dbid',$db_id)
+                  ->whereYear('sales.order_date',$date['year'])
+                  ->whereMonth('sales.order_date',$date['month'])
+          ->get()->toArray();
+          $count =0 ;
+          if(count($data) > 0){
+              foreach ($data as $val){
+                  $count += (int) $val->quantity;
+              }
+          }
+          return $count;
+      }
 }
 
 if(!function_exists('houseWisePerformance')){
     function houseWisePerformance($ids,$selected_memo){
         $db_house_wise_performance=[];
         foreach ($ids as $house_key=>$house_value){
-           $house = \App\Models\DistributionHouse::where('id',$house_value)->first()->toArray();
-            $get_target = \App\Models\Target::where('target_type','house')->where('type_id',$house_value);
-            if($get_target->exists()){
-                $get_target= $get_target->first()->toArray();
-                $target_value=json_decode($get_target['base_value'],true);
-                foreach ($selected_memo as $cat_key=>$cat_val){
-                    $selected_skues=array_flatten($cat_val);
-                    $sku_target= [];
-                    foreach ($selected_skues as $key => $value){
-                        $sku_target[]=isset($target_value[$value]) ? $target_value[$value] : 0;
-                        $sku_target[]=2;
-                        $sku_target[]=achievement($target_value[$value],2);
+            $house = \App\Models\DistributionHouse::where('id',$house_value)->first()->toArray();
+            $get_target = \App\Models\Target::where('target_type','house')->where('type_id',$house_value)->first();
+            $sku_target = [];
+            foreach ($selected_memo as $cat_key=>$cat_val) {
+                $selected_skues = array_flatten($cat_val);
+                $target_value = json_decode($get_target['base_value'], true);
+                    foreach ($selected_skues as $key => $value) {
+                        if(!empty($get_target)){
+                            $cumulative_sale= get_sale_by_month($house_value,$value,'January-2018');
+                            $sku_target[] = [
+                                isset($target_value[$value]) ? $target_value[$value] : 0,
+                                $cumulative_sale,
+                                achievement($target_value[$value],$cumulative_sale)
+                            ];
+                        }
+                        else{
+                            $sku_target[] = [
+                                0, 0, 0
+                            ];
+                        }
+
                     }
 
-                }
-            }else{
-                $sku_target=[
-                    0,0,0
-                ];
             }
+
             $db_house_wise_performance[$house['market_name']]=$sku_target;
         }
         return $db_house_wise_performance;
