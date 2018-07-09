@@ -287,13 +287,102 @@ class ReportsController extends Controller
         $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
         $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
         $selected_houses =array_filter($selected_houses);
-//        $house_stock_list =[];
 
-//        dd($house_stock_list);
         $data['house_stock_list'] = getHouseStockInfo($selected_houses,$memo);
 
         return view('reports.house_stock_ajax',$data);
 
+    }
+
+    public function houseLifting(Request $request){
+        $data['ajaxUrl'] = URL::to('house-lifting-search');
+        $data['searching_options'] = 'grid.search_elements_all';
+        $data['searchAreaShow'] = 1;
+        $memo = repoStructure();
+        $data['level'] = 2;
+        $data['level_col_data'] =['Requested','Delivery'];
+        $data['memo_structure']= $memo;
+        return view('reports.house_lifting',$data);
+    }
+
+    public function houseLiftingSearch(Request $request){
+        $data['ajaxUrl'] = URL::to('house-lifting-search');
+        $data['searching_options'] = 'grid.search_elements_all';
+
+        //request data
+        $post= $request->all();
+        unset($post['_token']);
+        $request_data = filter_array($post);
+
+        //memeo structure
+        $categorie_ids =array_key_exists('category_id',$request_data) ? $request_data['category_id'] : [];
+        $brand_ids =array_key_exists('brands_id',$request_data) ? $request_data['brands_id'] : [];
+        $sku_ids =array_key_exists('skues_id',$request_data) ? $request_data['skues_id'] : [];
+
+        $data['memo_structure']= repoStructure($categorie_ids,$brand_ids,$sku_ids);
+        $data['level'] = 2;
+        $data['level_col_data'] =['Req','Del'];
+
+
+        //Requested Information
+        $zone_ids=array_key_exists('zones_id',$request_data) ? $request_data['zones_id'] : [];
+        $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
+        $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
+        $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
+        $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+        $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
+        $selected_houses =array_filter($selected_houses);
+
+
+
+        $data['house_lifting_list'] = getHouseLifting($selected_houses, $data['memo_structure']);
+
+
+        return view('reports.house_lifting_ajax',$data);
+
+    }
+
+    public function routeWisePerformance(Request $request){
+        $data['ajaxUrl'] = URL::to('db-wise-performance-search');
+        $data['searching_options'] = 'grid.search_elements_all';
+        $data['searchAreaShow'] = 1;
+        $memo = repoStructure();
+        $data['level'] = 3;
+        $data['level_col_data'] =['Target','Sales','Ach%'];
+        $data['memo_structure']= $memo;
+        return view('reports.db_wise_performance',$data);
+    }
+
+    public function routeWisePerformanceSearch(Request $request){
+        $data['ajaxUrl'] = URL::to('db-wise-performance-search');
+        $data['searching_options'] = 'grid.search_elements_all';
+
+        //request data
+        $post= $request->all();
+        unset($post['_token']);
+        $request_data = filter_array($post);
+
+        //memeo structure
+        $categorie_ids =array_key_exists('category_id',$request_data) ? $request_data['category_id'] : [];
+        $brand_ids =array_key_exists('brands_id',$request_data) ? $request_data['brands_id'] : [];
+        $sku_ids =array_key_exists('skues_id',$request_data) ? $request_data['skues_id'] : [];
+
+        $data['memo_structure']= repoStructure($categorie_ids,$brand_ids,$sku_ids);
+        $data['level'] = 3;
+        $data['level_col_data'] =['Target','Sales','Ach%'];
+
+        //Requested Information
+        $zone_ids=array_key_exists('zones_id',$request_data) ? $request_data['zones_id'] : [];
+        $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
+        $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
+        $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
+        $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+        $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
+        $selected_houses =array_filter($selected_houses);
+
+        $data['house_wise_performance'] = houseWisePerformance($selected_houses, $data['memo_structure']);
+
+        return view('reports.db_wise_performance_ajax',$data);
     }
 
 
