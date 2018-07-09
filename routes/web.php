@@ -84,6 +84,10 @@ Route::get('db-wise-performance','ReportsController@houseWisePerformance');
 Route::post('db-wise-performance-search','ReportsController@houseWisePerformanceSearch');
 
 
+Route::get('route-wise-performence-by-category','ReportsController@routeWisePerformenceByCategory');
+Route::post('route-wise-performence-by-category-ajax','ReportsController@routeWisePerformenceByCategoryAjax');
+
+
 /* End Report routings */
 
 

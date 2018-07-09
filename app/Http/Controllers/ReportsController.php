@@ -252,7 +252,7 @@ class ReportsController extends Controller
     public function houseStock(Request $request){
         $data['ajaxUrl'] = URL::to('house-stock-search');
         $data['searching_options'] = 'grid.search_elements_all';
-        $data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
+        $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange'));
         $memo = repoStructure();
         $data['memo_structure']= $memo;
         $data['level'] = 1;
@@ -297,7 +297,8 @@ class ReportsController extends Controller
     public function houseLifting(Request $request){
         $data['ajaxUrl'] = URL::to('house-lifting-search');
         $data['searching_options'] = 'grid.search_elements_all';
-        $data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
+        //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
+        $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange'));
         $memo = repoStructure();
         $data['level'] = 2;
         $data['level_col_data'] =['Requested','Delivery'];
@@ -345,7 +346,8 @@ class ReportsController extends Controller
     public function houseWisePerformance(Request $request){
         $data['ajaxUrl'] = URL::to('db-wise-performance-search');
         $data['searching_options'] = 'grid.search_elements_all';
-        $data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
+        //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
+        $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange'));
         $memo = repoStructure();
         $data['level'] = 3;
         $data['level_col_data'] =['Target','Sales','Ach%'];
@@ -385,5 +387,21 @@ class ReportsController extends Controller
         return view('reports.db_wise_performance_ajax',$data);
     }
 
+    public function routeWisePerformenceByCategory(){
+        $data['ajaxUrl'] = URL::to('route-wise-performence-by-category-ajax');
+        $data['searching_options'] = 'grid.search_elements_all';
+        //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
+        $data['searchAreaOption'] = searchAreaOption(array('show','month'));
+        $memo = repoStructure();
+        $data['memo_structure']= $memo;
+        $data['level'] = 1;
+        $data['level_col_data'] =[];
+        return view('reports.house_stock',$data);
+    }
+
+    public function routeWisePerformenceByCategoryAjax(Request $request)
+    {
+
+    }
 
 }

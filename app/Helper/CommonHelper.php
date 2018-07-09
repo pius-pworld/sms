@@ -303,4 +303,17 @@ if(!function_exists('repoStructure')){
     }
 }
 
+
+if(!function_exists('searchAreaOption')){
+    function searchAreaOption($data = array()){
+        $options = array('zone'=>1,'region'=>1,'territory'=>1,'house'=>1,'route'=>1,'category'=>1,'brand'=>1,'sku'=>1,'month'=>1,'daterange'=>1);
+        foreach($data as $val)
+        {
+            unset($options[$val]);
+        }
+        $options['show'] = (in_array('show',$data)?1:0);
+        return $options;
+    }
+}
+
 ?>
