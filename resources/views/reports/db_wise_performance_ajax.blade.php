@@ -43,14 +43,12 @@
     </tr>
     </thead>
     <tbody>
-    @if(isset($house_lifting_list) && count($house_lifting_list) > 0)
-        @foreach($house_lifting_list as $house_key=> $house_info)
+    @if(isset($house_wise_performance) && count($house_wise_performance) > 0)
+        @foreach($house_wise_performance as $house_key=> $house_info)
             <tr>
                 <th>{{$house_key}}</th>
                 @foreach($house_info as $key => $value)
-                    @for($i=0;$i<$level;$i++)
-                        <td>{{$value[$i]}}</td>
-                    @endfor
+                        <td>{{$value}}</td>
                 @endforeach
             </tr>
         @endforeach

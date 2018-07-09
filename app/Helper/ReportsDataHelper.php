@@ -108,12 +108,39 @@ if(!function_exists('getHouseLifting')){
     }
 }
 
+if(!function_exists('achievement')){
+    function achievement($target,$sale){
+        return $target* $sale;
+    }
+}
+
 if(!function_exists('houseWisePerformance')){
     function houseWisePerformance($ids,$selected_memo){
+        $db_house_wise_performance=[];
         foreach ($ids as $house_key=>$house_value){
-           $selected_tso = \App\Models\Territorie::where('id',$house_value)->get()->toArray();
-        }
+           $house = \App\Models\DistributionHouse::where('id',$house_value)->first()->toArray();
+            $get_target = \App\Models\Target::where('target_type','house')->where('type_id',$house_value);
+            if($get_target->exists()){
+                $get_target= $get_target->first()->toArray();
+                $target_value=json_decode($get_target['base_value'],true);
+                foreach ($selected_memo as $cat_key=>$cat_val){
+                    $selected_skues=array_flatten($cat_val);
+                    $sku_target= [];
+                    foreach ($selected_skues as $key => $value){
+                        $sku_target[]=isset($target_value[$value]) ? $target_value[$value] : 0;
+                        $sku_target[]=2;
+                        $sku_target[]=achievement($target_value[$value],2);
+                    }
 
+                }
+            }else{
+                $sku_target=[
+                    0,0,0
+                ];
+            }
+            $db_house_wise_performance[$house['market_name']]=$sku_target;
+        }
+        return $db_house_wise_performance;
     }
 }
 
