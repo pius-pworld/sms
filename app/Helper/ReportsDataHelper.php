@@ -124,7 +124,7 @@ if(!function_exists('getHouseLifting')){
 
 if(!function_exists('achievement')){
     function achievement($target,$sale){
-        return $target > 0 ? number_format(((int)$sale/ $target) * 100,2,'.','')."%"  : 0;
+        return $target > 0 ? number_format(((int)$sale/ $target) * 100,2,'.','')  : 0;
     }
 }
 
@@ -175,18 +175,18 @@ if(!function_exists('get_sale_by_month_route')){
 }
 
 if(!function_exists('houseWisePerformance')){
-    function houseWisePerformance($ids,$selected_memo){
+    function houseWisePerformance($ids,$selected_memo,$month){
         $db_house_wise_performance=[];
         foreach ($ids as $house_key=>$house_value){
             $house = \App\Models\DistributionHouse::where('id',$house_value)->first()->toArray();
-            $get_target = \App\Models\Target::where('target_type','house')->where('type_id',$house_value)->first();
+            $get_target = \App\Models\Target::where('target_type','house')->where('type_id',$house_value)->where('target_month',isset($month[0]) ? $month[0]: '')->first();
             $sku_target = [];
             foreach ($selected_memo as $cat_key=>$cat_val) {
                 $selected_skues = array_flatten($cat_val);
                 $target_value = json_decode($get_target['base_value'], true);
                     foreach ($selected_skues as $key => $value) {
                         if(!empty($get_target)){
-                            $cumulative_sale= get_sale_by_month_house($house_value,$value,'January-2018');
+                            $cumulative_sale= get_sale_by_month_house($house_value,$value,isset($month[0]) ? $month[0]: '');
                             $sku_target[] = [
                                 isset($target_value[$value]) ? $target_value[$value] : 0,
                                 $cumulative_sale,
@@ -210,17 +210,17 @@ if(!function_exists('houseWisePerformance')){
 }
 
 if(!function_exists('routeWisePerformance')){
-    function routeWisePerformance($ids,$selected_memo){
+    function routeWisePerformance($ids,$selected_memo,$month){
         $route_wise_performance=[];
         foreach ($ids as $route_key=>$route_value){
-            $get_target = \App\Models\Target::where('target_type','area')->where('type_id',$route_value['id'])->first();
+            $get_target = \App\Models\Target::where('target_type','area')->where('type_id',$route_value['id'])->where('target_month',isset($month[0]) ? $month[0]: '')->first();
             $sku_target = [];
             foreach ($selected_memo as $cat_key=>$cat_val) {
                 $selected_skues = array_flatten($cat_val);
                 $target_value = json_decode($get_target['base_value'], true);
                 foreach ($selected_skues as $key => $value) {
                     if(!empty($get_target)){
-                        $cumulative_sale= get_sale_by_month_route($route_value['id'],$value,'January-2018');
+                        $cumulative_sale= get_sale_by_month_route($route_value['id'],$value,isset($month[0]) ? $month[0]: '');
                         $sku_target[] = [
                             isset($target_value[$value]) ? $target_value[$value] : 0,
                             $cumulative_sale,

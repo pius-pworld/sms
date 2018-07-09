@@ -347,7 +347,7 @@ class ReportsController extends Controller
         $data['ajaxUrl'] = URL::to('db-wise-performance-search');
         $data['searching_options'] = 'grid.search_elements_all';
         //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
-        $data['searchAreaOption'] = searchAreaOption(array('show','month','route','daterange'));
+        $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange'));
         $memo = repoStructure();
         $data['level'] = 3;
         $data['level_col_data'] =['Target','Sales','Ach%'];
@@ -378,10 +378,11 @@ class ReportsController extends Controller
         $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
         $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
         $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
+        $selected_months=array_key_exists('month',$request_data) ? $request_data['month'] : [];
         $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
         $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
         $selected_houses =array_filter($selected_houses);
-        $data['house_wise_performance'] = houseWisePerformance($selected_houses, $data['memo_structure']);
+        $data['house_wise_performance'] = houseWisePerformance($selected_houses, $data['memo_structure'],$selected_months);
 
 
         return view('reports.db_wise_performance_ajax',$data);
@@ -391,7 +392,7 @@ class ReportsController extends Controller
         $data['ajaxUrl'] = URL::to('route-wise-performence-by-category-ajax');
         $data['searching_options'] = 'grid.search_elements_all';
         //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
-        $data['searchAreaOption'] = searchAreaOption(array('show','month','daterange'));
+        $data['searchAreaOption'] = searchAreaOption(array('show','daterange'));
         $memo = repoStructure();
         $data['memo_structure']= $memo;
         $data['level'] = 3;
@@ -423,6 +424,7 @@ class ReportsController extends Controller
         $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
         $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
         $route_ids=array_key_exists('aso_id',$request_data) ? $request_data['aso_id'] : [];
+        $selected_months=array_key_exists('month',$request_data) ? $request_data['month'] : [];
         if(count($route_ids) == 0 ){
             $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
             $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
@@ -431,7 +433,7 @@ class ReportsController extends Controller
         }else{
             $selected_route=getRouteInfoByAso($route_ids);
         }
-        $data['route_wise_performance'] = routeWisePerformance($selected_route, $data['memo_structure']);
+        $data['route_wise_performance'] = routeWisePerformance($selected_route, $data['memo_structure'],$selected_months);
 
         return view('reports.route_wise_performence_by_category_ajax',$data);
 

@@ -50,13 +50,13 @@
     @if(isset($searchAreaOption['month']) && $searchAreaOption['month'] == 1)
         <div class="col-lg-4 form-group">
             <label>Month</label>
-            <input type="text" name="month" placeholder="Month" value="" class="form-control user-error monthpicker" aria-invalid="true">
+            <input type="text" name="month[]" placeholder="Month" value="" class="form-control user-error monthpicker" aria-invalid="true">
         </div>
     @endif
     @if(isset($searchAreaOption['daterange']) && $searchAreaOption['daterange'] == 1)
         <div class="col-lg-4 form-group">
             <label>Date Range</label>
-            <input type="text" name="created_at" placeholder="ASO Name" value="" class="form-control user-error date_range" aria-invalid="true">
+            <input type="text" name="created_at[]" placeholder="ASO Name" value="" class="form-control user-error date_range" aria-invalid="true">
         </div>
     @endif
 
