@@ -385,5 +385,20 @@ class ReportsController extends Controller
         return view('reports.db_wise_performance_ajax',$data);
     }
 
+    public function routeWisePerformenceByCategory(){
+        $data['ajaxUrl'] = URL::to('route-wise-performence-by-category-ajax');
+        $data['searching_options'] = 'grid.search_elements_all';
+        $data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
+        $memo = repoStructure();
+        $data['memo_structure']= $memo;
+        $data['level'] = 1;
+        $data['level_col_data'] =[];
+        return view('reports.house_stock',$data);
+    }
+
+    public function routeWisePerformenceByCategoryAjax(Request $request)
+    {
+
+    }
 
 }
