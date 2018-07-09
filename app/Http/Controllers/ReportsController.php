@@ -347,7 +347,7 @@ class ReportsController extends Controller
         $data['ajaxUrl'] = URL::to('db-wise-performance-search');
         $data['searching_options'] = 'grid.search_elements_all';
         //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
-        $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange'));
+        $data['searchAreaOption'] = searchAreaOption(array('show','month','route','daterange'));
         $memo = repoStructure();
         $data['level'] = 3;
         $data['level_col_data'] =['Target','Sales','Ach%'];
