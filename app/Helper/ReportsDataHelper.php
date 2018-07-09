@@ -47,6 +47,20 @@ if(!function_exists('getHouseStockInfo')){
     }
 }
 
+if(!function_exists('getRouteInfoByHouse')){
+    function getRouteInfoByHouse($house_ids){
+        $data = \App\Models\User::where('user_type','area')->whereIn('distribution_house_id',$house_ids)->get()->toArray();
+        return $data;
+    }
+}
+
+if(!function_exists('getRouteInfoByAso')){
+    function getRouteInfoByAso($route_ids){
+        $data = \App\Models\User::where('user_type','area')->whereIn('id',$route_ids)->get()->toArray();
+        return $data;
+    }
+}
+
 if(!function_exists('count_sku')){
     function count_sku(array $skues){
         $count=0;
@@ -114,8 +128,8 @@ if(!function_exists('achievement')){
     }
 }
 
-if(!function_exists('get_sale_by_month')){
-      function get_sale_by_month($db_id,$sku_name,$month){
+if(!function_exists('get_sale_by_month_house')){
+      function get_sale_by_month_house($db_id,$sku_name,$month){
           $date = date_parse($month);
 
           $data =  DB::table('sales')
@@ -123,6 +137,7 @@ if(!function_exists('get_sale_by_month')){
                   ->join('sale_details','sales_id','=','sales.id')
                   ->where('sale_details.short_name',$sku_name)
                   ->where('sales.dbid',$db_id)
+                  ->where('sales.sale_type','Secondary')
                   ->whereYear('sales.order_date',$date['year'])
                   ->whereMonth('sales.order_date',$date['month'])
           ->get()->toArray();
@@ -134,6 +149,29 @@ if(!function_exists('get_sale_by_month')){
           }
           return $count;
       }
+}
+
+if(!function_exists('get_sale_by_month_route')){
+    function get_sale_by_month_route($aso_id,$sku_name,$month){
+        $date = date_parse($month);
+
+        $data =  DB::table('sales')
+            ->select('sales.id','sale_details.quantity')
+            ->join('sale_details','sales_id','=','sales.id')
+            ->where('sale_details.short_name',$sku_name)
+            ->where('sales.aso_id',$aso_id)
+            ->where('sales.sale_type','Secondary')
+            ->whereYear('sales.order_date',$date['year'])
+            ->whereMonth('sales.order_date',$date['month'])
+            ->get()->toArray();
+        $count =0 ;
+        if(count($data) > 0){
+            foreach ($data as $val){
+                $count += (int) $val->quantity;
+            }
+        }
+        return $count;
+    }
 }
 
 if(!function_exists('houseWisePerformance')){
@@ -148,7 +186,7 @@ if(!function_exists('houseWisePerformance')){
                 $target_value = json_decode($get_target['base_value'], true);
                     foreach ($selected_skues as $key => $value) {
                         if(!empty($get_target)){
-                            $cumulative_sale= get_sale_by_month($house_value,$value,'January-2018');
+                            $cumulative_sale= get_sale_by_month_house($house_value,$value,'January-2018');
                             $sku_target[] = [
                                 isset($target_value[$value]) ? $target_value[$value] : 0,
                                 $cumulative_sale,
@@ -168,6 +206,40 @@ if(!function_exists('houseWisePerformance')){
             $db_house_wise_performance[$house['market_name']]=$sku_target;
         }
         return $db_house_wise_performance;
+    }
+}
+
+if(!function_exists('routeWisePerformance')){
+    function routeWisePerformance($ids,$selected_memo){
+        $route_wise_performance=[];
+        foreach ($ids as $route_key=>$route_value){
+            $get_target = \App\Models\Target::where('target_type','area')->where('type_id',$route_value['id'])->first();
+            $sku_target = [];
+            foreach ($selected_memo as $cat_key=>$cat_val) {
+                $selected_skues = array_flatten($cat_val);
+                $target_value = json_decode($get_target['base_value'], true);
+                foreach ($selected_skues as $key => $value) {
+                    if(!empty($get_target)){
+                        $cumulative_sale= get_sale_by_month_route($route_value['id'],$value,'January-2018');
+                        $sku_target[] = [
+                            isset($target_value[$value]) ? $target_value[$value] : 0,
+                            $cumulative_sale,
+                            achievement($target_value[$value],$cumulative_sale)
+                        ];
+                    }
+                    else{
+                        $sku_target[] = [
+                            0, 0, 0
+                        ];
+                    }
+
+                }
+
+            }
+
+            $route_wise_performance[$route_value['name']]=$sku_target;
+        }
+        return $route_wise_performance;
     }
 }
 

@@ -391,16 +391,49 @@ class ReportsController extends Controller
         $data['ajaxUrl'] = URL::to('route-wise-performence-by-category-ajax');
         $data['searching_options'] = 'grid.search_elements_all';
         //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
-        $data['searchAreaOption'] = searchAreaOption(array('show','month'));
+        $data['searchAreaOption'] = searchAreaOption(array('show','month','daterange'));
         $memo = repoStructure();
         $data['memo_structure']= $memo;
-        $data['level'] = 1;
-        $data['level_col_data'] =[];
-        return view('reports.house_stock',$data);
+        $data['level'] = 3;
+        $data['level_col_data'] =['Target','Sale','Ach%'];
+        return view('reports.route_wise_performence_by_category',$data);
     }
 
     public function routeWisePerformenceByCategoryAjax(Request $request)
     {
+        $data['ajaxUrl'] = URL::to('route-wise-performence-by-category-ajax');
+        $data['searching_options'] = 'grid.search_elements_all';
+
+        //request data
+        $post= $request->all();
+        unset($post['_token']);
+        $request_data = filter_array($post);
+
+        //memeo structure
+        $categorie_ids =array_key_exists('category_id',$request_data) ? $request_data['category_id'] : [];
+        $brand_ids =array_key_exists('brands_id',$request_data) ? $request_data['brands_id'] : [];
+        $sku_ids =array_key_exists('skues_id',$request_data) ? $request_data['skues_id'] : [];
+
+        $data['memo_structure']= repoStructure($categorie_ids,$brand_ids,$sku_ids);
+        $data['level'] = 3;
+        $data['level_col_data'] =['Target','Sales','Ach%'];
+
+        $zone_ids=array_key_exists('zones_id',$request_data) ? $request_data['zones_id'] : [];
+        $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
+        $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
+        $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
+        $route_ids=array_key_exists('aso_id',$request_data) ? $request_data['aso_id'] : [];
+        if(count($route_ids) == 0 ){
+            $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+            $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
+            $selected_houses =array_filter($selected_houses);
+            $selected_route=getRouteInfoByHouse($selected_houses);
+        }else{
+            $selected_route=getRouteInfoByAso($route_ids);
+        }
+        $data['route_wise_performance'] = routeWisePerformance($selected_route, $data['memo_structure']);
+
+        return view('reports.route_wise_performence_by_category_ajax',$data);
 
     }
 

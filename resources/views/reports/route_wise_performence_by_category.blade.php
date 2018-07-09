@@ -31,7 +31,7 @@
                         </span>
                     </div>
                     <div class="box-body showSearchDataUnique" style="overflow: scroll;">
-                        @include('reports.house_stock_ajax')
+                        @include('reports.route_wise_performence_by_category_ajax')
                     </div>
 
 
