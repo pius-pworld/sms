@@ -252,7 +252,7 @@ class ReportsController extends Controller
     public function houseStock(Request $request){
         $data['ajaxUrl'] = URL::to('house-stock-search');
         $data['searching_options'] = 'grid.search_elements_all';
-        $data['searchAreaShow'] = 1;
+        $data['searchAreaOption'] = array('show'=>1,'daterange'=>1);
         $memo = repoStructure();
         $data['memo_structure']= $memo;
         $data['level'] = 1;
