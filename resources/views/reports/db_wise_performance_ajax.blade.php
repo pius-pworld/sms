@@ -1,4 +1,4 @@
-<table border="1">
+<table id="dataTableId" class="table table-bordered table-striped dataTable no-footer">
     <thead>
     <tr>
         <th rowspan="4" style="vertical-align: middle">House Name</th>

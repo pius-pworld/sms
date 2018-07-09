@@ -142,6 +142,9 @@
         border-color: #C9302C !important;
     }
 
+    thead th{
+        background: #ccc;
+    }
 
     tfoot {
         display: table-header-group;

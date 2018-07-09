@@ -1,4 +1,9 @@
-<table border="1">
+<div>
+    Route : <br/>
+    Category : <br/>
+    Month : <br/><br/>
+</div>
+<table id="dataTableId" class="table table-bordered table-striped dataTable no-footer">
     <thead>
     <tr>
         <th rowspan="4" style="vertical-align: middle">Route Name</th>
