@@ -27,13 +27,11 @@
                                     <div style="border-bottom: 1px solid #ccc">
                                         <h3>{{$orders_info->point_name.' - '.$orders_info->market_name}}</h3>
                                         <h5>House Phone : {{$orders_info->dh_phone}}</h5>
-                                        <h5>Requester Name : {{$orders_info->requester_name}}</h5>
-                                        <h5>Requester Phone : {{$orders_info->requester_phone}}</h5>
+                                        <h5>ASO Name : {{$orders_info->requester_name}}</h5>
+                                        <h5>SO Phone : {{$orders_info->requester_phone}}</h5>
                                         <h5 style="overflow: hidden;">
-                                            <span style="float: left;">Requester Date : {{$orders_info->order_date}}</span>
-                                            <span style="float: right; color: #0000F0; font-weight: bold;">&nbsp;
-                                                Current Balance : <span class="current_balance">{{$orders_info->current_balance}}</span>
-                                            </span>
+                                            <span style="float: left;">Request Date : {{$orders_info->order_date}}</span>
+
                                         </h5>
                                     </div>
                                 </div>

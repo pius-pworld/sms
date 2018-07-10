@@ -6,12 +6,12 @@
 
         <section class="content-header">
             <h1>
-                Ordering Brand And Skue
+                Ordering Brand And SKU
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
                 <li><a href="#">Ordering</a></li>
-                <li class="active">Skue</li>
+                <li class="active">SKU</li>
             </ol>
         </section>
 

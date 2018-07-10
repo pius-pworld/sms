@@ -27,7 +27,7 @@
                             </button>
                         </span>
                     </div>
-                    <div class="box-body showSearchDataUnique">
+                    <div class="box-body showSearchDataUnique" style="overflow: scroll;">
                         @include('reports.sales_list_ajax')
                     </div>
 

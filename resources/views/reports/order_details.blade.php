@@ -27,13 +27,13 @@
                                     <div style="border-bottom: 1px solid #ccc">
                                         <h3>{{$orders_info->point_name.' - '.$orders_info->market_name}}</h3>
                                         <h5>House Phone : {{$orders_info->dh_phone}}</h5>
-                                        <h5>Requester Name : {{$orders_info->requester_name}}</h5>
-                                        <h5>Requester Phone : {{$orders_info->requester_phone}}</h5>
+                                        <h5>ASO/SO Name : {{$orders_info->requester_name}}</h5>
+                                        <h5>ASO/SO Phone : {{$orders_info->requester_phone}}</h5>
                                         <h5 style="overflow: hidden;">
-                                            <span style="float: left;">Requester Date : {{$orders_info->order_date}}</span>
+                                            <span style="float: left;">Request Date : {{$orders_info->order_date}}</span>
                                             <span style="float: right; color: #0000F0; font-weight: bold;">
-                                                Deposited Amount : <span>{{$orders_info->order_da}}</span>&nbsp;&nbsp;
-                                                Current Balance : <span class="current_balance">{{$orders_info->current_balance}}</span>
+                                                Deposited Amount : <span>{{number_format($orders_info->order_da,2)}}</span>&nbsp;&nbsp;
+                                                Current Balance : <span class="current_balance">{{number_format($orders_info->current_balance,2)}}</span>
                                             </span>
                                         </h5>
                                     </div>
@@ -84,8 +84,8 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <th colspan="2" style="text-align: center">Product Details</th>
-                                        <th>Request Quantity</th>
-                                        <th>Order Quantity</th>
+                                        <th>Order Qty</th>
+                                        <th>Sale Qty</th>
                                         <th style="text-align: right">Rate</th>
                                         <th style="text-align: right">Sub Total</th>
                                     </thead>
@@ -136,7 +136,7 @@
                                             <th class="total_order_quantity">{{$orders_info->order_total}}</th>
                                             <th>&nbsp;</th>
                                             <th class="grand_total" style="text-align: right">
-                                                {{$grand_total}}
+                                                {{number_format($grand_total,2)}}
                                             </th>
                                         </tr>
                                     </tbody>

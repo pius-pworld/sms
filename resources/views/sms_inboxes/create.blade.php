@@ -7,7 +7,7 @@
         <div class="panel-heading clearfix">
             
             <span class="pull-left">
-                <h4 class="mt-5 mb-5">Create New Sms Inbox</h4>
+                <h4 class="mt-5 mb-5">Create New SMS Inbox</h4>
             </span>
 
             <div class="btn-group btn-group-sm pull-right" role="group">
