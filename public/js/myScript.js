@@ -42,6 +42,15 @@ $(document).ready(function () {
         "showDropdowns": true,
         "alwaysShowCalendars": true
     });
+
+    $(".date_range_converted").daterangepicker({
+        "locale":{
+            format:"YYYY-MM-DD"
+        },
+        "autoApply": true,
+        "showDropdowns": true,
+        "alwaysShowCalendars": true
+    });
 });
 
 function confirmation_alert(targetUrl) {

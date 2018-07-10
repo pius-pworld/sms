@@ -87,6 +87,11 @@ Route::post('db-wise-performance-search','ReportsController@houseWisePerformance
 Route::get('route-wise-performence-by-category','ReportsController@routeWisePerformenceByCategory');
 Route::post('route-wise-performence-by-category-ajax','ReportsController@routeWisePerformenceByCategoryAjax');
 
+Route::get('strike-rate','ReportsController@strikeRateByCategory');
+Route::post('strike-rate-search','ReportsController@strikeRateByCategoryAjax');
+
+
+
 
 /* End Report routings */
 

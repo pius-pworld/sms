@@ -243,5 +243,121 @@ if(!function_exists('routeWisePerformance')){
     }
 }
 
+if(!function_exists('routeWiseStrikeRate')){
+    function routeWiseStrikeRate($ids,$selected_memo,$date_range){
+        $route_wise_strike_rate=[];
+        foreach ($ids as $route_key=>$route_value){
+            $data = DB::table('order_details')
+                ->select('skues.sku_name','order_details.short_name',DB::raw('SUM(orders.total_outlet) as total_outlet'),DB::raw('SUM(orders.visited_outlet) as visited_outlet'),'orders.total_no_of_memo',DB::raw('SUM(order_details.quantity) as order_quantity'),DB::raw('SUM(sale_details.quantity) as  sale_quantity'),DB::raw('SUM(order_details.no_of_memo) as  total_indi_no_of_memo'))
+                ->leftJoin('orders','orders.id','=','order_details.orders_id')
+                ->leftJoin('sales',function($join){
+                    $join->on('sales.aso_id','=','orders.aso_id')
+                        ->on('sales.order_date','=','orders.order_date');
+                })
+                ->leftJoin('sale_details',function ($join){
+                    $join->on('sale_details.sales_id','=','sales.id')
+                        ->on('sale_details.short_name','=','order_details.short_name');
+                })
+                ->leftJoin('skues','skues.short_name','=','order_details.short_name')
+                ->where('orders.order_type','Secondary')
+                ->where('orders.aso_id',$route_value['id'])
+                ->whereBetween('orders.order_date',array_map('trim', explode(" - ",$date_range[0])))
+                ->groupBy('order_details.short_name')
+                ->orderBy('orders.id', 'DESC');
+             $data=$data->get()->toArray();
+             $sku_gen_value=[];
+             $sku_gen_additional=[];
+             foreach ($selected_memo as $cat_key=>$cat_val) {
+                 $selected_skues = array_flatten($cat_val);
+                 foreach ($selected_skues as $key => $value) {
+                     $selected_value=array_search($value,array_column($data,'short_name'));
+                     if($selected_value!=false){
+                         $sku_gen_value[]=[
+                             productivity($data[$selected_value]->total_indi_no_of_memo,$data[$selected_value]->total_no_of_memo),
+                             avg_per_memo(array_sum (array_column($data,'total_indi_no_of_memo')),$data[$selected_value]->total_no_of_memo),
+                             volume_per_memo($data[$selected_value]->order_quantity,$data[$selected_value]->total_indi_no_of_memo),
+                             protfolio_volume($data[$selected_value]->order_quantity,$data[$selected_value]->total_no_of_memo),
+                             bounce_call($data[$selected_value]->order_quantity,$data[$selected_value]->sale_quantity)
+                         ];
+                     }else{
+                         $sku_gen_value[]=[0,0,0,0,0,0];
+                     }
+
+                 }
+             }
+            $route_wise_strike_rate[$route_value['name']]['data']= $sku_gen_value;
+             if(count($data) > 0){
+                 $route_wise_strike_rate[$route_value['name']]['additional']=[
+                     $data[count($data)-1]->total_outlet,
+                     $data[count($data)-1]->visited_outlet,
+                     visited_outlet_per($data[count($data)-1]->visited_outlet,$data[$selected_value]->total_outlet),
+                     $data[count($data)-1]->total_no_of_memo,
+                     call_productivity($data[count($data)-1]->total_no_of_memo,$data[$selected_value]->visited_outlet)
+                 ];
+             }
+             else{
+                 $route_wise_strike_rate[$route_value['name']]['additional']=[
+                    0,0,0,0,0
+                 ];
+             }
+
+
+        }
+
+        return $route_wise_strike_rate;
+
+    }
+}
+
+if(!function_exists('visited_outlet_per')){
+    function visited_outlet_per($visited_outlet,$total_outlet){
+        return ($visited_outlet/$total_outlet)*100;
+    }
+}
+
+if(!function_exists('call_productivity')){
+    function call_productivity($successful_memo,$visited_outlet){
+        return ($successful_memo/$visited_outlet) * 100;
+    }
+}
+
+if(!function_exists('productivity')){
+    function productivity($indi_sku_memo,$successfull_memo){
+        return number_format(($indi_sku_memo/$successfull_memo)*100,2,'.','');
+    }
+}
+
+if(!function_exists('avg_per_memo')){
+    function avg_per_memo($total_indi_memo,$successfull_memo){
+        return number_format(($total_indi_memo/$successfull_memo)*100,2,'.','');
+    }
+}
+if(!function_exists('volume_per_memo')){
+    function volume_per_memo($sku_quantity,$sku_memo_quantity){
+        if($sku_memo_quantity > 0){
+            return number_format($sku_quantity/$sku_memo_quantity,2,'.','');
+        }
+        else{
+            return 0;
+        }
+    }
+}
+
+if(!function_exists('protfolio_volume')){
+    function protfolio_volume($order_quantity,$total_no_succ_memo){
+        return number_format( $order_quantity/$total_no_succ_memo,2,'.','');
+    }
+}
+
+if(!function_exists('bounce_call')){
+    function bounce_call($total_order_qty,$total_sal_qty){
+        if($total_sal_qty > 0){
+            return number_format( (($total_order_qty-$total_sal_qty)/$total_order_qty)*100,2,'.','');
+        }else{
+            return 0;
+        }
+    }
+}
+
 
 
