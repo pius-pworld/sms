@@ -92,6 +92,11 @@ Route::post('strike-rate-search','ReportsController@strikeRateByCategoryAjax');
 
 
 
+Route::get('sms-outboxes','SmsOutboxesController@smsOutboxes');
+Route::post('sms-outboxes-ajax','SmsOutboxesController@smsOutboxesAjax');
+
+
+
 
 /* End Report routings */
 

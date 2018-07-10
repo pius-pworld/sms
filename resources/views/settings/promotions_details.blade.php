@@ -25,11 +25,19 @@
                     </div>
                     <div class="box-body">
                         <div class="col-xs-6">
-                            <div style="text-align: center; font-weight: bold;">Package Details</div>
+                            <div style="text-align: center; font-weight: bold; border-bottom: 1px solid #ccc;">Package Details</div>
                             <table id="sort" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Brand</th>
+                                        <th>SKU</th>
+                                        <th>Quantity</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                     @foreach($package_details as $skue)
                                         <tr>
+                                            <td>{{$skue->brand_name}}</td>
                                             <td>{{$skue->sku_name}}</td>
                                             <td>{{$ddetails[$skue->id]}}</td>
                                         </tr>
@@ -38,11 +46,19 @@
                             </table>
                         </div>
                         <div class="col-xs-6">
-                            <div style="text-align: center; font-weight: bold;">Free Items</div>
+                            <div style="text-align: center; font-weight: bold; border-bottom: 1px solid #ccc;">Free Items</div>
                             <table id="sort" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Brand</th>
+                                    <th>SKU</th>
+                                    <th>Quantity</th>
+                                </tr>
+                                </thead>
                                 <tbody>
                                 @foreach($items_details as $skue)
                                     <tr>
+                                        <td>{{$skue->brand_name}}</td>
                                         <td>{{$skue->sku_name}}</td>
                                         <td>{{$items[$skue->id]}}</td>
                                     </tr>
