@@ -360,4 +360,66 @@ if(!function_exists('bounce_call')){
 }
 
 
+if(!function_exists('monthly_sale_recon_by_house')){
+    function monthly_sale_recon_by_house($ids,$selected_memo,$month){
+
+
+    }
+}
+
+function get_order_sale($route_id,$date_range){
+    $data = DB::table('order_details')
+        ->select('orders.order_date as order_date','skues.sku_name','order_details.short_name','orders.total_outlet','order_details.quantity as order_quantity','sale_details.quantity as  sale_quantity')
+        ->leftJoin('orders','orders.id','=','order_details.orders_id')
+        ->leftJoin('sales',function($join){
+            $join->on('sales.aso_id','=','orders.aso_id')
+                ->on('sales.order_date','=','orders.order_date');
+        })
+        ->leftJoin('sale_details',function ($join){
+            $join->on('sale_details.sales_id','=','sales.id')
+                ->on('sale_details.short_name','=','order_details.short_name');
+        })
+        ->leftJoin('skues','skues.short_name','=','order_details.short_name')
+        ->where('orders.order_type','Secondary')
+        ->where('orders.aso_id',$route_id)
+        ->whereBetween('orders.order_date',array_map('trim', explode(" - ",$date_range[0])))
+        ->orderBy('orders.id', 'DESC');
+    return $data->get()->toArray();
+}
+if(!function_exists('dailySaleSummaryByMonth')){
+    function dailySaleSummaryByMonth($ids,$selected_memo,$month,$selected_date_range){
+        $route_wise_sale_summary=[];
+        foreach ($ids as $route_key=>$route_value){
+            $get_target = \App\Models\Target::where('target_type','area')->where('type_id',$route_value['id'])->where('target_month',isset($month[0]) ? $month[0]: '')->first();
+            $order_sale_data=get_order_sale($route_value['id'],$selected_date_range);
+            $sku_target = [];
+            foreach ($selected_memo as $cat_key=>$cat_val) {
+                $selected_skues = array_flatten($cat_val);
+                $target_value = json_decode($get_target['base_value'], true);
+                foreach ($selected_skues as $key => $value) {
+                    if(!empty($get_target)){
+                        $cumulative_sale= get_sale_by_month_route($route_value['id'],$value,isset($month[0]) ? $month[0]: '');
+                        $sku_target[] = [
+                            isset($target_value[$value]) ? $target_value[$value] : 0,
+                            $cumulative_sale,
+                            achievement($target_value[$value],$cumulative_sale)
+                        ];
+                    }
+                    else{
+                        $sku_target[] = [
+                            0, 0, 0
+                        ];
+                    }
+
+                }
+
+            }
+
+            $route_wise_sale_summary[$route_value['name']]=$sku_target;
+        }
+        return $route_wise_sale_summary;
+    }
+}
+
+
 
