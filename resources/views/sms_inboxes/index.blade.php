@@ -29,12 +29,12 @@
 	<section class="content-header">
       <h1>
         Data Tables
-        <small>Sms Inboxes</small>
+        <small>SMS Inboxes</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Sms Inboxes</a></li>
-        <li class="active">Sms Inboxes</li>
+        <li><a href="#">SMS Inboxes</a></li>
+        <li class="active">SMS Inboxes</li>
       </ol>
     </section>
 	
@@ -44,7 +44,7 @@
         <div class="col-xs-12">
 			<div class="box">
 				<div class="box-header">
-					<h3 class="box-title">Sms Inboxes</h3>
+					<h3 class="box-title">SMS Inboxes</h3>
 				</div>
 				 <div class="btn-group btn-group-sm pull-right" role="group">
 					<a href="{{ route('sms_inboxes.sms_inbox.create') }}" class="btn btn-success" title="Create New Sms Inbox">
@@ -53,7 +53,7 @@
 				</div>
 				@if(count($smsInboxes) == 0)
 					<div class="text-center">
-						<h4>No Sms Inboxes Available!</h4>
+						<h4>No SMS Inboxes Available!</h4>
 					</div>
 				@else
 				<div class="box-body">
@@ -61,8 +61,8 @@
                     <thead>
                         <tr>
                             <th>Sender</th>
-                            <th>Sms Content</th>
-                            <th>Sms Status</th>
+                            <th>SMS Content</th>
+                            <th>SMS Status</th>
                             <th>Action</th>
                             <th>Process</th>
                         </tr>

@@ -32,12 +32,13 @@ class ReportsHelper
 //            $query->whereIn('orders_details.short_name',$searchValue);
             if($post['created_at'])
             {
-                $query->where('orders.created_at','>=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[0]))));
-                $query->where('orders.created_at','<=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[1]))));
+                $query->where('orders.order_date','>=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[0]))));
+                $query->where('orders.order_date','<=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[1]))));
             }
         }
 
         $result = $query->get();
+//        dd(DB::getQueryLog());
         return $result;
     }
 
@@ -50,7 +51,7 @@ class ReportsHelper
             $dateselect = explode(' - ', $post['created_at']);
         }
         $query = DB::table('sales');
-        $query->select('sales.*','distribution_houses.current_balance','orders.order_total');
+        $query->select('sales.*','distribution_houses.current_balance','orders.total_outlet','orders.visited_outlet','orders.total_no_of_memo','orders.order_total','orders.order_amount');
         $query->leftJoin('distribution_houses','distribution_houses.id','=','sales.dbid');
         $query->leftJoin('orders','orders.id','=','sales.order_id');
         if($type)
@@ -64,8 +65,8 @@ class ReportsHelper
 //            $query->whereIn('orders_details.short_name',$searchValue);
             if($post['created_at'])
             {
-                $query->where('sales.created_at','>=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[0]))));
-                $query->where('sales.created_at','<=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[1]))));
+                $query->where('sales.order_date','>=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[0]))));
+                $query->where('sales.order_date','<=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[1]))));
             }
         }
 

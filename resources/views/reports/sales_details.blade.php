@@ -27,13 +27,13 @@
                                     <div style="border-bottom: 1px solid #ccc">
                                         <h3>{{$sales_info->point_name.' - '.$sales_info->market_name}}</h3>
                                         <h5>House Phone : {{$sales_info->dh_phone}}</h5>
-                                        <h5>Requester Name : {{$sales_info->sender_name}}</h5>
-                                        <h5>Requester Phone : {{$sales_info->sender_phone}}</h5>
+                                        <h5>ASO/SO Name : {{$sales_info->sender_name}}</h5>
+                                        <h5>ASO/SO Phone : {{$sales_info->sender_phone}}</h5>
                                         <h5 style="overflow: hidden;">
-                                            <span style="float: left;">Requester Date : {{$sales_info->order_date}}</span>
-                                            <span style="float: right; color: #0000F0; font-weight: bold;">
-                                                Current Balance : <span class="current_balance">{{$sales_info->current_balance}}</span>
-                                            </span>
+                                            <span style="float: left;">Order Date : {{$sales_info->order_date}}</span>
+                                            {{--<span style="float: right; color: #0000F0; font-weight: bold;">--}}
+                                                {{--Current Balance : <span class="current_balance">{{number_format($sales_info->current_balance,2)}}</span>--}}
+                                            {{--</span>--}}
                                         </h5>
                                     </div>
                                 </div>
@@ -54,7 +54,7 @@
                                 <table class="table table-bordered">
                                     <thead>
                                     <th colspan="2" style="text-align: center">Product Details</th>
-                                    <th>Request Quantity</th>
+                                    <th>Order Quantity</th>
                                     <th>Sale Quantity</th>
                                     <th style="text-align: right">Rate</th>
                                     <th style="text-align: right">Sub Total</th>
@@ -92,8 +92,8 @@
                                                                 type="number"
                                                                 oldValue="'.floor($convertArrayOrder[$key]->quantity).'"
                                                                 value="'.floor($convertArrayOrder[$key]->quantity).'"></td>';
-                                            echo '<td style="text-align: right" class="price_rate">'.$convertArrayOrder[$key]->price.'</td>';
-                                            echo '<td style="text-align: right" class="sub_total">'.($convertArrayOrder[$key]->price*$convertArrayOrder[$key]->quantity).'</td>';
+                                            echo '<td style="text-align: right" class="price_rate">'.number_format($convertArrayOrder[$key]->price,2).'</td>';
+                                            echo '<td style="text-align: right" class="sub_total">'.number_format(($convertArrayOrder[$key]->price*$convertArrayOrder[$key]->quantity),2).'</td>';
                                             echo '</tr>';
                                             $sl++;
                                         }
@@ -106,7 +106,7 @@
                                         <th class="total_order_quantity">{{$sales_info->sale_total}}</th>
                                         <th>&nbsp;</th>
                                         <th class="grand_total" style="text-align: right">
-                                            {{$grand_total}}
+                                            {{number_format($grand_total,2)}}
                                         </th>
                                     </tr>
                                     </tbody>

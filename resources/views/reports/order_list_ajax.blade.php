@@ -5,6 +5,7 @@
         @if($type == 'primary')
             <th>ASM/RSM</th>
             <th>ASM/RSM Phone</th>
+            <th>Current Balance</th>
         @elseif($type == 'secondary')
             <th>ASO/SO</th>
             <th>ASO/SO Phone</th>
@@ -20,7 +21,7 @@
 
         <th>Total SKU Quantity</th>
         <th>Order Date</th>
-        <th>Current Balance</th>
+
         <th>Order Amount</th>
         <th>Status</th>
         <th>Action</th>
@@ -40,10 +41,12 @@
                 <td>{{(($order->total_no_of_memo/$order->visited_outlet)*100).'%'}}</td>
                 <td>{{number_format(($order->order_total/$order->total_no_of_memo), 2, '.', '')}}</td>
                 <td>{{($order->order_amount/$order->total_no_of_memo)}}</td>
+            @else
+                <td>{{$order->current_balance}}</td>
             @endif
             <td>{{$order->order_total}}</td>
-            <td>{{date('d-m-Y',strtotime($order->created_at))}}</td>
-            <td>{{$order->current_balance}}</td>
+            <td>{{date('d-m-Y',strtotime($order->order_date))}}</td>
+
             <td>{{$order->order_amount}}</td>
             <td>{{$order->order_status}}</td>
             <td>

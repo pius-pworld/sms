@@ -6,18 +6,19 @@
 
         <section class="content-header">
             <h1>
-                {{$pageTitle}}
+                SMS Outbox
             </h1>
             {!! $breadcrumb !!}
         </section>
 
         @include('grid.search_area_unique')
 
+
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header" style="overflow: hidden">
-                        <span class="box-title" style="float: left;">Sales List</span>
+                        <span class="box-title" style="float: left;">SMS Outbox</span>
                         <span class="advanchedSearchToggle" style="float: right;">
                             <button
                                     type="button"
@@ -28,7 +29,7 @@
                         </span>
                     </div>
                     <div class="box-body showSearchDataUnique" style="overflow: scroll;">
-                        @include('reports.sales_list_ajax')
+                        @include('reports.sms_outboxes_ajax')
                     </div>
 
 

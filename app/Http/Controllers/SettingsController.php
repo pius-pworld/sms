@@ -128,8 +128,14 @@ class SettingsController extends Controller
             $isku_id[] = $k;
         }
         //dd($isku_id);
-        $data['package_details'] = DB::table('skues')->whereIn('id', $psku_id)->get();
-        $data['items_details'] = DB::table('skues')->whereIn('id', $isku_id)->get();
+        $data['package_details'] = DB::table('skues')
+                                    ->select('skues.*','brands.brand_name')
+                                    ->leftJoin('brands','brands.id','=','skues.brands_id')
+                                    ->whereIn('skues.id', $psku_id)->get();
+        $data['items_details'] = DB::table('skues')
+                                ->select('skues.*','brands.brand_name')
+                                ->leftJoin('brands','brands.id','=','skues.brands_id')
+                                ->whereIn('skues.id', $isku_id)->get();
         //dd($psku_id);
         return view('settings.promotions_details',$data);
     }

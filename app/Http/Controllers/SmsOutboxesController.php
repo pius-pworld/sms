@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\SmsOutbox;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
+use DB;
 
 class SmsOutboxesController extends Controller
 {
@@ -11,7 +13,14 @@ class SmsOutboxesController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     *
      */
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        DB::enableQueryLog();
+    }
     public function index()
     {
         //
@@ -99,5 +108,29 @@ class SmsOutboxesController extends Controller
 
         SmsOutbox::Create($input_data);
 
+    }
+
+    public function smsOutboxes()
+    {
+        $data['searching_options'] = 'grid.search_elements_all';
+        $data['searchAreaOption'] = searchAreaOption(array('show','zone','region','territory','house','route','route','category','brand','sku','month'));
+        $data['ajaxUrl'] = URL::to('sms-outboxes-ajax');
+        $data['breadcrumb'] = breadcrumb(array('active'=>'SMS Outbox'));
+        $data['outboxes'] = DB::table('sms_outboxes')->where('created',date('Y-m-d'))->get();
+        return view('reports.sms_outboxes',$data);
+    }
+
+    public function smsOutboxesAjax(Request $request)
+    {
+        $post = $request->all();
+//        debug($post,1);
+        $dateselect = explode(' - ', $post['created_at'][0]);
+//        debug($dateselect,1);
+        $query = DB::table('sms_outboxes');
+        $query->where('created','>=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[0]))));
+        $query->where('created','<=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[1]))));
+        $data['outboxes'] = $query->get();
+//        dd(DB::getQueryLog());
+        return view('reports.sms_outboxes_ajax',$data);
     }
 }

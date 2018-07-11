@@ -99,6 +99,11 @@ Route::get('sale-summary-month','ReportsController@saleSummaryMonth');
 Route::post('sale-summary-month-search','ReportsController@saleSummaryMonthAjax');
 
 
+Route::get('sms-outboxes','SmsOutboxesController@smsOutboxes');
+Route::post('sms-outboxes-ajax','SmsOutboxesController@smsOutboxesAjax');
+
+
+
 
 /* End Report routings */
 

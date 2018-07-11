@@ -31,7 +31,8 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="#"><b>Globe</b>Soft Drinks Ltd.</a>
+        <img src="{{URL::to('public/dist/img/g-logo.png')}}"><br/>
+        <a href="#"><b>Globe</b> Soft Drinks Ltd.</a>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
