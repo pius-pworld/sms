@@ -91,6 +91,13 @@ Route::get('strike-rate','ReportsController@strikeRateByCategory');
 Route::post('strike-rate-search','ReportsController@strikeRateByCategoryAjax');
 
 
+Route::get('monthly-sale-reconc','ReportsController@monthlySaleReconcilation');
+Route::post('monthly-sale-reconc-search','ReportsController@monthlySaleReconcilationAjax');
+
+
+Route::get('sale-summary-month','ReportsController@saleSummaryMonth');
+Route::post('sale-summary-month-search','ReportsController@saleSummaryMonthAjax');
+
 
 Route::get('sms-outboxes','SmsOutboxesController@smsOutboxes');
 Route::post('sms-outboxes-ajax','SmsOutboxesController@smsOutboxesAjax');
