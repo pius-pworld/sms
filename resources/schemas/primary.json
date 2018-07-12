@@ -229,6 +229,8 @@
   },
   "required": [
     "asm_rsm_id",
+    "dbid",
+    "dt",
     "total",
     "da"
   ]

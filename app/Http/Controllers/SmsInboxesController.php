@@ -202,6 +202,9 @@ class SmsInboxesController extends Controller
             }
             if($type===PRIMARY){
                 $total = $total + (int)$value;
+                if($value > 0){
+                    $calculate_total_amount = $calculate_total_amount+($value*(int)get_house_price_by_sku($key));
+                }
             }
             if ($type === ORDER) {
                 $val = explode(',', $value);
@@ -330,33 +333,49 @@ class SmsInboxesController extends Controller
         $asm_rms_id = $data['asm_rsm_id'];
         $dbid= $data['dbid'];
         $order_date = $data['dt'];
-        $order_total_sku =  $data['total'];
+        $primary_order_total_sku =  $data['total'];
         $da=$data['da'];
-        unset($data['asm_rsm_id']);
-        unset($data['dbid']);
-        unset($data['dt']);
-        unset($data['total']);
-        unset($data['da']);
-        $total = $this->totalCheck($data,PRIMARY);
+        unset($data['asm_rsm_id'],$data['dbid'],$data['dt'],$data['total'],$data['da']);
+        $total = $this->totalCheck($data,PRIMARY,$primary_order_total);
+        $get_information=get_info_by_asm($asm_rms_id);
 
-        if ($total === (int)$order_total_sku) {
+        if(is_null($get_information)){
+            $primary_order_information['status'] = false;
+            $primary_order_information['message'] = "Invalid ASM/RSM Information!!";
+            return $primary_order_information;
+        }
+
+        if($get_information->distribution_house_id != $dbid ){
+            $primary_order_information['status'] = false;
+            $primary_order_information['message'] = "Invalid Distribution House Information !!";
+            return $primary_order_information;
+        }
+
+
+        if ($total === (int)$primary_order_total_sku) {
             $primary_order_information['order'] = [
                 'asm_rsm_id'=> $asm_rms_id,
                 'dbid'=>$dbid,
                 'order_date'=>$order_date,
-                'requester_name' => 'test',
-                'requester_phone' => 'testss',
+                'requester_name' => $get_information->name,
+                'requester_phone' => $get_information->mobile,
+                'dh_phone' => $get_information->dhname,
+                'dh_name' => $get_information->dhphone,
+                'tso_name' => $get_information->tsoname,
+                'tso_phone' => $get_information->tsophone,
                 'order_type'=>'Primary',
-                'order_total_sku' => $total,
+                'order_total_sku' => $primary_order_total_sku,
+                'order_amount'    => $primary_order_total,
                 'order_da'    =>$da,
                 'created_by' => Auth::Id()
             ];
-
+            $primary_order_information['status'] = true;
             return $primary_order_information;
         }
         else{
-
-            return false;
+            $primary_order_information['status'] = false;
+            $primary_order_information['message'] = "Invalid Primary Order Total SKU !!";
+            return $primary_order_information;
         }
 
     }
@@ -365,24 +384,31 @@ class SmsInboxesController extends Controller
         $aso_id = $data['asoid'];
         $order_date = $data['dt'];
         $route_name = $data['rt'];
-        unset($data['asoid']);
-        unset($data['dt']);
-        unset($data['rt']);
+        unset($data['asoid'],$data['dt'],$data['rt']);
+        $get_information=get_info_by_aso($aso_id);
+        if(is_null($get_information)){
+            $promotional_sale['status'] = false;
+            $promotional_sale['message'] = "Invalid ASO Information!!";
+            return $promotional_sale;
+        }
+        $promotional_sale=[];
         if(!empty($aso_id) && !empty($order_date) && !empty($route_name)){
             $promotional_sale['order'] = [
                 'aso_id'=> $aso_id,
-                'sale_date'=>$order_date,
-                'sender_name' => 'test',
-                'sender_phone' => 'testss',
-                'dh_phone' => 'asdsd',
-                'dh_name' => 'adsadsad',
-                'tso_name' => 'asdasd',
-                'tso_phone' => 'asdsadsd',
+                'dbid' => $get_information->distribution_house_id,
+                'order_date'=>$order_date,
+                'sale_date'=>date('Y-m-d'),
+                'sender_name' => $get_information->name,
+                'sender_phone' => $get_information->mobile,
+                'dh_phone' => $get_information->dhname,
+                'dh_name' => $get_information->dhphone,
+                'tso_name' => $get_information->tsoname,
+                'tso_phone' => $get_information->tsophone,
                 'sale_route' => $route_name,
                 'sale_type'=>'Promotional',
                 'created_by' => Auth::Id()
             ];
-
+            $promotional_sale['status'] = true;
             return $promotional_sale;
         }
        else{
@@ -506,12 +532,13 @@ class SmsInboxesController extends Controller
     private function processPrimary($id,$parseData){
         $primary_information = $this->preparePrimaryData($parseData['data']);
 
-        if ($primary_information != false) {
+        if (isset($primary_information['status']) && $primary_information['status']!= false) {
 
             foreach ($parseData['data'] as $key => $value){
                 $primary_information['order_details'][] =[
                     "short_name" => $key,
                     "quantity"   => (int)$value,
+                    "price"      => get_house_price_by_sku($key),
                     "created_by" => Auth::id()
                 ];
             }
@@ -520,28 +547,32 @@ class SmsInboxesController extends Controller
                 SmsInbox::find($id)->update(['sms_status' => 'Processed']);
 
                 return redirect()->route('sms_inboxes.sms_inbox.index')
-                    ->with('success_message', 'Order successfully placed!');
+                    ->with('success_message', 'Primary Order successfully placed!');
             }
         }
         else{
 
             return redirect()->route('sms_inboxes.sms_inbox.index')
-                ->with('error_message', 'Invalid order total!!');
+                ->with('error_message', isset($primary_information['message']) ? $primary_information['message'] : 'Invalid Primary Order!!');
         }
     }
 
     private function processPromotion($id,$parseData){
         $promotion_information = $this->preparePromotionData($parseData['data']);
 
-        if ($promotion_information != false) {
-
+        $promotion_information['order_details']=[];
+        if (isset($promotion_information['status']) && $promotion_information['status'] != false) {
             foreach ($parseData['data']['pdn'] as $key => $value){
-                $promotion_information['order_details'][] =[
-                    "short_name" => $value['short_name'],
-                    "quantity"   => (int)$value['quantity'],
-                    'no_of_memo' => (int)$value['no_of_memo'],
-                    "created_by" =>Auth::id()
-                ];
+                $package_details = get_package_by_name($value['short_name']);
+                $package_merge = promotion_package_merge($package_details['purchase'],$package_details['free'],$value['quantity']);
+                foreach ($package_merge $sku_key=>$sku_value){
+                    $promotion_information['order_details'][] =[
+                        "short_name" =>$key,
+                        "quantity"   => (int)$value,
+                        'no_of_memo' => (int)$value['no_of_memo'],
+                        "created_by" =>Auth::id()
+                    ];
+                }
             }
 
             if (Sale::insertSale($promotion_information['order'], $promotion_information['order_details'])) {
@@ -555,7 +586,7 @@ class SmsInboxesController extends Controller
         else{
 
             return redirect()->route('sms_inboxes.sms_inbox.index')
-                ->with('error_message', 'Invalid sell SMS!!');
+                ->with('error_message', isset($promotion_information['message']) ? $promotion_information['message'] : 'Invalid Promotinal Sale!!');
         }
     }
 

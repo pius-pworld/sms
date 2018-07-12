@@ -330,12 +330,36 @@ if(!function_exists('get_info_by_aso')){
     }
 }
 
+if(!function_exists('get_info_by_asm')){
+    function get_info_by_asm($id){
+        $data=DB::table('users')
+            ->select('users.name','users.mobile','users.distribution_house_id','distribution_houses.incharge_name as dhname','distribution_houses.incharge_phone as dhphone','territories.incharge_name as tsoname','territories.incharge_phone as tsophone')
+            ->join('territories','territories.id','=','users.territories_id')
+            ->join('distribution_houses','distribution_houses.id','users.distribution_house_id')
+            ->where('users.user_type','territory')
+            ->where('users.id',$id)
+            ->first();
+        return $data;
+    }
+}
+
 if(!function_exists('get_regular_price_by_sku')){
     function get_regular_price_by_sku($sku){
         $data = \App\Models\Skue::where('short_name',$sku)->first();
         if(!is_null($data)){
             $result = $data->toArray();
             return $result['price'];
+        }
+        return 0;
+    }
+}
+
+if(!function_exists('get_house_price_by_sku')){
+    function get_house_price_by_sku($sku){
+        $data = \App\Models\Skue::where('short_name',$sku)->first();
+        if(!is_null($data)){
+            $result = $data->toArray();
+            return $result['house_price'];
         }
         return 0;
     }
@@ -350,6 +374,33 @@ if(!function_exists('get_order_id_by_sale')){
         }
        return 0;
 
+    }
+}
+if(!function_exists('promotion_package_merge')){
+    function promotion_package_merge($a1,$a2,$package_qty){
+        $sums = array();
+        foreach (array_keys($a1 + $a2) as $key) {
+            $sums[$key] = (isset($a1[$key]) ? $a1[$key] : 0) + (isset($a2[$key]) ? $a2[$key] : 0);
+        }
+        $sums=array_map(function($el) use (&$package_qty) { return $el * $package_qty; }, $sums);
+        return $sums;
+
+
+    }
+}
+
+if(!function_exists('get_package_by_name')){
+    function get_package_by_name($package_name){
+        $package_details = DB::table('promotional_package')
+            ->select('promotional_package.package_details','promotional_package.package_free_item')
+            ->where('promotional_package.package_name',$package_name)
+            ->first();
+        $skues=[];
+        if(!is_null($package_details)){
+            $skues['purchase']=json_decode($package_details->package_details,true);
+            $skues['free']=json_decode($package_details->package_free_item,true);
+        }
+        return $skues;
     }
 }
 
