@@ -132,8 +132,8 @@
                                         <tr>
                                             <th style="text-align: right">Total</th>
                                             <th>&nbsp;</th>
-                                            <th class="total_quantity">{{$orders_info->order_total}}</th>
-                                            <th class="total_order_quantity">{{$orders_info->order_total}}</th>
+                                            <th class="total_quantity">{{$orders_info->order_total_sku}}</th>
+                                            <th class="total_order_quantity">{{$orders_info->order_total_sku}}</th>
                                             <th>&nbsp;</th>
                                             <th class="grand_total" style="text-align: right">
                                                 {{number_format($grand_total,2)}}

@@ -30,7 +30,12 @@ class Sale extends Model
      */
     protected $fillable = [
         'aso_id',
+        'dbid',
+        'asm_rsm_id',
+        'order_id',
+        'order_date',
         'sale_date',
+        'total_sale_amount',
         'sender_name',
         'sender_phone',
         'dh_phone',
@@ -38,7 +43,7 @@ class Sale extends Model
         'tso_name',
         'tso_phone',
         'sale_type',
-        'sale_total',
+        'sale_total_sku',
         'sale_route',
         'created_by'
     ];

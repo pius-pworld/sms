@@ -37,10 +37,10 @@
                 <td>{{$order->visited_outlet}}</td>
                 <td>{{(($order->visited_outlet/$order->total_outlet)*100).'%'}}</td>
                 <td>{{(($order->total_no_of_memo/$order->visited_outlet)*100).'%'}}</td>
-                <td>{{number_format(($order->order_total/$order->total_no_of_memo), 2, '.', '')}}</td>
+                <td>{{number_format(($order->order_total_sku/$order->total_no_of_memo), 2, '.', '')}}</td>
                 <td>{{($order->order_amount/$order->total_no_of_memo)}}</td>
             @endif
-            <td>{{$order->order_total}}</td>
+            <td>{{$order->order_total_sku}}</td>
             <td>{{date('d-m-Y',strtotime($order->created_at))}}</td>
             <td>{{$order->order_da}}</td>
             <td>{{$order->current_balance}}</td>

@@ -16,7 +16,7 @@
             <td>{{$sale->sender_phone}}</td>
             <td>{{$sale->dh_name}}</td>
             <td>{{$sale->sale_type}}</td>
-            <td>{{$sale->sale_total}}</td>
+            <td>{{$sale->sale_total_sku}}</td>
             <td>{{$sale->created_at}}</td>
         </tr>
     @endforeach

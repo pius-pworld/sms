@@ -316,4 +316,41 @@ if(!function_exists('searchAreaOption')){
     }
 }
 
+
+if(!function_exists('get_info_by_aso')){
+    function get_info_by_aso($id){
+        $data=DB::table('users')
+             ->select('users.name','users.mobile','users.distribution_house_id','distribution_houses.incharge_name as dhname','distribution_houses.incharge_phone as dhphone','territories.incharge_name as tsoname','territories.incharge_phone as tsophone')
+             ->join('territories','territories.id','=','users.territories_id')
+             ->join('distribution_houses','distribution_houses.id','users.distribution_house_id')
+             ->where('users.user_type','market')
+             ->where('users.id',$id)
+             ->first();
+        return $data;
+    }
+}
+
+if(!function_exists('get_regular_price_by_sku')){
+    function get_regular_price_by_sku($sku){
+        $data = \App\Models\Skue::where('short_name',$sku)->first();
+        if(!is_null($data)){
+            $result = $data->toArray();
+            return $result['price'];
+        }
+        return 0;
+    }
+}
+
+if(!function_exists('get_order_id_by_sale')){
+    function get_order_id_by_sale($aso_id,$order_date){
+        $data=\App\Models\Order::where('aso_id',$aso_id)->where('order_date',$order_date)->where('order_type','Secondary')->where('order_status','Processed')->orderBy('id', 'DESC')->first();
+        if(!is_null($data)){
+            $result=$data->toArray();
+            return $result['id'];
+        }
+       return 0;
+
+    }
+}
+
 ?>

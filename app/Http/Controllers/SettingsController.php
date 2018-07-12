@@ -188,12 +188,12 @@ class SettingsController extends Controller
                     ->groupBy('distribution_houses.territories_id')
                     ->orderBy('territories.ordering')->get();
             }
-            else if($type == 'area')
+            else if($type == 'market')
             {
                 $data['geographies'] = DB::table('users')
                     ->select('id','name as gname')
                     ->where('territories_id',Auth::user()->territories_id)
-                    ->where('user_type','area')->get();
+                    ->where('user_type','market')->get();
             }
             $data['baseData'] = $this->baseData($data['geographies']);
 
@@ -244,12 +244,12 @@ class SettingsController extends Controller
                 ->orderBy('territories.ordering')->get();
 //            debug(DB::getQueryLog(),1);
         }
-        else if($post['target_type'] == 'area')
+        else if($post['target_type'] == 'market')
         {
             $data['geographies'] = DB::table('users')
                 ->select('id','name as gname')
                 ->where('territories_id',Auth::user()->territories_id)
-                ->where('user_type','area')->get();
+                ->where('user_type','market')->get();
         }
         $data['baseData'] = $this->baseData($data['geographies']);
         $data['base'] = $this->totalBaseData($data['baseData']);

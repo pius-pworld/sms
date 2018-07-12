@@ -40,14 +40,14 @@
                 <td>{{$sale->visited_outlet}}</td>
                 <td>{{$sale->total_no_of_memo}}</td>
                 <td>{{(($sale->total_no_of_memo/$sale->visited_outlet)*100)}}</td>
-                <td>{{($sale->order_total/$sale->total_no_of_memo)}}</td>
+                <td>{{($sale->order_total_sku/$sale->total_no_of_memo)}}</td>
                 <td>{{($sale->order_amount/$sale->total_no_of_memo)}}</td>
-                <td>{{$sale->order_total}}</td>
+                <td>{{$sale->order_total_sku}}</td>
                 <td>{{$sale->order_amount}}</td>
             @endif
             <td>{{$sale->order_date}}</td>
             <td>{{$sale->sale_date}}</td>
-            <td>{{$sale->sale_total}}</td>
+            <td>{{$sale->sale_total_sku}}</td>
             <td>{{$sale->total_sale_amount}}</td>
 {{--            <td>{{($sale->current_balance-$sale->total_sale_amount)}}</td>--}}
             <td><a href="{{URL::to('sales-details/'.$type.'/'.$sale->id)}}"><i class="fa fa-eye"></i></a></td>

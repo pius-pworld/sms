@@ -189,13 +189,16 @@ class SmsInboxesController extends Controller
      * @param int $total_memo
      * @return int
      */
-    private function totalCheck($input_data, $type = "sale",&$total_memo = 0)
+    private function totalCheck($input_data, $type = "sale",&$calculate_total_amount=0)
     {
         $total = 0;
         foreach ($input_data as $key => $value) {
 
             if ($type === SALE) {
                 $total = $total + (int)$value;
+                if($value > 0){
+                    $calculate_total_amount = $calculate_total_amount+($value*(int)get_regular_price_by_sku($key));
+                }
             }
             if($type===PRIMARY){
                 $total = $total + (int)$value;
@@ -203,7 +206,9 @@ class SmsInboxesController extends Controller
             if ($type === ORDER) {
                 $val = explode(',', $value);
                 $total = $total + (int)$val[0];
-                $total_memo = $total_memo + (int)$val[1];
+                if($val[0] > 0){
+                    $calculate_total_amount = $calculate_total_amount+($val[0]*(int)get_regular_price_by_sku($key));
+                }
             }
         }
 
@@ -219,41 +224,47 @@ class SmsInboxesController extends Controller
     {
         $aso_id = $data['asoid'];
         $order_date = $data['dt'];
-        $route_name = $data['rt'];
+        $route_name = isset($data['rt']) ? $data['rt'] : '';
         $total_outlet= $data['ou'];
         $visited_outlet = $data['vo'];
-        $order_total = str_replace('c', '', $data['total']);
-        unset($data['asoid']);
-        unset($data['dt']);
-        unset($data['total']);
-        unset($data['rt']);
-        unset($data['ou']);
-        unset($data['vo']);
-        $total = $this->totalCheck($data, 'order',$total_memo);
-
-        if ($total === (int)$order_total) {
+        $total_memo_order= $data['me'];
+        $order_total_sku =  $data['total'];
+        unset($data['asoid'],$data['rt'],$data['dt'],$data['ou'],$data['vo'],$data['me'],$data['total']);
+        $get_information=get_info_by_aso($aso_id);
+        if(is_null($get_information)){
+            $order_information['status'] = false;
+            $order_information['message'] = "Invalid ASO Information!!";
+            return $order_information;
+        }
+        $total_sku_count = $this->totalCheck($data, 'order',$order_total_amount);
+        $order_information=[];
+        if ($total_sku_count === (int)$order_total_sku) {
             $order_information['order'] = [
                 'aso_id'=> $aso_id,
+                'dbid'  => $get_information->distribution_house_id,
                 'order_date'=>$order_date,
-                'requester_name' => 'test',
-                'requester_phone' => 'testss',
-                'dh_phone' => 'asdsd',
-                'dh_name' => 'adsadsad',
-                'tso_name' => 'asdasd',
-                'tso_phone' => 'asdsadsd',
+                'requester_name' => $get_information->name,
+                'requester_phone' => $get_information->mobile,
+                'dh_phone' => $get_information->dhname,
+                'dh_name' => $get_information->dhphone,
+                'tso_name' => $get_information->tsoname,
+                'tso_phone' => $get_information->tsophone,
                 'route_name' => $route_name,
                 'total_outlet' => $total_outlet,
                 'visited_outlet'=>$visited_outlet,
                 'order_type'=>'Secondary',
-                'total_no_of_memo'=> $total_memo,
-                'order_total' => $total,
+                'total_no_of_memo'=> $total_memo_order,
+                'order_total_sku' => $order_total_sku,
+                'order_amount'    => $order_total_amount,
+                'order_status'    => 'Processed',
                 'created_by' => Auth::Id()
             ];
-
+            $order_information['status'] = true;
             return $order_information;
         } else {
-
-            return false;
+            $order_information['status'] = false;
+            $order_information['message'] = "Invalid Order Total SKU !!";
+            return $order_information;
         }
     }
 
@@ -266,32 +277,47 @@ class SmsInboxesController extends Controller
     {
         $aso_id = $data['asoid'];
         $order_date = $data['dt'];
-        $order_total = str_replace('c', '', $data['total']);
-        unset($data['asoid']);
-        unset($data['dt']);
-        unset($data['total']);
-        $total = $this->totalCheck($data,SALE);
-
-        if ($total === (int)$order_total) {
+        $sale_total_sku =  $data['total'];
+        unset($data['asoid'],$data['dt'],$data['total']);
+        $total = $this->totalCheck($data,SALE,$total_sale_amount);
+        $order_id = get_order_id_by_sale($aso_id,$order_date);
+        if($order_id== 0){
+            $sale_information['status'] = false;
+            $sale_information['message'] = "Invalid Order Date!!";
+            return $sale_information;
+        }
+        $get_information=get_info_by_aso($aso_id);
+        if(is_null($get_information)){
+            $sale_information['status'] = false;
+            $sale_information['message'] = "Invalid ASO Information!!";
+            return $sale_information;
+        }
+        $sale_information=[];
+        if ($total === (int)$sale_total_sku) {
             $sale_information['order'] = [
                 'aso_id'=> $aso_id,
-                'sale_date'=>$order_date,
-                'sender_name' => 'test',
-                'sender_phone' => 'testss',
-                'dh_phone' => 'asdsd',
-                'dh_name' => 'adsadsad',
-                'tso_name' => 'asdasd',
-                'tso_phone' => 'asdsadsd',
+                'dbid' =>$get_information->distribution_house_id,
+                'order_id'=>$order_id,
+                'order_date'=>$order_date,
+                'sale_date'=>date('Y-m-d'),
+                'sender_name' => $get_information->name,
+                'sender_phone' => $get_information->mobile,
+                'dh_phone' => $get_information->dhname,
+                'dh_name' => $get_information->dhphone,
+                'tso_name' => $get_information->tsoname,
+                'tso_phone' => $get_information->tsophone,
                 'sale_type'=>'Secondary',
-                'sale_total' => $total,
+                'sale_total_sku' => $total,
+                'total_sale_amount'=>$total_sale_amount,
                 'created_by' => Auth::Id()
             ];
-
+            $sale_information['status'] = true;
             return $sale_information;
         }
         else {
-
-            return false;
+            $sale_information['status'] = false;
+            $sale_information['message'] = "Invalid Sale Total SKU !!";
+            return $sale_information;
         }
     }
 
@@ -304,7 +330,7 @@ class SmsInboxesController extends Controller
         $asm_rms_id = $data['asm_rsm_id'];
         $dbid= $data['dbid'];
         $order_date = $data['dt'];
-        $order_total =  $data['total'];
+        $order_total_sku =  $data['total'];
         $da=$data['da'];
         unset($data['asm_rsm_id']);
         unset($data['dbid']);
@@ -313,7 +339,7 @@ class SmsInboxesController extends Controller
         unset($data['da']);
         $total = $this->totalCheck($data,PRIMARY);
 
-        if ($total === (int)$order_total) {
+        if ($total === (int)$order_total_sku) {
             $primary_order_information['order'] = [
                 'asm_rsm_id'=> $asm_rms_id,
                 'dbid'=>$dbid,
@@ -321,7 +347,7 @@ class SmsInboxesController extends Controller
                 'requester_name' => 'test',
                 'requester_phone' => 'testss',
                 'order_type'=>'Primary',
-                'order_total' => $total,
+                'order_total_sku' => $total,
                 'order_da'    =>$da,
                 'created_by' => Auth::Id()
             ];
@@ -374,11 +400,13 @@ class SmsInboxesController extends Controller
     private function processOrder($id,$parseData){
         $order_information = $this->prepareOrderData($parseData['data']);
 
-        if ($order_information != false) {
+        if (isset($order_information['status']) && $order_information['status']!= false) {
             foreach ($parseData['data'] as $key => $value){
                 $order_information['order_details'][] =[
                     "short_name" => $key,
                     "quantity"   => (int)explode(',',$value)[0],
+                    "price"      => get_regular_price_by_sku($key),
+                    "no_of_memo" =>(int)explode(',',$value)[1],
                     "created_by" => Auth::id()
                 ];
             }
@@ -390,9 +418,8 @@ class SmsInboxesController extends Controller
                     ->with('success_message', 'Order successfully placed!');
             }
         } else {
-
             return redirect()->route('sms_inboxes.sms_inbox.index')
-                ->with('error_message', 'Invalid order total!!');
+                ->with('error_message', isset($order_information['message']) ? $order_information['message'] : 'Invalid Order !!');
         }
     }
 
@@ -444,28 +471,29 @@ class SmsInboxesController extends Controller
      */
     private function processSell($id,$parseData){
         $sale_information = $this->prepareSaleData($parseData['data']);
-        if ($sale_information != false) {
+        if (isset($sale_information['status']) &&  $sale_information['status']!= false) {
 
             foreach ($parseData['data'] as $key => $value){
                 $sale_information['order_details'][] =[
                     "short_name" => $key,
                     "quantity"   => (int)explode(',',$value)[0],
+                    "price"      => get_regular_price_by_sku($key),
                     "created_by" =>1
                 ];
             }
-            $order_information = Order::all()->where('aso_id',$sale_information['order']['aso_id'])->where('order_date',$sale_information['order']['sale_date'])->last()->toArray();
+            $order_information = Order::all()->where('aso_id',$sale_information['order']['aso_id'])->where('order_date',$sale_information['order']['order_date'])->last()->toArray();
             $this->modifyStock($sale_information['order_details'],$order_information);
 
             if (Sale::insertSale($sale_information['order'], $sale_information['order_details'])) {
                 SmsInbox::find($id)->update(['sms_status' => 'Processed']);
 
                 return redirect()->route('sms_inboxes.sms_inbox.index')
-                    ->with('success_message', 'Order successfully placed!');
+                    ->with('success_message', 'Sale successfully placed!');
             }
         } else {
 
             return redirect()->route('sms_inboxes.sms_inbox.index')
-                ->with('error_message', 'Invalid order total!!');
+                ->with('error_message', isset($sale_information['message']) ? $sale_information['message'] : 'Invalid Sale !!');
         }
     }
 

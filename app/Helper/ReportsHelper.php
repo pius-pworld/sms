@@ -51,7 +51,7 @@ class ReportsHelper
             $dateselect = explode(' - ', $post['created_at']);
         }
         $query = DB::table('sales');
-        $query->select('sales.*','distribution_houses.current_balance','orders.total_outlet','orders.visited_outlet','orders.total_no_of_memo','orders.order_total','orders.order_amount');
+        $query->select('sales.*','distribution_houses.current_balance','orders.total_outlet','orders.visited_outlet','orders.total_no_of_memo','orders.order_total_sku','orders.order_amount');
         $query->leftJoin('distribution_houses','distribution_houses.id','=','sales.dbid');
         $query->leftJoin('orders','orders.id','=','sales.order_id');
         if($type)

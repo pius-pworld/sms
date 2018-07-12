@@ -239,6 +239,10 @@
   },
   "required": [
     "asoid",
+    "dt",
+    "ou",
+    "vo",
+    "me",
     "total"
   ]
 }
