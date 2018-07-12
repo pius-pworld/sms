@@ -290,7 +290,7 @@ class SmsInboxesController extends Controller
                 'tso_name' => 'asdasd',
                 'tso_phone' => 'asdsadsd',
                 'sale_type'=>'Secondary',
-                'sale_total' => $total,
+                'sale_total_sku' => $total,
                 'created_by' => Auth::Id()
             ];
 

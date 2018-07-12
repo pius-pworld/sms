@@ -164,7 +164,7 @@ class ReportsController extends Controller
             'dh_name'=>$post['dh_name'],
             'dh_phone'=>$post['dh_phone'],
             'sale_type'=>'Primary',
-            'sale_total'=>array_sum($post['quantity']),
+            'sale_total_sku'=>array_sum($post['quantity']),
             'created_by'=>Auth::id()
         );
         $sale_id = DB::table('sales')->insertGetId($salesdata);

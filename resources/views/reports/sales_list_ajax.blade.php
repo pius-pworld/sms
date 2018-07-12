@@ -47,7 +47,7 @@
             @endif
             <td>{{$sale->order_date}}</td>
             <td>{{$sale->sale_date}}</td>
-            <td>{{$sale->sale_total}}</td>
+            <td>{{$sale->sale_total_sku}}</td>
             <td>{{$sale->total_sale_amount}}</td>
 {{--            <td>{{($sale->current_balance-$sale->total_sale_amount)}}</td>--}}
             <td><a href="{{URL::to('sales-details/'.$type.'/'.$sale->id)}}"><i class="fa fa-eye"></i></a></td>
