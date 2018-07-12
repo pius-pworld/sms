@@ -131,11 +131,11 @@ class SettingsController extends Controller
         $data['package_details'] = DB::table('skues')
                                     ->select('skues.*','brands.brand_name')
                                     ->leftJoin('brands','brands.id','=','skues.brands_id')
-                                    ->whereIn('skues.id', $psku_id)->get();
+                                    ->whereIn('skues.short_name', $psku_id)->get();
         $data['items_details'] = DB::table('skues')
                                 ->select('skues.*','brands.brand_name')
                                 ->leftJoin('brands','brands.id','=','skues.brands_id')
-                                ->whereIn('skues.id', $isku_id)->get();
+                                ->whereIn('skues.short_name', $isku_id)->get();
         //dd($psku_id);
         return view('settings.promotions_details',$data);
     }

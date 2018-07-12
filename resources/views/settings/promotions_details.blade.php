@@ -39,7 +39,7 @@
                                         <tr>
                                             <td>{{$skue->brand_name}}</td>
                                             <td>{{$skue->sku_name}}</td>
-                                            <td>{{$ddetails[$skue->id]}}</td>
+                                            <td>{{$ddetails[$skue->short_name]}}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -60,7 +60,7 @@
                                     <tr>
                                         <td>{{$skue->brand_name}}</td>
                                         <td>{{$skue->sku_name}}</td>
-                                        <td>{{$items[$skue->id]}}</td>
+                                        <td>{{$items[$skue->short_name]}}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>
