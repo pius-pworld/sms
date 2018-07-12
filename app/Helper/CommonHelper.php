@@ -316,4 +316,11 @@ if(!function_exists('searchAreaOption')){
     }
 }
 
+
+if(!function_exists('get_info_by_aso')){
+    function get_info_by_aso($id){
+
+    }
+}
+
 ?>

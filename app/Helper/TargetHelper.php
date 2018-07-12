@@ -61,7 +61,7 @@ class TargetHelper
                 ->where('type_id',Auth::user()->regions_id)->first();
 //            debug(DB::getQueryLog(),1);
         }
-        else if($type == 'area')
+        else if($type == 'market')
         {
             $existingTarget = DB::table('targets')
                 ->where('target_type','territories')

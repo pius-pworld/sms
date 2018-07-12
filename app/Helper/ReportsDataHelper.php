@@ -49,14 +49,14 @@ if(!function_exists('getHouseStockInfo')){
 
 if(!function_exists('getRouteInfoByHouse')){
     function getRouteInfoByHouse($house_ids){
-        $data = \App\Models\User::where('user_type','area')->whereIn('distribution_house_id',$house_ids)->get()->toArray();
+        $data = \App\Models\User::where('user_type','market')->whereIn('distribution_house_id',$house_ids)->get()->toArray();
         return $data;
     }
 }
 
 if(!function_exists('getRouteInfoByAso')){
     function getRouteInfoByAso($route_ids){
-        $data = \App\Models\User::where('user_type','area')->whereIn('id',$route_ids)->get()->toArray();
+        $data = \App\Models\User::where('user_type','market')->whereIn('id',$route_ids)->get()->toArray();
         return $data;
     }
 }
@@ -213,7 +213,7 @@ if(!function_exists('routeWisePerformance')){
     function routeWisePerformance($ids,$selected_memo,$month){
         $route_wise_performance=[];
         foreach ($ids as $route_key=>$route_value){
-            $get_target = \App\Models\Target::where('target_type','area')->where('type_id',$route_value['id'])->where('target_month',isset($month[0]) ? $month[0]: '')->first();
+            $get_target = \App\Models\Target::where('target_type','market')->where('type_id',$route_value['id'])->where('target_month',isset($month[0]) ? $month[0]: '')->first();
             $sku_target = [];
             foreach ($selected_memo as $cat_key=>$cat_val) {
                 $selected_skues = array_flatten($cat_val);
@@ -390,7 +390,7 @@ if(!function_exists('dailySaleSummaryByMonth')){
     function dailySaleSummaryByMonth($ids,$selected_memo,$month,$selected_date_range){
         $route_wise_sale_summary=[];
         foreach ($ids as $route_key=>$route_value){
-            $get_target = \App\Models\Target::where('target_type','area')->where('type_id',$route_value['id'])->where('target_month',isset($month[0]) ? $month[0]: '')->first();
+            $get_target = \App\Models\Target::where('target_type','market')->where('type_id',$route_value['id'])->where('target_month',isset($month[0]) ? $month[0]: '')->first();
             $order_sale_data=get_order_sale($route_value['id'],$selected_date_range);
             $sku_target = [];
             foreach ($selected_memo as $cat_key=>$cat_val) {
