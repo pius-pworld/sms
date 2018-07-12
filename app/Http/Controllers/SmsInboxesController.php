@@ -457,7 +457,7 @@ class SmsInboxesController extends Controller
         $present_data =[];
         $updated_data=[];
 
-        if($order_information['order_status'] == 'Processed' && $update){
+        if(isset($order_information['order_status']) && $order_information['order_status'] == 'Processed' && $update){
             $order_details = DB::table('orders')
                 ->select('order_details.short_name','order_details.quantity')
                 ->where('orders.aso_id',$order_information['aso_id'])
@@ -579,6 +579,8 @@ class SmsInboxesController extends Controller
                     ];
                 }
             }
+            $data['aso_id'] = $promotion_information['order']['aso_id'];
+            $this->modifyStock($promotion_information['order_details'],$data);
 
             if (Sale::insertSale($promotion_information['order'], $promotion_information['order_details'])) {
                 SmsInbox::find($id)->update(['sms_status' => 'Processed']);
