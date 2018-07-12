@@ -564,6 +564,10 @@ class SmsInboxesController extends Controller
         if (isset($promotion_information['status']) && $promotion_information['status'] != false) {
             foreach ($parseData['data']['pdn'] as $key => $value){
                 $package_details = get_package_by_name($value['short_name']);
+                if(count($package_details) < 1){
+                    return redirect()->route('sms_inboxes.sms_inbox.index')
+                        ->with('error_message', 'Invalid Package Information!!');
+                }
                 $package_merge = promotion_package_merge($package_details['purchase'],$package_details['free'],$value['quantity']);
                 foreach ($package_merge as $sku_key=>$sku_value){
                     $promotion_information['order_details'][] =[
