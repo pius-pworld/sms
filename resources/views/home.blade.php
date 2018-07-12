@@ -92,20 +92,20 @@
               <div class="inner">
                 <div style="text-align: center; font-size: 25px; font-weight: bold; border-bottom: 1px solid #fff;">Brand Wise Productiveity</div>
                 <table class="dashboardTable">
-                  <tr><td>Tiger</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-71.79</td></tr>
-                  <tr><td>Black Horse</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-21.79</td></tr>
-                  <tr><td>Fizz upp</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-up"></i>&nbsp;&nbsp;+34.79</td></tr>
-                  <tr><td>Uro Cola</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79</td></tr>
+                  <tr><td>Tiger</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-71.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
+                  <tr><td>Black Horse</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-21.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
+                  <tr><td>Fizz upp</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-up"></i>&nbsp;&nbsp;+34.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
+                  <tr><td>Uro Cola</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
 
-                  <tr><td>Uro Cola</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79</td></tr>
-                  <tr><td>Uro Lemon</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79</td></tr>
-                  <tr><td>Uro Orance</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79</td></tr>
-                  <tr><td>Uro Zeera</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79</td></tr>
-                  <tr><td>Uro Lemonjee</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79</td></tr>
-                  <tr><td>Mangolee</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79</td></tr>
-                  <tr><td>Mango King</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79</td></tr>
-                  <tr><td>Lychena</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79</td></tr>
-                  <tr><td>Alma</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79</td></tr>
+                  <tr><td>Uro Cola</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
+                  <tr><td>Uro Lemon</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
+                  <tr><td>Uro Orance</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
+                  <tr><td>Uro Zeera</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
+                  <tr><td>Uro Lemonjee</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
+                  <tr><td>Mangolee</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
+                  <tr><td>Mango King</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
+                  <tr><td>Lychena</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
+                  <tr><td>Alma</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-56.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
                 </table>
               </div>
 
@@ -126,7 +126,7 @@
 <style>
   .dashboardTable td {
     font-size: 25px;
-    padding: 4px 10px;
+    padding: 4px 0px;
   }
 </style>
 @stop
