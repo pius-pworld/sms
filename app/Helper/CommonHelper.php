@@ -377,12 +377,14 @@ if(!function_exists('get_order_id_by_sale')){
     }
 }
 if(!function_exists('promotion_package_merge')){
-    function promotion_package_merge($a1,$a2,$package_qty){
+    function promotion_package_merge($a1,$a2,$package_qty=0){
         $sums = array();
         foreach (array_keys($a1 + $a2) as $key) {
             $sums[$key] = (isset($a1[$key]) ? $a1[$key] : 0) + (isset($a2[$key]) ? $a2[$key] : 0);
         }
-        $sums=array_map(function($el) use (&$package_qty) { return $el * $package_qty; }, $sums);
+        if($package_qty > 0){
+            $sums=array_map(function($el) use (&$package_qty) { return $el * $package_qty; }, $sums);
+        }
         return $sums;
 
 

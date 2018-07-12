@@ -565,10 +565,11 @@ class SmsInboxesController extends Controller
             foreach ($parseData['data']['pdn'] as $key => $value){
                 $package_details = get_package_by_name($value['short_name']);
                 $package_merge = promotion_package_merge($package_details['purchase'],$package_details['free'],$value['quantity']);
-                foreach ($package_merge $sku_key=>$sku_value){
+                foreach ($package_merge as $sku_key=>$sku_value){
                     $promotion_information['order_details'][] =[
-                        "short_name" =>$key,
-                        "quantity"   => (int)$value,
+                        "short_name" =>$sku_key,
+                        "quantity"   => (int)$sku_value,
+                        "price"      => get_house_price_by_sku($sku_key),
                         'no_of_memo' => (int)$value['no_of_memo'],
                         "created_by" =>Auth::id()
                     ];
