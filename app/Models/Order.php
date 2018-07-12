@@ -46,6 +46,7 @@ class Order extends Model
         'order_da',
         'order_amount',
         'current_balance',
+        'order_status',
         'created_by'
     ];
 

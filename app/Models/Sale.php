@@ -30,7 +30,12 @@ class Sale extends Model
      */
     protected $fillable = [
         'aso_id',
+        'dbid',
+        'asm_rsm_id',
+        'order_id',
+        'order_date',
         'sale_date',
+        'total_sale_amount',
         'sender_name',
         'sender_phone',
         'dh_phone',

@@ -341,4 +341,16 @@ if(!function_exists('get_regular_price_by_sku')){
     }
 }
 
+if(!function_exists('get_order_id_by_sale')){
+    function get_order_id_by_sale($aso_id,$order_date){
+        $data=\App\Models\Order::where('aso_id',$aso_id)->where('order_date',$order_date)->where('order_type','Secondary')->where('order_status','Processed')->orderBy('id', 'DESC')->first();
+        if(!is_null($data)){
+            $result=$data->toArray();
+            return $result['id'];
+        }
+       return 0;
+
+    }
+}
+
 ?>
