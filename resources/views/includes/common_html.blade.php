@@ -1,3 +1,4 @@
+<div style="height: 50px;">&nbsp;</div>
 <!--for confirmation diologue-->
 <div id="dialog" title="Confirmation Required" style="display: none;">
     Are you sure about this?

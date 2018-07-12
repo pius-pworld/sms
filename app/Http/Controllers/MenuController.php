@@ -135,12 +135,24 @@ function buildTree(array $elements, $parentId = 0) {
 
     return $branch;
 }
-public function makeMenuTree($tree){
+
+public function makeMenuTree($tree,$pid=null){
     //echo "<pre>";
     //print_r($tree);
+//    debug(decrypt($_GET['mid']),1);
+//    debug($tree,1);
+    if(isset($_GET['mid']))
+    {
+        $mID = $_GET['mid'];
+    }
+    else
+    {
+        $mID = '';
+    }
     $html='';
     foreach ($tree as $key=>$val){
         if($val['children']){
+//
             $html .='<li class="treeview">
               <a href="#">
                 <i class="'.$val['icon_class'].'"></i> <span>'.$val['name'].'</span>
