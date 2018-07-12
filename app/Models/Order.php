@@ -37,13 +37,12 @@ class Order extends Model
         'dh_name',
         'tso_name',
         'tso_phone',
-        'order_total',
+        'order_total_sku',
         'route_name',
         'total_outlet',
         'visited_outlet',
         'order_type',
         'total_no_of_memo',
-        'order_total',
         'created_by'
     ];
 

@@ -219,19 +219,16 @@ class SmsInboxesController extends Controller
     {
         $aso_id = $data['asoid'];
         $order_date = $data['dt'];
-        $route_name = $data['rt'];
+        $route_name = isset($data['rt']) ? $data['rt'] : '';
         $total_outlet= $data['ou'];
         $visited_outlet = $data['vo'];
-        $order_total = str_replace('c', '', $data['total']);
-        unset($data['asoid']);
-        unset($data['dt']);
-        unset($data['total']);
-        unset($data['rt']);
-        unset($data['ou']);
-        unset($data['vo']);
+        $total_memo_order= $data['me'];
+        $order_total_sku =  $data['total'];
+        unset($data['asoid'],$data['rt'],$data['dt'],$data['ou'],$data['vo'],$data['me'],$data['total']);
+        //dd($aso_id,$order_date,$route_name,$total_outlet,$total_memo_order,$order_total_sku,$data);
         $total = $this->totalCheck($data, 'order',$total_memo);
 
-        if ($total === (int)$order_total) {
+        if ($total === (int)$order_total_sku) {
             $order_information['order'] = [
                 'aso_id'=> $aso_id,
                 'order_date'=>$order_date,
@@ -246,7 +243,7 @@ class SmsInboxesController extends Controller
                 'visited_outlet'=>$visited_outlet,
                 'order_type'=>'Secondary',
                 'total_no_of_memo'=> $total_memo,
-                'order_total' => $total,
+                'order_total_sku' => $total,
                 'created_by' => Auth::Id()
             ];
 
@@ -266,13 +263,13 @@ class SmsInboxesController extends Controller
     {
         $aso_id = $data['asoid'];
         $order_date = $data['dt'];
-        $order_total = str_replace('c', '', $data['total']);
+        $order_total_sku = str_replace('c', '', $data['total']);
         unset($data['asoid']);
         unset($data['dt']);
         unset($data['total']);
         $total = $this->totalCheck($data,SALE);
 
-        if ($total === (int)$order_total) {
+        if ($total === (int)$order_total_sku) {
             $sale_information['order'] = [
                 'aso_id'=> $aso_id,
                 'sale_date'=>$order_date,
@@ -304,7 +301,7 @@ class SmsInboxesController extends Controller
         $asm_rms_id = $data['asm_rsm_id'];
         $dbid= $data['dbid'];
         $order_date = $data['dt'];
-        $order_total =  $data['total'];
+        $order_total_sku =  $data['total'];
         $da=$data['da'];
         unset($data['asm_rsm_id']);
         unset($data['dbid']);
@@ -313,7 +310,7 @@ class SmsInboxesController extends Controller
         unset($data['da']);
         $total = $this->totalCheck($data,PRIMARY);
 
-        if ($total === (int)$order_total) {
+        if ($total === (int)$order_total_sku) {
             $primary_order_information['order'] = [
                 'asm_rsm_id'=> $asm_rms_id,
                 'dbid'=>$dbid,
@@ -321,7 +318,7 @@ class SmsInboxesController extends Controller
                 'requester_name' => 'test',
                 'requester_phone' => 'testss',
                 'order_type'=>'Primary',
-                'order_total' => $total,
+                'order_total_sku' => $total,
                 'order_da'    =>$da,
                 'created_by' => Auth::Id()
             ];
@@ -373,6 +370,7 @@ class SmsInboxesController extends Controller
 
     private function processOrder($id,$parseData){
         $order_information = $this->prepareOrderData($parseData['data']);
+        dd($order_information);
 
         if ($order_information != false) {
             foreach ($parseData['data'] as $key => $value){
