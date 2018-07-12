@@ -43,6 +43,9 @@ class Order extends Model
         'visited_outlet',
         'order_type',
         'total_no_of_memo',
+        'order_da',
+        'order_amount',
+        'current_balance',
         'created_by'
     ];
 

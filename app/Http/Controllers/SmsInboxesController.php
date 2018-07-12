@@ -189,7 +189,7 @@ class SmsInboxesController extends Controller
      * @param int $total_memo
      * @return int
      */
-    private function totalCheck($input_data, $type = "sale",&$total_memo = 0)
+    private function totalCheck($input_data, $type = "sale",&$calculate_total_amount=0)
     {
         $total = 0;
         foreach ($input_data as $key => $value) {
@@ -203,7 +203,9 @@ class SmsInboxesController extends Controller
             if ($type === ORDER) {
                 $val = explode(',', $value);
                 $total = $total + (int)$val[0];
-                $total_memo = $total_memo + (int)$val[1];
+                if($val[0] > 0){
+                    $calculate_total_amount = $calculate_total_amount+($val[0]*(int)get_regular_price_by_sku($key));
+                }
             }
         }
 
@@ -225,32 +227,40 @@ class SmsInboxesController extends Controller
         $total_memo_order= $data['me'];
         $order_total_sku =  $data['total'];
         unset($data['asoid'],$data['rt'],$data['dt'],$data['ou'],$data['vo'],$data['me'],$data['total']);
-        //dd($aso_id,$order_date,$route_name,$total_outlet,$total_memo_order,$order_total_sku,$data);
-        $total = $this->totalCheck($data, 'order',$total_memo);
-
-        if ($total === (int)$order_total_sku) {
+        $get_information=get_info_by_aso($aso_id);
+        if(is_null($get_information)){
+            $order_information['status'] = false;
+            $order_information['message'] = "Invalid ASO Information!!";
+            return $order_information;
+        }
+        $total_sku_count = $this->totalCheck($data, 'order',$order_total_amount);
+        $order_information=[];
+        if ($total_sku_count === (int)$order_total_sku) {
             $order_information['order'] = [
                 'aso_id'=> $aso_id,
+                'dbid'  => $get_information->distribution_house_id,
                 'order_date'=>$order_date,
-                'requester_name' => 'test',
-                'requester_phone' => 'testss',
-                'dh_phone' => 'asdsd',
-                'dh_name' => 'adsadsad',
-                'tso_name' => 'asdasd',
-                'tso_phone' => 'asdsadsd',
+                'requester_name' => $get_information->name,
+                'requester_phone' => $get_information->mobile,
+                'dh_phone' => $get_information->dhname,
+                'dh_name' => $get_information->dhphone,
+                'tso_name' => $get_information->tsoname,
+                'tso_phone' => $get_information->tsophone,
                 'route_name' => $route_name,
                 'total_outlet' => $total_outlet,
                 'visited_outlet'=>$visited_outlet,
                 'order_type'=>'Secondary',
-                'total_no_of_memo'=> $total_memo,
-                'order_total_sku' => $total,
+                'total_no_of_memo'=> $total_memo_order,
+                'order_total_sku' => $order_total_sku,
+                'order_amount'    => $order_total_amount,
                 'created_by' => Auth::Id()
             ];
-
+            $order_information['status'] = true;
             return $order_information;
         } else {
-
-            return false;
+            $order_information['status'] = false;
+            $order_information['message'] = "Invalid Order Total SKU !!";
+            return $order_information;
         }
     }
 
@@ -370,13 +380,14 @@ class SmsInboxesController extends Controller
 
     private function processOrder($id,$parseData){
         $order_information = $this->prepareOrderData($parseData['data']);
-        dd($order_information);
 
-        if ($order_information != false) {
+        if (isset($order_information['status']) && $order_information['status']!= false) {
             foreach ($parseData['data'] as $key => $value){
                 $order_information['order_details'][] =[
                     "short_name" => $key,
                     "quantity"   => (int)explode(',',$value)[0],
+                    "price"      => get_regular_price_by_sku($key),
+                    "no_of_memo" =>(int)explode(',',$value)[1],
                     "created_by" => Auth::id()
                 ];
             }
@@ -388,9 +399,8 @@ class SmsInboxesController extends Controller
                     ->with('success_message', 'Order successfully placed!');
             }
         } else {
-
             return redirect()->route('sms_inboxes.sms_inbox.index')
-                ->with('error_message', 'Invalid order total!!');
+                ->with('error_message', isset($order_information['message']) ? $order_information['message'] : 'Invalid Order !!');
         }
     }
 
