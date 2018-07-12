@@ -171,6 +171,7 @@ class ReportsController extends Controller
 
         $sales_details_data = array();
         $total_order = 0;
+//        debug($post,1);
         foreach($post['quantity'] as $k=>$q)
         {
             $total_order = $total_order+($q*$post['price'][$k]);
@@ -179,6 +180,7 @@ class ReportsController extends Controller
             $sales_details_data['quantity'] = $q;
             $sales_details_data['price'] = $post['price'][$k];
             $sales_details_data['created_by'] = Auth::id();
+
             DB::table('sale_details')->insert($sales_details_data);
         }
         DB::table('orders')->where('id', $post['order_id'])->update(['order_status' => 'Processed']);
