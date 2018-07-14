@@ -37,7 +37,7 @@ class SmsInboxesController extends Controller
      */
     public function index()
     {
-        $smsInboxes = SmsInbox::paginate(25);
+        $smsInboxes = SmsInbox::orderBy('id', 'desc')->paginate(25);
 
         return view('sms_inboxes.index', compact('smsInboxes'));
     }
