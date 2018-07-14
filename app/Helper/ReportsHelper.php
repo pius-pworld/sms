@@ -19,7 +19,7 @@ class ReportsHelper
             $dateselect = explode(' - ', $post['created_at']);
         }
         $query = DB::table('orders');
-        $query->select('orders.*','distribution_houses.opening_balance','distribution_houses.point_name');
+        $query->select('orders.*','distribution_houses.current_balance as dhcb','distribution_houses.opening_balance','distribution_houses.point_name');
         $query->leftJoin('distribution_houses','distribution_houses.id','=','orders.dbid');
         if($type)
         {

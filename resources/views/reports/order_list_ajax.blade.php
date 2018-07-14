@@ -44,7 +44,7 @@
                 <td>{{($order->order_amount/$order->total_no_of_memo)}}</td>
             @else
                 <td>{{number_format($order->order_da,2)}}</td>
-                <td>{{(number_format($order->current_balance+$order->order_da,2))}}</td>
+                <td>{{(number_format($order->dhcb+$order->order_da,2))}}</td>
             @endif
             <td>{{$order->order_total_sku}}</td>
             <td>{{date('d-m-Y',strtotime($order->order_date))}}</td>
