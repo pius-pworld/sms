@@ -37,7 +37,7 @@ class ReportsHelper
             }
         }
 
-        $result = $query->get();
+        $result = $query->whereNotIn('order_status',['Rejected'])->get();
 //        dd(DB::getQueryLog());
         return $result;
     }
@@ -70,7 +70,7 @@ class ReportsHelper
             }
         }
 
-        $result = $query->get();
+        $result = $query->whereNotIn('sale_status',['Rejected'])->get();
         return $result;
     }
 
