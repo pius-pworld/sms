@@ -239,6 +239,7 @@ class SmsInboxesController extends Controller
             $order_information['message'] = "Invalid ASO Information!!";
             return $order_information;
         }
+        Order::where('aso_id',$aso_id)->where('order_date',$order_date)->update(['order_status'=>'Rejected']);
         $total_sku_count = $this->totalCheck($data, 'order',$order_total_amount);
         $order_information=[];
         if ($total_sku_count === (int)$order_total_sku) {
@@ -295,6 +296,7 @@ class SmsInboxesController extends Controller
             $sale_information['message'] = "Invalid ASO Information!!";
             return $sale_information;
         }
+        Sale::where('aso_id',$aso_id)->where('order_date',$order_date)->update(['sale_status'=>'Rejected']);
         $sale_information=[];
         if ($total === (int)$sale_total_sku) {
             $sale_information['order'] = [
@@ -351,6 +353,7 @@ class SmsInboxesController extends Controller
             return $primary_order_information;
         }
 
+        Order::where('asm_rsm_id',$asm_rms_id)->where('order_date',$order_date)->update(['order_status'=>'Rejected']);
 
         if ($total === (int)$primary_order_total_sku) {
             $primary_order_information['order'] = [
@@ -391,6 +394,8 @@ class SmsInboxesController extends Controller
             $promotional_sale['message'] = "Invalid ASO Information!!";
             return $promotional_sale;
         }
+        
+        Sale::where('aso_id',$aso_id)->where('order_date',$order_date)->update(['order_status'=>'Rejected']);
         $promotional_sale=[];
         if(!empty($aso_id) && !empty($order_date) && !empty($route_name)){
             $promotional_sale['order'] = [
@@ -455,6 +460,7 @@ class SmsInboxesController extends Controller
             ->where('users.id',$order_information['aso_id'])
             ->first();
         $present_data =[];
+        $updated_data=[];
         $updated_data=[];
 
         if(isset($order_information['order_status']) && $order_information['order_status'] == 'Processed' && $update){
