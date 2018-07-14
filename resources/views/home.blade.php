@@ -131,7 +131,7 @@
 <style>
   .dashboardTable td, th{
     font-size: 20px;
-    padding: 4px 0px;
+    padding: 4px 0px !important;
   }
   .content-wrapper {
     background-color: #ccc !important;
