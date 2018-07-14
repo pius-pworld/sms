@@ -33,7 +33,7 @@
                                             <span style="float: left;">Request Date : {{$orders_info->order_date}}</span>
                                             <span style="float: right; color: #0000F0; font-weight: bold;">
                                                 Deposited Amount : <span>{{number_format($orders_info->order_da,2)}}</span>&nbsp;&nbsp;
-                                                Current Balance : <span class="current_balance">{{number_format($orders_info->current_balance,2)}}</span>
+                                                Current Balance : <span class="current_balance">{{number_format(($orders_info->current_balance+$orders_info->order_da),2)}}</span>
                                             </span>
                                         </h5>
                                     </div>

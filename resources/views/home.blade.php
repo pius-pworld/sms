@@ -26,13 +26,13 @@
             <!-- small box -->
             <div class="small-box bg-green">
               <div class="inner">
-                <h5>Strike Rate</h5>
-                <h3>79.14<sup style="font-size: 20px">%</sup>
+                <h3 style="font-size: 25px; text-align: center;">Strike Rate</h3>
+                <h5 style="text-align: center">79.14<sup style="font-size: 20px">%</sup>
                   <i style="position: relative; bottom: 10px; left: 5px;" class="fa fa-sort-down"></i>
                   -3.09<span style="font-size: 16px; position: relative; bottom: 7px;">(SDLW)</span>
-                </h3>
+                </h5>
 
-                <p>Till Date Strike Rate : 81.29%</p>
+                <p style="text-align: center">Till Date Strike Rate : 81.29%</p>
               </div>
 
             </div>
