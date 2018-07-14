@@ -186,6 +186,8 @@ class ReportsController extends Controller
         DB::table('orders')->where('id', $post['order_id'])->update(['order_status' => 'Processed']);
         DB::table('sales')->where('id', $sale_id)->update(['total_sale_amount' => $total_order]);
 
+        DB::table('distribution_houses')->where('id', $post['dh_id'])->update(['current_balance' => DB::raw('current_balance + '.$post['order_da'])]);
+
         stock_update($post['dh_id'],$post['quantity'],array(),$total_order,true);
 
         return redirect('order-list/primary')->with('success', 'Information has been added.');
