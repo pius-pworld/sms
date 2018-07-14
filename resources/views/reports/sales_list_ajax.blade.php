@@ -31,7 +31,7 @@
     <tbody>
     @foreach($sales as $sale)
         <tr>
-            <td>{{$sale->dh_name}}</td>
+            <td>{{$sale->point_name}}</td>
             <td>{{$sale->dh_phone}}</td>
             <td>{{$sale->sender_name}}</td>
             <td>{{$sale->sender_phone}}</td>

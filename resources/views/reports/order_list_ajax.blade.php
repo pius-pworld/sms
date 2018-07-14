@@ -30,7 +30,7 @@
     <tbody>
     @foreach($orders as $order)
         <tr>
-            <td>{{$order->dh_name}}</td>
+            <td>{{$order->point_name}}</td>
             <td>{{$order->requester_name}}</td>
             <td>{{$order->requester_phone}}</td>
             @if($type == 'secondary')

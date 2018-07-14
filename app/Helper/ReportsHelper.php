@@ -19,7 +19,7 @@ class ReportsHelper
             $dateselect = explode(' - ', $post['created_at']);
         }
         $query = DB::table('orders');
-        $query->select('orders.*','distribution_houses.opening_balance');
+        $query->select('orders.*','distribution_houses.opening_balance','distribution_houses.point_name');
         $query->leftJoin('distribution_houses','distribution_houses.id','=','orders.dbid');
         if($type)
         {
@@ -51,7 +51,7 @@ class ReportsHelper
             $dateselect = explode(' - ', $post['created_at']);
         }
         $query = DB::table('sales');
-        $query->select('sales.*','distribution_houses.current_balance','orders.total_outlet','orders.visited_outlet','orders.total_no_of_memo','orders.order_total_sku','orders.order_amount');
+        $query->select('sales.*','distribution_houses.point_name','distribution_houses.current_balance','orders.total_outlet','orders.visited_outlet','orders.total_no_of_memo','orders.order_total_sku','orders.order_amount');
         $query->leftJoin('distribution_houses','distribution_houses.id','=','sales.dbid');
         $query->leftJoin('orders','orders.id','=','sales.order_id');
         if($type)
