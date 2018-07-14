@@ -18,7 +18,7 @@
         @if($val->quantity > 0)
             <tr>
                 <td>{{$val->oid}}</td>
-                <td>{{$val->dh_name}}</td>
+                <td>{{$val->point_name}}</td>
                 <td>{{$val->requester_name}}</td>
                 <td>{{$val->brand_name}}</td>
                 <td>{{$val->sku_name}}</td>

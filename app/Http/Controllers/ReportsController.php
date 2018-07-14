@@ -212,7 +212,7 @@ class ReportsController extends Controller
         $data['searching_options'] = 'reports.sales_list_search';
 
         $data['ordervssale'] = DB::table('order_details')
-                            ->select('orders.id as oid','orders.requester_name','orders.order_date','orders.dh_name','orders.order_date','brands.brand_name','skues.sku_name','order_details.short_name','order_details.quantity','sales.sale_date','sale_details.quantity as salequantity')
+                            ->select('distribution_houses.point_name','orders.id as oid','orders.requester_name','orders.order_date','orders.dh_name','orders.order_date','brands.brand_name','skues.sku_name','order_details.short_name','order_details.quantity','sales.sale_date','sale_details.quantity as salequantity')
                             ->leftJoin('orders','orders.id','=','order_details.orders_id')
                             ->leftJoin('sales',function($join){
                                 $join->on('sales.asm_rsm_id','=','orders.asm_rsm_id')
@@ -224,6 +224,7 @@ class ReportsController extends Controller
                             })
                             ->leftJoin('skues','skues.short_name','=','order_details.short_name')
                             ->leftJoin('brands','brands.id','=','skues.brands_id')
+                            ->leftJoin('distribution_houses','distribution_houses.id','=','orders.dbid')
                             ->where('orders.order_type','Primary')
                             ->orderBy('orders.id', 'DESC')->get();
         //dd(DB::getQueryLog());
