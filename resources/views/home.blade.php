@@ -26,11 +26,11 @@
             <!-- small box -->
             <div class="small-box bg-green">
               <div class="inner">
-                <h3 style="font-size: 25px; text-align: center;">Strike Rate</h3>
-                <h5 style="text-align: center">79.14<sup style="font-size: 20px">%</sup>
-                  <i style="position: relative; bottom: 10px; left: 5px;" class="fa fa-sort-down"></i>
-                  -3.09<span style="font-size: 16px; position: relative; bottom: 7px;">(SDLW)</span>
-                </h5>
+                <h3 style="font-size: 25px; text-align: center; border-bottom: 2px solid #fff;">Strike Rate</h3>
+                <P style="text-align: center; font-size: 20px;">79.14%
+                  &nbsp;<i style="" class="fa fa-sort-down"></i>&nbsp;
+                  -3.09<span style="">(SDLW)</span>
+                </P>
 
                 <p style="text-align: center">Till Date Strike Rate : 81.29%</p>
               </div>
@@ -41,8 +41,8 @@
             <!-- small box -->
             <div class="small-box bg-green">
               <div class="inner">
-                <h3 class="text-center" style="border-bottom: 1px solid #fff;">Non Lifter</h3>
-                <h3 class="text-center">113</h3>
+                <h3 class="text-center" style="border-bottom: 1px solid #fff; font-size: 25px;">Non Lifter</h3>
+                <p class="text-center" style="font-size: 20px;">113</p>
               </div>
 
             </div>
@@ -51,8 +51,8 @@
             <!-- small box -->
             <div class="small-box bg-green">
               <div class="inner">
-                <h3 class="text-center" style="border-bottom: 1px solid #fff;">No Order</h3>
-                <h3 class="text-center">250</h3>
+                <h3 class="text-center" style="border-bottom: 1px solid #fff; font-size: 25px;">No Order</h3>
+                <p class="text-center" style="font-size: 20px;">250</p>
               </div>
 
             </div>
@@ -61,8 +61,8 @@
             <!-- small box -->
             <div class="small-box bg-green">
               <div class="inner">
-                <h3 class="text-center" style="border-bottom: 1px solid #fff;">No Sales</h3>
-                <h3 class="text-center">235</h3>
+                <h3 class="text-center" style="border-bottom: 1px solid #fff; font-size: 25px;">No Sales</h3>
+                <p class="text-center" style="font-size: 20px;">235</p>
               </div>
 
             </div>
@@ -74,10 +74,15 @@
             <!-- small box -->
             <div class="small-box bg-yellow">
               <div class="inner">
-                <table class="dashboardTable">
+                <table class="table dashboardTable">
+                  <thead>
+                  <tr><th>Name</th><th>&nbsp;</th><th>Value</th></tr>
+                  </thead>
+                  <tbody>
                   <tr><td>Target Outlet</td><td>:</td><td>371284</td></tr>
                   <tr><td>Successfull Call</td><td>:</td><td>203843</td></tr>
                   <tr><td>Visited Outlet</td><td>:</td><td>321281</td></tr>
+                  </tbody>
                 </table>
               </div>
 
@@ -91,7 +96,7 @@
             <div class="small-box bg-red">
               <div class="inner">
                 <div style="text-align: center; font-size: 25px; font-weight: bold; border-bottom: 1px solid #fff;">Brand Wise Productiveity</div>
-                <table class="dashboardTable">
+                <table class="table table-border dashboardTable">
                   <tr><td>Tiger</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-71.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
                   <tr><td>Black Horse</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-down"></i>&nbsp;&nbsp;-21.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
                   <tr><td>Fizz upp</td><td>80.04</td><td><i style="position: relative; bottom: 4px; left: 5px;" class="fa fa-sort-up"></i>&nbsp;&nbsp;+34.79<span style="font-size: 16px;">(SDLW)</span></td></tr>
@@ -124,9 +129,12 @@
   </div>
   <!-- /.content-wrapper -->
 <style>
-  .dashboardTable td {
-    font-size: 25px;
+  .dashboardTable td, th{
+    font-size: 20px;
     padding: 4px 0px;
+  }
+  .content-wrapper {
+    background-color: #ccc !important;
   }
 </style>
 @stop
