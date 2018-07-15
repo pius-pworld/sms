@@ -611,7 +611,7 @@ class ReportsController extends Controller
         $data['ajaxUrl'] = URL::to('order-vs-sale-secondary-search');
         $data['searching_options'] = 'grid.search_elements_all';
         //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
-        $data['searchAreaOption'] = searchAreaOption(array('show'));
+        $data['searchAreaOption'] = searchAreaOption(array('show','month'));
         $data['memo_structure']=repoStructure();
         $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'order vs sale secondary'));
         $data['level'] = 2;

@@ -420,45 +420,60 @@ if(!function_exists('dailySaleSummaryByMonth')){
         return $route_wise_sale_summary;
     }
 }
-
+if(!function_exists('getSecondaryOrderSaleByIds')){
+    function getSecondaryOrderSaleByIds($ids){
+        $data =DB::table('skues')
+            ->select('distribution_houses.point_name','skues.short_name','orders.requester_name','skues.short_name',DB::raw('SUM(order_details.quantity) as order_quantity'),DB::raw('SUM(sale_details.quantity) as sale_quantity'))
+            ->leftJoin('order_details','order_details.short_name','=','skues.short_name')
+            ->leftJoin('orders','orders.id','=','order_details.orders_id')
+            ->leftJoin('sales',function($join){
+                $join->on('sales.aso_id','=','orders.aso_id')
+                    ->on('sales.order_date','=','orders.order_date');
+            })
+            ->leftJoin('sale_details',function ($join){
+                $join->on('sale_details.sales_id','=','sales.id')
+                    ->on('sale_details.short_name','=','order_details.short_name');
+            })
+            ->leftJoin('distribution_houses','distribution_houses.id','=','orders.dbid')
+            ->where('orders.order_type','Secondary')
+            ->where('orders.order_status','Processed')
+            ->where('orders.order_status','Processed')
+            ->whereIn('orders.aso_id',$ids)
+            ->groupBy('skues.short_name')
+            ->groupBy('distribution_houses.point_name')
+            ->get();
+        return $data;
+    }
+}
 if(!function_exists('orderVsSaleSecondary')){
     function orderVsSaleSecondary($asos,$selected_memo,$selected_date_range){
             $response=[];
             $selected_aso=array_column($asos,'id');
-            $data =DB::table('skues')
-                  ->select('distribution_houses.point_name','orders.requester_name','skues.short_name',DB::raw('SUM(order_details.quantity) as order_quantity'),DB::raw('SUM(sale_details.quantity) as sale_quantity'))
-                  ->leftJoin('order_details','order_details.short_name','=','skues.short_name')
-                  ->leftJoin('orders','orders.id','=','order_details.orders_id')
-                   ->leftJoin('sales',function($join){
-                        $join->on('sales.aso_id','=','orders.aso_id')
-                            ->on('sales.order_date','=','orders.order_date');
-                    })
-                   ->leftJoin('sale_details',function ($join){
-                        $join->on('sale_details.sales_id','=','sales.id')
-                            ->on('sale_details.short_name','=','order_details.short_name');
-                   })
-                  ->leftJoin('distribution_houses','distribution_houses.id','=','orders.dbid')
-                  ->leftJoin('brands','brands.id','skues.brands_id')
-                  ->leftJoin('categories','categories.id','brands.categories_id')
-                   ->where('orders.order_type','Secondary')
-                  ->where('orders.order_status','Processed')
-                  ->whereIn('orders.aso_id',$selected_aso)
-                  ->groupBy('skues.short_name')
-                  ->groupBy('distribution_houses.point_name')
-                  ->orderBy('categories.ordering')
-                  ->orderBy('brands.ordering')
-                  ->orderBy('skues.ordering')
-                  ->get();
+            $data= getSecondaryOrderSaleByIds($selected_aso,$selected_date_range);
+            if(!$data->isEmpty()){
+                   foreach ($data as $value){
+                       $response[$value->point_name][$value->short_name]['requested'] = $value->order_quantity;
+                       $response[$value->point_name][$value->short_name]['delivered'] = $value->sale_quantity;
+                   }
+             }
 
-           if(!$data->isEmpty()){
-               foreach ($data as $value){
-                   $response[$value->point_name][] = [
-                        $value->order_quantity,
-                        $value->sale_quantity
-                   ];
-               }
-           }
-           return $response;
+            $response_data=[];
+             foreach ($response as $h_key=>$h_value){
+                   $sku_gen_value=[];
+                   foreach ($selected_memo as $cat_key=>$cat_val) {
+                       $selected_skues = array_flatten($cat_val);
+                       foreach($selected_skues as $key=>$value){
+                          $sku_gen_value[]=[
+                                $h_value[$value]['requested'],
+                                $h_value[$value]['delivered']
+                          ];
+                       }
+                   }
+                   $response_data[$h_key] = $sku_gen_value;
+             }
+
+           return $response_data;
+
 
     }
 }
