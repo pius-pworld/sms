@@ -656,7 +656,8 @@ class ReportsController extends Controller
             $selected_route=getRouteInfoByAso($route_ids);
         }
 
-        $data['order_vs_sale_secondary'] = dailySaleSummaryByMonth($selected_route, $data['memo_structure'],$selected_months,$selected_date_range);
+
+        $data['order_vs_sale_secondary'] = orderVsSaleSecondary($selected_route, $data['memo_structure'],$selected_date_range);
 
 
         return view('reports.order_vs_sale_secondary_ajax',$data);

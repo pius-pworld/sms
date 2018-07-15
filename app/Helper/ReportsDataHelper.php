@@ -422,8 +422,28 @@ if(!function_exists('dailySaleSummaryByMonth')){
 }
 
 if(!function_exists('orderVsSaleSecondary')){
-    function orderVsSaleSecondary(){
-        
+    function orderVsSaleSecondary($asos,$selected_memo,$selected_date_range){
+            $selected_aso=array_column($asos,'id');
+            $data= DB::table('orders')
+                ->select('orders.order_date','distribution_houses.point_name','orders.id as oid','orders.requester_name','orders.order_date','orders.dh_name','orders.order_date',DB::row(),'skues.sku_name','order_details.short_name','order_details.quantity as order_quantity','sales.sale_date','sale_details.quantity as salequantity')
+                ->join('order_details','order_details.orders_id','=','orders.id')
+                ->leftJoin('sales',function($join){
+                    $join->on('sales.aso_id','=','orders.aso_id')
+                        ->on('sales.order_date','=','orders.order_date');
+                })
+                ->leftJoin('sale_details',function ($join){
+                    $join->on('sale_details.sales_id','=','sales.id')
+                        ->on('sale_details.short_name','=','order_details.short_name');
+                })
+                ->leftJoin('skues','skues.short_name','=','order_details.short_name')
+                ->leftJoin('distribution_houses','distribution_houses.id','=','orders.dbid')
+                ->where('orders.order_type','Secondary')
+                ->where('orders.order_status','Processed')
+                ->whereIn('orders.aso_id',[11])
+                ->orderBy('orders.id', 'DESC')->get();
+
+            dd($data);
+
     }
 }
 
