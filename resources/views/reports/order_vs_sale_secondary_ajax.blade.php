@@ -43,17 +43,17 @@
     </tr>
     </thead>
     <tbody>
-    {{--@if(isset($house_wise_performance) && count($house_wise_performance) > 0)--}}
-        {{--@foreach($house_wise_performance as $house_key=> $house_info)--}}
-            {{--<tr>--}}
-                {{--<th>{{$house_key}}</th>--}}
-                {{--@foreach($house_info as $key => $value)--}}
-                    {{--@for($i=0;$i<$level;$i++)--}}
-                        {{--<td>{{$value[$i]}}</td>--}}
-                    {{--@endfor--}}
-                {{--@endforeach--}}
-            {{--</tr>--}}
-        {{--@endforeach--}}
-    {{--@endif--}}
+    @if(isset($order_vs_sale_secondary) && count($order_vs_sale_secondary) > 0)
+        @foreach($order_vs_sale_secondary as $house_key=> $house_info)
+            <tr>
+                <th>{{$house_key}}</th>
+                @foreach($house_info as $key => $value)
+                    @for($i=0;$i<$level;$i++)
+                        <td>{{$value[$i]}}</td>
+                    @endfor
+                @endforeach
+            </tr>
+        @endforeach
+    @endif
     </tbody>
 </table>
