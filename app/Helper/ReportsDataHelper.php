@@ -421,5 +421,11 @@ if(!function_exists('dailySaleSummaryByMonth')){
     }
 }
 
+if(!function_exists('orderVsSaleSecondary')){
+    function orderVsSaleSecondary(){
+        
+    }
+}
+
 
 

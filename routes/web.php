@@ -102,6 +102,10 @@ Route::post('sale-summary-month-search','ReportsController@saleSummaryMonthAjax'
 Route::get('sms-outboxes','SmsOutboxesController@smsOutboxes');
 Route::post('sms-outboxes-ajax','SmsOutboxesController@smsOutboxesAjax');
 
+Route::get('order-vs-sale-secondary','ReportsController@orderVsSaleSecondary');
+Route::post('order-vs-sale-secondary-search','ReportsController@orderVsSaleSecondaryAjax');
+
+
 
 
 

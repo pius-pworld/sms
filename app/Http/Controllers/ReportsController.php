@@ -607,4 +607,59 @@ class ReportsController extends Controller
         return view('reports.sale_summary_by_month_ajax',$data);
     }
 
+    public function orderVsSaleSecondary(Request $request){
+        $data['ajaxUrl'] = URL::to('order-vs-sale-secondary-search');
+        $data['searching_options'] = 'grid.search_elements_all';
+        //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
+        $data['searchAreaOption'] = searchAreaOption(array('show'));
+        $data['memo_structure']=repoStructure();
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'order vs sale secondary'));
+        $data['level'] = 2;
+        $data['level_col_data'] =['Req','Del'];
+        return view('reports.order_vs_sale_secondary',$data);
+    }
+
+    public function orderVsSaleSecondaryAjax(Request $request){
+        $data['ajaxUrl'] = URL::to('order-vs-sale-secondary-search');
+        $data['searching_options'] = 'grid.search_elements_all';
+
+        //request data
+        $post= $request->all();
+        unset($post['_token']);
+        $request_data = filter_array($post);
+
+        //memeo structure
+        $categorie_ids =array_key_exists('category_id',$request_data) ? $request_data['category_id'] : [];
+        $brand_ids =array_key_exists('brands_id',$request_data) ? $request_data['brands_id'] : [];
+        $sku_ids =array_key_exists('skues_id',$request_data) ? $request_data['skues_id'] : [];
+
+        $data['memo_structure']= repoStructure($categorie_ids,$brand_ids,$sku_ids);
+        $data['level'] = 2;
+        $data['level_col_data'] =['Req','Del'];
+
+
+        //Request
+
+        $zone_ids=array_key_exists('zones_id',$request_data) ? $request_data['zones_id'] : [];
+        $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
+        $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
+        $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
+        $route_ids=array_key_exists('aso_id',$request_data) ? $request_data['aso_id'] : [];
+        $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
+
+        if(count($route_ids) == 0 ){
+            $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+            $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
+            $selected_houses =array_filter($selected_houses);
+            $selected_route=getRouteInfoByHouse($selected_houses);
+        }else{
+            $selected_route=getRouteInfoByAso($route_ids);
+        }
+
+        $data['order_vs_sale_secondary'] = dailySaleSummaryByMonth($selected_route, $data['memo_structure'],$selected_months,$selected_date_range);
+
+
+        return view('reports.order_vs_sale_secondary_ajax',$data);
+    }
+
 }
