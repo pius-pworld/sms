@@ -257,7 +257,7 @@ class ReportsController extends Controller
     public function houseStock(Request $request){
         $data['ajaxUrl'] = URL::to('house-stock-search');
         $data['searching_options'] = 'grid.search_elements_all';
-        $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange'));
+        $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange','month'));
         $memo = repoStructure();
         $data['memo_structure']= $memo;
         $data['level'] = 1;
@@ -303,7 +303,7 @@ class ReportsController extends Controller
         $data['ajaxUrl'] = URL::to('house-lifting-search');
         $data['searching_options'] = 'grid.search_elements_all';
         //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
-        $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange'));
+        $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange','month'));
         $memo = repoStructure();
         $data['level'] = 2;
         $data['level_col_data'] =['Requested','Delivery'];

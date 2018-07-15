@@ -1,4 +1,4 @@
-<table border="1">
+<table id="dataTableId" class="table-bordered table dataTable">
     <thead>
     <tr>
         <th rowspan="4" style="vertical-align: middle">Route Name</th>
