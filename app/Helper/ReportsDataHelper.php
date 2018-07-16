@@ -296,7 +296,7 @@ if(!function_exists('routeWiseStrikeRate')){
                  ];
              }
              else{
-                 $route_wise_strike_rate[$route_value['name']]['additional']=[
+                 $route_wise_strike_rate[$route_value['name']]['additionaladditional']=[
                     0,0,0,0,0
                  ];
              }

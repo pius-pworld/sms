@@ -197,10 +197,10 @@
                     if(!empty($present_quantity)){
                         $present_quantity = $present_quantity->toArray();
                         if(!$stock){
-                            $update_quantity = $present_quantity['quantity'] + $value;
+                            $update_quantity = (int)$present_quantity['quantity'] + $value;
                         }
                         else{
-                            $update_quantity = $present_quantity['quantity'] - $value;
+                            $update_quantity = (int)$present_quantity['quantity'] - $value;
                         }
                         \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->update(['quantity'=>$update_quantity]);
                     }
@@ -223,10 +223,10 @@
                 if(!empty($present_quantity)){
                     $present_quantity = $present_quantity->toArray();
                     if(!$stock){
-                        $update_quantity = $present_quantity['quantity'] - $value;
+                        $update_quantity = (int)$present_quantity['quantity'] - $value;
                     }
                     else{
-                        $update_quantity = $present_quantity['quantity'] + $value;
+                        $update_quantity = (int)$present_quantity['quantity'] + $value;
                     }
                     \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->update(['quantity'=>$update_quantity]);
                 }
@@ -318,12 +318,12 @@ if(!function_exists('searchAreaOption')){
 
 
 if(!function_exists('get_info_by_aso')){
-    function get_info_by_aso($id){
+    function get_info_by_aso($id,$type="market"){
         $data=DB::table('users')
              ->select('users.name','users.mobile','users.distribution_house_id','distribution_houses.incharge_name as dhname','distribution_houses.incharge_phone as dhphone','territories.incharge_name as tsoname','territories.incharge_phone as tsophone')
              ->join('territories','territories.id','=','users.territories_id')
              ->join('distribution_houses','distribution_houses.id','users.distribution_house_id')
-             ->where('users.user_type','market')
+             ->where('users.user_type',$type)
              ->where('users.id',$id)
              ->first();
         return $data;
@@ -331,12 +331,12 @@ if(!function_exists('get_info_by_aso')){
 }
 
 if(!function_exists('get_info_by_asm')){
-    function get_info_by_asm($id){
+    function get_info_by_asm($id,$type="territory"){
         $data=DB::table('users')
             ->select('users.name','users.mobile','users.distribution_house_id','distribution_houses.incharge_name as dhname','distribution_houses.incharge_phone as dhphone','territories.incharge_name as tsoname','territories.incharge_phone as tsophone')
             ->join('territories','territories.id','=','users.territories_id')
             ->join('distribution_houses','distribution_houses.id','users.distribution_house_id')
-            ->where('users.user_type','territory')
+            ->where('users.user_type',$type)
             ->where('users.id',$id)
             ->first();
         return $data;
