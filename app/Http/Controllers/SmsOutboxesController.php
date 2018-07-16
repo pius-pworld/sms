@@ -94,6 +94,7 @@ class SmsOutboxesController extends Controller
 
     public static function writeOutbox($number, $message, array $options = [])
     {
+        $input_data['inbox_id'] = $options['id'];
         $input_data['sms_reciever_number'] = $number;
         $input_data['sms_content'] = $message;
         if (array_key_exists('priority', $options)) {

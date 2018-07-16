@@ -9,6 +9,7 @@ use App\Models\OrderDetail;
 use App\Models\Sale;
 use App\Models\Skue;
 use App\Models\SmsInbox;
+use App\Models\SmsOutbox;
 use App\Models\Stocks;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -454,11 +455,13 @@ class SmsInboxesController extends Controller
                     ->with('success_message', 'Order successfully placed!');
             }
         } else {
+
+            SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
             return redirect()->route('sms_inboxes.sms_inbox.index')
                 ->with('error_message', isset($order_information['message']) ? $order_information['message'] : 'Invalid Order !!');
         }
     }
-    
+
     /**
      * process sell
      * @param $id
@@ -485,7 +488,7 @@ class SmsInboxesController extends Controller
                     ->with('success_message', 'Sale successfully placed!');
             }
         } else {
-
+            SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
             return redirect()->route('sms_inboxes.sms_inbox.index')
                 ->with('error_message', isset($sale_information['message']) ? $sale_information['message'] : 'Invalid Sale !!');
         }
@@ -519,13 +522,14 @@ class SmsInboxesController extends Controller
             }
         }
         else{
-
+            SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
             return redirect()->route('sms_inboxes.sms_inbox.index')
                 ->with('error_message', isset($primary_information['message']) ? $primary_information['message'] : 'Invalid Primary Order!!');
         }
     }
 
     private function processPromotion($id,$parseData){
+        $get_info=SmsInbox::where('id',$id)->first()->toArray();
         $promotion_information = $this->preparePromotionData($parseData['data']);
 
         $promotion_information['order_details']=[];
@@ -533,6 +537,9 @@ class SmsInboxesController extends Controller
             foreach ($parseData['data']['pdn'] as $key => $value){
                 $package_details = get_package_by_name($value['short_name']);
                 if(count($package_details) < 1){
+                    $error_message ='Invalid Package ( *'.$value['short_name'].' ) Information!!';
+                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
+                    SmsOutboxesController::writeOutbox($get_info['sender'],$error_message,['id'=>$id,'order_type'=>'promotional','priority'=>3]);
                     return redirect()->route('sms_inboxes.sms_inbox.index')
                         ->with('error_message', 'Invalid Package ( *'.$value['short_name'].' ) Information!!');
                 }
@@ -547,10 +554,7 @@ class SmsInboxesController extends Controller
                     ];
                 }
             }
-            //$data['aso_id'] = $promotion_information['order']['aso_id'];
             modify_stock($promotion_information['order']['aso_id'],$promotion_information['order_details'],isset($promotion_information['update']) && $promotion_information['update'] ? $promotion_information['previous_data']: []);
-            //$this->modifyStock($promotion_information['order_details'],$data);
-
             if (Sale::insertSale($promotion_information['order'], $promotion_information['order_details'])) {
                 SmsInbox::find($id)->update(['sms_status' => 'Processed']);
 
@@ -560,9 +564,11 @@ class SmsInboxesController extends Controller
 
         }
         else{
-
+            $error_message = isset($promotion_information['message']) ? $promotion_information['message'] : 'Invalid Promotinal Sale!!';
+            SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
+            SmsOutboxesController::writeOutbox($get_info['sender'],$error_message,['id'=>$id,'order_type'=>'promotional','priority'=>3]);
             return redirect()->route('sms_inboxes.sms_inbox.index')
-                ->with('error_message', isset($promotion_information['message']) ? $promotion_information['message'] : 'Invalid Promotinal Sale!!');
+                ->with('error_message', $error_message);
         }
     }
 
@@ -594,12 +600,12 @@ class SmsInboxesController extends Controller
                     return $this->processPromotion($id,$parseData);
                     break;
                 default:
-
+                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
                     return redirect()->route('sms_inboxes.sms_inbox.index')
                         ->with('error_message','Invalid message format !');
             }
         } else {
-
+            SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
             return redirect()->route('sms_inboxes.sms_inbox.index')
                 ->with('error_message', $parseData['message']);
         }

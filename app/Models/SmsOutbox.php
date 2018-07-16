@@ -31,6 +31,7 @@ class SmsOutbox extends Model
      * @var array
      */
     protected $fillable=[
+        'inbox_id',
         'sms_reciever_number',
         'sms_content',
         'priority',
