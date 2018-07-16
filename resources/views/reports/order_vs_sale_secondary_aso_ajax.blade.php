@@ -1,7 +1,7 @@
 <table id="dataTableId" class="table table-bordered table-striped dataTable no-footer">
     <thead>
     <tr>
-        <th rowspan="4" style="vertical-align: middle">House Name</th>
+        <th rowspan="4" style="vertical-align: middle">ASO Name</th>
         @if(isset($memo_structure))
             @foreach($memo_structure as $category_key=>$category_value)
                 <th colspan="{{ array_sum(array_map("count", $category_value)) * $level }}" style="text-align: center">{{$category_key}}</th>
@@ -46,7 +46,7 @@
     @if(isset($order_vs_sale_secondary) && count($order_vs_sale_secondary) > 0)
         @foreach($order_vs_sale_secondary as $house_key=> $house_info)
             <tr>
-                <th><a href="{{URL::to('order-vs-sale-secondary-aso/'.$house_info['additional']['house_id'].'/'.json_encode($post_data))}}"> {{$house_key}} </a></th>
+                <th><a href="{{URL::to('order-vs-sale-secondary-route/'.$house_info['additional']['aso_id'].'/'.json_encode($post_data))}}"> {{$house_key}} </a></th>
                 @foreach($house_info['data'] as $key => $value)
                     @for($i=0;$i<$level;$i++)
                         <td>{{$value[$i]}}</td>

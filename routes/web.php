@@ -105,6 +105,15 @@ Route::post('sms-outboxes-ajax','SmsOutboxesController@smsOutboxesAjax');
 Route::get('order-vs-sale-secondary','ReportsController@orderVsSaleSecondary');
 Route::post('order-vs-sale-secondary-search','ReportsController@orderVsSaleSecondaryAjax');
 
+Route::get('order-vs-sale-secondary-aso/{dbid}/{postdata}','ReportsController@orderVsSaleSecondaryAso');
+Route::post('order-vs-sale-secondary-aso-search/{dbid}','ReportsController@orderVsSaleSecondaryAsoSearch');
+
+Route::get('order-vs-sale-secondary-route/{aso_id}/{postdata}','ReportsController@orderVsSaleSecondaryRoute');
+Route::post('order-vs-sale-secondary-route-search/{aso_id}','ReportsController@orderVsSaleSecondaryRouteSearch');
+
+Route::get('order-vs-sale-secondary-date/{route_id}/{postdata}','ReportsController@orderVsSaleSecondaryDate');
+Route::post('order-vs-sale-secondary-date-search/{route_id}','ReportsController@orderVsSaleSecondaryDateSearch');
+
 
 
 
