@@ -10,6 +10,7 @@ use App\Models\Sale;
 use App\Models\Skue;
 use App\Models\SmsInbox;
 use App\Models\Stocks;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Sms;
@@ -239,7 +240,7 @@ class SmsInboxesController extends Controller
             $order_information['message'] = "Invalid ASO Information!!";
             return $order_information;
         }
-        Order::where('aso_id',$aso_id)->where('order_date',$order_date)->update(['order_status'=>'Rejected']);
+        Order::where('aso_id',$aso_id)->where('order_date',$order_date)->where('order_type','Secondary')->where('created_at','>',Carbon::now()->subHours(48)->toDateTimeString())->update(['order_status'=>'Rejected']);
         $total_sku_count = $this->totalCheck($data, 'order',$order_total_amount);
         $order_information=[];
         if ($total_sku_count === (int)$order_total_sku) {
@@ -296,8 +297,10 @@ class SmsInboxesController extends Controller
             $sale_information['message'] = "Invalid ASO Information!!";
             return $sale_information;
         }
-        Sale::where('aso_id',$aso_id)->where('order_date',$order_date)->update(['sale_status'=>'Rejected']);
         $sale_information=[];
+        if(!getPreviousSale($aso_id,$order_date)->isEmpty()){
+            rejectPreviousSale($aso_id,$order_date,$sale_information);
+        }
         if ($total === (int)$sale_total_sku) {
             $sale_information['order'] = [
                 'aso_id'=> $aso_id,
@@ -353,7 +356,7 @@ class SmsInboxesController extends Controller
             return $primary_order_information;
         }
 
-        Order::where('asm_rsm_id',$asm_rms_id)->where('order_date',$order_date)->update(['order_status'=>'Rejected']);
+        Order::where('asm_rsm_id',$asm_rms_id)->where('order_date',$order_date)->where('order_type','Primary')->where('created_at','>',Carbon::now()->subHours(48)->toDateTimeString())->update(['order_status'=>'Rejected']);
 
         if ($total === (int)$primary_order_total_sku) {
             $primary_order_information['order'] = [
@@ -388,15 +391,17 @@ class SmsInboxesController extends Controller
         $order_date = $data['dt'];
         $route_name = $data['rt'];
         unset($data['asoid'],$data['dt'],$data['rt']);
-        $get_information=get_info_by_aso($aso_id);
+        $get_information=get_info_by_aso($aso_id,'territory');
         if(is_null($get_information)){
             $promotional_sale['status'] = false;
             $promotional_sale['message'] = "Invalid ASO Information!!";
             return $promotional_sale;
         }
-        
-        Sale::where('aso_id',$aso_id)->where('order_date',$order_date)->update(['order_status'=>'Rejected']);
+
         $promotional_sale=[];
+        if(!getPreviousSale($aso_id,$order_date,'Promotional')->isEmpty()){
+            rejectPreviousSale($aso_id,$order_date,$promotional_sale,'Promotional');
+        }
         if(!empty($aso_id) && !empty($order_date) && !empty($route_name)){
             $promotional_sale['order'] = [
                 'aso_id'=> $aso_id,
@@ -453,48 +458,7 @@ class SmsInboxesController extends Controller
                 ->with('error_message', isset($order_information['message']) ? $order_information['message'] : 'Invalid Order !!');
         }
     }
-
-    private function modifyStock($sku_informations,$order_information,$update=false){
-        $distribution_house_info = DB::table('users')
-            ->select('users.distribution_house_id')
-            ->where('users.id',$order_information['aso_id'])
-            ->first();
-        $present_data =[];
-        $updated_data=[];
-        $updated_data=[];
-
-        if(isset($order_information['order_status']) && $order_information['order_status'] == 'Processed' && $update){
-            $order_details = DB::table('orders')
-                ->select('order_details.short_name','order_details.quantity')
-                ->where('orders.aso_id',$order_information['aso_id'])
-                ->join('order_details', 'order_details.orders_id', '=', 'orders.id')->get();
-            $total = 0;
-            foreach ($order_details as $val){
-                $unit=Skue::where('short_name',$val['short_name'])->first(['price']);
-                if(!empty($unit)){
-                    $unit = $unit->toArray();
-                    $total+= $unit['price'] * $val['quantity'];
-                    $present_data[$val['short_name']] = $val['quantity'];
-                }
-            }
-            stock_update($distribution_house_info->distribution_house_id,$updated_data,$present_data,$total);
-        }
-        else{
-            $total = 0;
-            foreach ($sku_informations as $val){
-                $unit=Skue::where('short_name',$val['short_name'])->first(['price']);
-                if(!empty($unit)){
-                    $unit = $unit->toArray();
-                    $total+= $unit['price'] * $val['quantity'];
-                    $updated_data[$val['short_name']] = $val['quantity'];
-                }
-            }
-            stock_update($distribution_house_info->distribution_house_id,$updated_data,$present_data,$total);
-        }
-
-
-    }
-
+    
     /**
      * process sell
      * @param $id
@@ -513,9 +477,7 @@ class SmsInboxesController extends Controller
                     "created_by" =>1
                 ];
             }
-            $order_information = Order::all()->where('aso_id',$sale_information['order']['aso_id'])->where('order_date',$sale_information['order']['order_date'])->last()->toArray();
-            $this->modifyStock($sale_information['order_details'],$order_information);
-
+            modify_stock($sale_information['order']['aso_id'],$sale_information['order_details'],isset($sale_information['update']) && $sale_information['update'] ? $sale_information['previous_data']: []);
             if (Sale::insertSale($sale_information['order'], $sale_information['order_details'])) {
                 SmsInbox::find($id)->update(['sms_status' => 'Processed']);
 
@@ -585,8 +547,9 @@ class SmsInboxesController extends Controller
                     ];
                 }
             }
-            $data['aso_id'] = $promotion_information['order']['aso_id'];
-            $this->modifyStock($promotion_information['order_details'],$data);
+            //$data['aso_id'] = $promotion_information['order']['aso_id'];
+            modify_stock($promotion_information['order']['aso_id'],$promotion_information['order_details'],isset($promotion_information['update']) && $promotion_information['update'] ? $promotion_information['previous_data']: []);
+            //$this->modifyStock($promotion_information['order_details'],$data);
 
             if (Sale::insertSale($promotion_information['order'], $promotion_information['order_details'])) {
                 SmsInbox::find($id)->update(['sms_status' => 'Processed']);
@@ -612,13 +575,11 @@ class SmsInboxesController extends Controller
     public function process($id, Request $request)
     {
         $parseData = $this->sms->parseSms($id);
-
         if ($parseData['status'] === true) {
-
             switch ($parseData['type']){
                 case ORDER:
-
                     return $this->processOrder($id,$parseData);
+
                     break;
                 case SALE:
 

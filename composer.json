@@ -23,9 +23,9 @@
     "autoload": {
         "files":[
             "app/Helper/CommonHelper.php",
-
             "app/Helper/DropdownHelper.php",
-            "app/Helper/ReportsDataHelper.php"
+            "app/Helper/ReportsDataHelper.php",
+            "app/Helper/SmsHelper.php"
         ],
         "classmap": [
             "database/seeds",
