@@ -925,4 +925,103 @@ class ReportsController extends Controller
         return view('reports.order_vs_sale_secondary_date_ajax',$data);
     }
 
+
+    //primary order vs sale
+    public function orderVsSalePrimary(Request $request){
+        $data['ajaxUrl'] = URL::to('order-vs-sale-primary-search');
+        $data['searching_options'] = 'grid.search_elements_all';
+        //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
+        $data['searchAreaOption'] = searchAreaOption(array('show','month','route'));
+        $data['memo_structure']=repoStructure();
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'order vs sale secondary'));
+        $data['level'] = 2;
+        $data['level_col_data'] =['Req','Del'];
+        return view('reports.order_vs_sale_primary',$data);
+    }
+
+    public function orderVsSalePrimarySearch(Request $request){
+        $data['ajaxUrl'] = URL::to('order-vs-sale-primary-search');
+        $data['searching_options'] = 'grid.search_elements_all';
+
+        //request data
+        $post= $request->all();
+        unset($post['_token']);
+        $request_data = filter_array($post);
+
+        //memeo structure
+        $categorie_ids =array_key_exists('category_id',$request_data) ? $request_data['category_id'] : [];
+        $brand_ids =array_key_exists('brands_id',$request_data) ? $request_data['brands_id'] : [];
+        $sku_ids =array_key_exists('skues_id',$request_data) ? $request_data['skues_id'] : [];
+
+        $data['memo_structure']= repoStructure($categorie_ids,$brand_ids,$sku_ids);
+        $data['level'] = 2;
+        $data['level_col_data'] =['Req','Del'];
+
+        //Requested Information
+        $zone_ids=array_key_exists('zones_id',$request_data) ? $request_data['zones_id'] : [];
+        $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
+        $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
+        $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
+        $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+        $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
+        $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
+        $selected_houses =array_filter($selected_houses);
+        $data['post_data'] = $post;
+        $data['order_vs_sale_primary'] = order_vs_sale_primary_by_house($selected_houses, $data['memo_structure'],$selected_date_range);
+
+//        dd( $data['order_vs_sale_primary'] );
+        return view('reports.order_vs_sale_primary_ajax',$data);
+    }
+
+    public function orderVsSalePrimaryDateWise(Request $request,$house_id,$post_data){
+        $request_pass_data = json_decode($post_data,true);
+        unset($request_pass_data['_token']);
+        $request_data = filter_array($request_pass_data);
+        $data['ajaxUrl'] = URL::to('order-vs-sale-primary-date-wise-search/'.$house_id);
+
+        $data['searching_options'] = 'grid.search_elements_all';
+        //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
+        $data['searchAreaOption'] = searchAreaOption(array('show','month','route','zone','region','territory','house'));
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'order vs sale secondary'));
+        //memo
+        $categorie_ids =array_key_exists('category_id',$request_data) ? $request_data['category_id'] : [];
+        $brand_ids =array_key_exists('brands_id',$request_data) ? $request_data['brands_id'] : [];
+        $sku_ids =array_key_exists('skues_id',$request_data) ? $request_data['skues_id'] : [];
+        $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
+
+        $data['memo_structure']= repoStructure($categorie_ids,$brand_ids,$sku_ids);
+        $data['level'] = 2;
+        $data['level_col_data'] =['Req','Del'];
+        $data['post_data'] = $post_data;
+        $data['date_wise'] = true;
+        $data['order_vs_sale_primary'] = order_vs_sale_primary_by_date($house_id, $data['memo_structure'],$selected_date_range);
+        return view('reports.order_vs_sale_primary',$data);
+    }
+
+    public function orderVsSalePrimaryDateWiseSearch(Request $request,$house_id){
+        $post= $request->all();
+        unset($post['_token']);
+        $request_data = filter_array($post);
+
+        //memeo structure
+        $categorie_ids =array_key_exists('category_id',$request_data) ? $request_data['category_id'] : [];
+        $brand_ids =array_key_exists('brands_id',$request_data) ? $request_data['brands_id'] : [];
+        $sku_ids =array_key_exists('skues_id',$request_data) ? $request_data['skues_id'] : [];
+
+        $data['memo_structure']= repoStructure($categorie_ids,$brand_ids,$sku_ids);
+        $data['level'] = 2;
+        $data['level_col_data'] =['Req','Del'];
+
+        //Requested Information
+        $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
+
+        $data['post_data'] = $post;
+        $data['order_vs_sale_primary'] = order_vs_sale_primary_by_date($house_id, $data['memo_structure'],$selected_date_range);
+
+
+        return view('reports.order_vs_sale_primary_ajax',$data);
+    }
+
+
+
 }
