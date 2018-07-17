@@ -67,6 +67,7 @@
                                         $sl = 0;
                                         foreach($v as $vk=>$vv)
                                         {
+//                                            debug($sales,1);
                                             $convertArrayOrder = collect($sales)->toArray();
                                             $key = array_search($vk, array_column($convertArrayOrder, 'short_name'));
                                             $grand_total += ($convertArrayOrder[$key]->quantity*$convertArrayOrder[$key]->price);
@@ -82,16 +83,16 @@
 
                                             echo '<td class="request_quantity">'.floor($convertArrayOrder[$key]->quantity).'</td>';
                                             echo '<td>
-                                                            <input type="hidden" name="short_name[]" value="'.$convertArrayOrder[$key]->short_name.'">
-                                                            <input type="hidden" name="price['.$convertArrayOrder[$key]->short_name.']" value="'.$convertArrayOrder[$key]->price.'">
-                                                            <input
-                                                                readonly
-                                                                class="order_quantity"
-                                                                style="width: 100px;"
-                                                                name="quantity['.$convertArrayOrder[$key]->short_name.']"
-                                                                type="number"
-                                                                oldValue="'.floor($convertArrayOrder[$key]->quantity).'"
-                                                                value="'.floor($convertArrayOrder[$key]->quantity).'"></td>';
+                                                <input type="hidden" name="short_name[]" value="'.$convertArrayOrder[$key]->short_name.'">
+                                                <input type="hidden" name="price['.$convertArrayOrder[$key]->short_name.']" value="'.$convertArrayOrder[$key]->price.'">
+                                                <input
+                                                    readonly
+                                                    class="order_quantity"
+                                                    style="width: 100px;"
+                                                    name="quantity['.$convertArrayOrder[$key]->short_name.']"
+                                                    type="number"
+                                                    oldValue="'.floor($convertArrayOrder[$key]->quantity).'"
+                                                    value="'.floor($convertArrayOrder[$key]->quantity).'"></td>';
                                             echo '<td style="text-align: right" class="price_rate">'.number_format($convertArrayOrder[$key]->price,2).'</td>';
                                             echo '<td style="text-align: right" class="sub_total">'.number_format(($convertArrayOrder[$key]->price*$convertArrayOrder[$key]->quantity),2).'</td>';
                                             echo '</tr>';

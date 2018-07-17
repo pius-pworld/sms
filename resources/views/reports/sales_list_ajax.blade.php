@@ -18,13 +18,18 @@
             <th>Value Per Call</th>
             <th>Total SKU Order Qty</th>
             <th>Order Amount</th>
+        @elseif($type == 'promotional')
+            <th>ASO/SO</th>
+            <th>ASO/SO Phone</th>
         @endif
         <th>Order Date</th>
         <th>Sale Date</th>
 
         <th>Total Sale Quantity</th>
-        <th>Total Amount</th>
-        {{--<th>Current Balance</th>--}}
+
+        @if($type != 'promotional')
+            <th>Total Amount</th>
+        @endif
         <th>Action</th>
     </tr>
     </thead>
@@ -48,8 +53,10 @@
             <td>{{$sale->order_date}}</td>
             <td>{{$sale->sale_date}}</td>
             <td>{{$sale->sale_total_sku}}</td>
-            <td>{{$sale->total_sale_amount}}</td>
-{{--            <td>{{($sale->current_balance-$sale->total_sale_amount)}}</td>--}}
+
+            @if($type != 'promotional')
+                <td>{{$sale->total_sale_amount}}</td>
+            @endif
             <td><a href="{{URL::to('sales-details/'.$type.'/'.$sale->id)}}"><i class="fa fa-eye"></i></a></td>
         </tr>
     @endforeach
