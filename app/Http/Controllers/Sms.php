@@ -65,7 +65,7 @@ class Sms extends Controller
         if (!$validator->isValid()) {
             foreach ($validator->getErrors() as $error) {
                 $error_message = sprintf("%s %s in $identifier SMS \n", $error['property'], $error['constraint']);
-                SmsOutboxesController::writeOutbox($additionals['sender'],$error_message,['order_type'=>$identifier,'priority'=>3]);
+                SmsOutboxesController::writeOutbox($additionals['sender'],$error_message,['id'=>$additionals['id'],'order_type'=>$identifier,'priority'=>3]);
                 return ['status' => false, 'message' => $error_message];
             }
         } else {
@@ -101,7 +101,7 @@ class Sms extends Controller
         if (!$validator->isValid()) {
             foreach ($validator->getErrors() as $error) {
                 $error_message = sprintf("%s %s in $identifier SMS \n", $error['property'], $error['constraint']);
-                SmsOutboxesController::writeOutbox($additionals['sender'],$error_message,['order_type'=>$identifier,'priority'=>3]);
+                SmsOutboxesController::writeOutbox($additionals['sender'],$error_message,['id'=>$additionals['id'],'order_type'=>$identifier,'priority'=>3]);
                 return ['status' => false, 'message' => $error_message];
             }
         } else {
@@ -181,7 +181,7 @@ class Sms extends Controller
 
         if (!empty($data) && !empty($data->sms_content)) {
 
-            return $this->parseData($data->sms_content,['sender'=>$data->sender]);
+            return $this->parseData($data->sms_content,['id'=>$id,'sender'=>$data->sender]);
         }
 
     }
