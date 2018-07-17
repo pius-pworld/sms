@@ -694,4 +694,116 @@ if(!function_exists('getSecondaryOrderRouteSaleByIds')){
 }
 
 
+if(!function_exists('gerOrderVsSaleByHouseIds')){
+    function gerOrderVsSaleByHouseIds($house_ids,$selected_date_range){
+
+        $data =DB::table('skues')
+            ->select('distribution_houses.id as house_id','distribution_houses.point_name','orders.order_date','orders.aso_id','distribution_houses.point_name','skues.short_name','orders.requester_name','skues.short_name',DB::raw('SUM(order_details.quantity) as order_quantity'),DB::raw('SUM(sale_details.quantity) as sale_quantity'))
+            ->leftJoin('order_details','order_details.short_name','=','skues.short_name')
+            ->leftJoin('orders','orders.id','=','order_details.orders_id')
+            ->leftJoin('sales',function($join){
+                $join->on('sales.aso_id','=','orders.aso_id')
+                    ->on('sales.order_date','=','orders.order_date');
+            })
+            ->leftJoin('sale_details',function ($join){
+                $join->on('sale_details.sales_id','=','sales.id')
+                    ->on('sale_details.short_name','=','order_details.short_name');
+            })
+            ->join('distribution_houses','distribution_houses.id','=','orders.dbid')
+            ->where('orders.order_type','Primary')
+            ->where('orders.order_status','Processed');
+            if(is_array($house_ids)){
+                $data->whereIn('orders.dbid',$house_ids);
+            }
+            else{
+                $data->where('orders.dbid',$house_ids);
+            }
+
+            $data->whereBetween('orders.order_date',array_map('trim', explode(" - ",$selected_date_range[0])))
+            ->groupBy('skues.short_name');
+            if(!is_array($house_ids)){
+               $data->groupBy('orders.order_date');
+            }
+            $data=$data->get();
+
+        return $data;
+    }
+}
+
+if(!function_exists('order_vs_sale_primary_by_house')){
+    function order_vs_sale_primary_by_house($house_ids,$selected_memo,$selected_date_range){
+        $data =gerOrderVsSaleByHouseIds($house_ids,$selected_date_range);
+        $response =[];
+        if(!$data->isEmpty()){
+            foreach ($data as $value){
+                $response[$value->point_name][$value->short_name]['requested'] = $value->order_quantity;
+                $response[$value->point_name][$value->short_name]['delivered'] = $value->sale_quantity;
+            }
+            $response[$value->point_name]['house_id'] = $value->house_id;
+        }
+        $response_data=[];
+        foreach ($response as $h_key=>$h_value){
+            $sku_gen_value=[];
+            foreach ($selected_memo as $cat_key=>$cat_val) {
+                $selected_skues = array_flatten($cat_val);
+                foreach($selected_skues as $key=>$value){
+                    $sku_gen_value[]=[
+                        $h_value[$value]['requested'],
+                        $h_value[$value]['delivered']
+                    ];
+
+                }
+            }
+            $response_data[$h_key]['additional']=[
+                'house_id'=> $h_value['house_id']
+            ];
+
+
+            $response_data[$h_key]['data'] = $sku_gen_value;
+        }
+
+        return $response_data;
+
+    }
+}
+
+if(!function_exists('order_vs_sale_primary_by_date')){
+    function order_vs_sale_primary_by_date($house_ids,$selected_memo,$selected_date_range){
+        $data =gerOrderVsSaleByHouseIds($house_ids,$selected_date_range);
+        $response =[];
+        if(!$data->isEmpty()){
+            foreach ($data as $value){
+                $response[$value->order_date][$value->short_name]['requested'] = $value->order_quantity;
+                $response[$value->order_date][$value->short_name]['delivered'] = $value->sale_quantity;
+            }
+        }
+
+        $response_data=[];
+        foreach ($response as $h_key=>$h_value){
+            $sku_gen_value=[];
+            foreach ($selected_memo as $cat_key=>$cat_val) {
+
+                $selected_skues = array_flatten($cat_val);
+                foreach($selected_skues as $key=>$value){
+                    $sku_gen_value[]=[
+                        $h_value[$value]['requested'],
+                        $h_value[$value]['delivered']
+                    ];
+
+                }
+            }
+            $response_data[$h_key]['additional']=[
+
+            ];
+
+
+            $response_data[$h_key]['data'] = $sku_gen_value;
+        }
+
+        return $response_data;
+
+    }
+}
+
+
 

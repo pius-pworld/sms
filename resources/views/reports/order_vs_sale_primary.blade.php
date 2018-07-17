@@ -16,8 +16,6 @@
         </section>
 
         @include('grid.search_area_unique')
-
-        <div class="row">
             <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header" style="overflow: hidden">
@@ -35,16 +33,24 @@
                         @include('reports.order_vs_sale_primary_ajax')
                     </div>
 
-
                 </div>
-
-
 
             </div>
         </div>
         <script>
             $(document).ready(function(){
                 myConfiguration();
+                 $post_data= @if(isset($post_data)) {!! $post_data !!} @else null @endif;
+                 if($post_data !== null){
+                     $category_id=$post_data.category_id;
+                     $brands_id=$post_data.brands_id;
+                     $sku_id=$post_data.skues_id;
+                     $date_range =$post_data.created_at;
+                     $('.category_id').val($category_id);
+                     $('.brands_id').val($brands_id);
+                     $('.skues_id').val($sku_id);
+                     $('.date_range_converted').val($date_range);
+                 }
             });
         </script>
 @endsection
