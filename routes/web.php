@@ -116,8 +116,8 @@ Route::post('order-vs-sale-secondary-aso-search/{dbid}','ReportsController@order
 Route::get('order-vs-sale-secondary-route/{aso_id}/{postdata}','ReportsController@orderVsSaleSecondaryRoute');
 Route::post('order-vs-sale-secondary-route-search/{aso_id}','ReportsController@orderVsSaleSecondaryRouteSearch');
 
-Route::get('order-vs-sale-secondary-date/{route_id}/{postdata}','ReportsController@orderVsSaleSecondaryDate');
-Route::post('order-vs-sale-secondary-date-search/{route_id}','ReportsController@orderVsSaleSecondaryDateSearch');
+Route::get('order-vs-sale-secondary-date/{aso_id}/{route_id}/{postdata}','ReportsController@orderVsSaleSecondaryDate');
+Route::post('order-vs-sale-secondary-date-search/{aso_id}/{route_id}','ReportsController@orderVsSaleSecondaryDateSearch');
 
 
 
