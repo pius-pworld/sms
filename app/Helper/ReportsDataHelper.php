@@ -573,6 +573,7 @@ if(!function_exists('orderVsSaleSecondaryRoute')){
                 $response[$value->routes_name][$value->short_name]['requested'] = $value->order_quantity;
                 $response[$value->routes_name][$value->short_name]['delivered'] = $value->sale_quantity;
                 $response[$value->routes_name]['route_id'] = $value->route_id;
+                $response[$value->routes_name]['aso_id'] = $value->aso_id;
             }
 
         }
@@ -592,7 +593,8 @@ if(!function_exists('orderVsSaleSecondaryRoute')){
                 }
             }
             $response_data[$h_key]['additional']=[
-                'route_id'=> $h_value['route_id']
+                'route_id'=> $h_value['route_id'],
+                'aso_id'=> $h_value['aso_id']
             ];
 
 
@@ -608,10 +610,10 @@ if(!function_exists('orderVsSaleSecondaryRoute')){
 
 
 if(!function_exists('getSecondaryOrderRouteSaleByIds')){
-    function getSecondaryOrderRouteSaleByIds($ids){
+    function getSecondaryOrderRouteSaleByIds($ids,$selected_date_range,$route_id=null){
 //        debug($ids,1);
         $data =DB::table('skues')
-            ->select('distribution_houses.id','orders.aso_id','distribution_houses.point_name','routes.id as route_id','routes.routes_name','skues.short_name','orders.requester_name','skues.short_name',DB::raw('SUM(order_details.quantity) as order_quantity'),DB::raw('SUM(sale_details.quantity) as sale_quantity'))
+            ->select('distribution_houses.id','orders.order_date','orders.aso_id','distribution_houses.point_name','routes.id as route_id','routes.routes_name','skues.short_name','orders.requester_name','skues.short_name',DB::raw('SUM(order_details.quantity) as order_quantity'),DB::raw('SUM(sale_details.quantity) as sale_quantity'))
             ->leftJoin('order_details','order_details.short_name','=','skues.short_name')
             ->leftJoin('orders','orders.id','=','order_details.orders_id')
             ->leftJoin('sales',function($join){
@@ -623,18 +625,71 @@ if(!function_exists('getSecondaryOrderRouteSaleByIds')){
                     ->on('sale_details.short_name','=','order_details.short_name');
             })
             ->leftJoin('distribution_houses','distribution_houses.id','=','orders.dbid')
-            ->leftJoin('routes','routes.so_aso_user_id','=','orders.aso_id')
-//            ->leftJoin('routes',function ($join){
-//                $join->on('routes.id','=','orders.route_id')
-//                    ->on('routes.so_aso_user_id','=','orders.aso_id');
-//            })
+//            ->leftJoin('routes','routes.so_aso_user_id','=','orders.aso_id')
+            ->join('routes',function ($join){
+                $join->on('routes.so_aso_user_id','=','orders.aso_id')
+                    ->on('routes.id','=','orders.route_id')
+                    ->on('routes.id','=','sales.sale_route_id');
+            })
             ->where('orders.order_type','Secondary')
-            ->where('orders.order_status','Processed')
-            ->whereIn('orders.aso_id',$ids)
+            ->where('orders.order_status','Processed');
+            if($route_id)
+            {
+                $data->where('orders.route_id',$route_id);
+            }
+            $data->whereIn('orders.aso_id',$ids)
+            ->whereBetween('orders.order_date',array_map('trim', explode(" - ",$selected_date_range[0])))
             ->groupBy('skues.short_name')
-            ->groupBy('routes.routes_name')
-            ->get();
-        return $data;
+            ->groupBy('routes.routes_name');
+            $result = $data->get();
+//            debug($result,1);
+        return $result;
+    }
+
+
+    if(!function_exists('orderVsSaleSecondaryDate')){
+        function orderVsSaleSecondaryDate($route_id,$asos,$selected_memo,$selected_date_range){
+            $response=[];
+            $selected_aso=array_column($asos,'id');
+
+            $data= getSecondaryOrderRouteSaleByIds($selected_aso,$selected_date_range,$route_id);
+//            debug($data,1);
+            if(!$data->isEmpty()){
+                foreach ($data as $value){
+//                dd();
+                    $response[$value->order_date][$value->short_name]['requested'] = $value->order_quantity;
+                    $response[$value->order_date][$value->short_name]['delivered'] = $value->sale_quantity;
+                    $response[$value->order_date]['route_id'] = $value->route_id;
+                }
+
+            }
+//        debug($response,1);
+            $response_data=[];
+            foreach ($response as $h_key=>$h_value){
+                $sku_gen_value=[];
+                foreach ($selected_memo as $cat_key=>$cat_val) {
+
+                    $selected_skues = array_flatten($cat_val);
+                    foreach($selected_skues as $key=>$value){
+                        $sku_gen_value[]=[
+                            $h_value[$value]['requested'],
+                            $h_value[$value]['delivered']
+                        ];
+
+                    }
+                }
+                $response_data[$h_key]['additional']=[
+                    'route_id'=> $h_value['route_id']
+                ];
+
+
+                $response_data[$h_key]['data'] = $sku_gen_value;
+            }
+
+            return $response_data;
+
+
+        }
     }
 }
 

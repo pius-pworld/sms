@@ -46,7 +46,7 @@
     @if(isset($order_vs_sale_secondary) && count($order_vs_sale_secondary) > 0)
         @foreach($order_vs_sale_secondary as $house_key=> $house_info)
             <tr>
-                <th><a href="{{URL::to('order-vs-sale-secondary-aso/'.$house_info['additional']['house_id'].'/'.json_encode($post_data))}}"> {{$house_key}} </a></th>
+                <th><a target="_blank" href="{{URL::to('order-vs-sale-secondary-aso/'.$house_info['additional']['house_id'].'/'.json_encode($post_data))}}"> {{$house_key}} </a></th>
                 @foreach($house_info['data'] as $key => $value)
                     @for($i=0;$i<$level;$i++)
                         <td>{{$value[$i]}}</td>
