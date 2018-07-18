@@ -45,14 +45,14 @@
             <dd>{{ optional($product->brand)->brand_name }}</dd>
             <dt>Skues</dt>
             <dd>{{ optional($product->skue)->sku_name }}</dd>
-            <dt>Price</dt>
-            <dd>{{ $product->price }}</dd>
-            <dt>Quantity</dt>
-            <dd>{{ $product->quantity }}</dd>
+            {{--<dt>Price</dt>--}}
+            {{--<dd>{{ $product->price }}</dd>--}}
+            {{--<dt>Quantity</dt>--}}
+            {{--<dd>{{ $product->quantity }}</dd>--}}
             <dt>Description</dt>
             <dd>{{ $product->description }}</dd>
-            <dt>Pack Size</dt>
-            <dd>{{ $product->pack_size }}</dd>
+            {{--<dt>Pack Size</dt>--}}
+            {{--<dd>{{ $product->pack_size }}</dd>--}}
 
         </dl>
 

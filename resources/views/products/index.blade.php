@@ -51,9 +51,9 @@
                                                     <th>Key Word</th>
                             <th>Brands</th>
                             <th>Skues</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Pack Size</th>
+                            {{--<th>Price</th>--}}
+                            {{--<th>Quantity</th>--}}
+                            {{--<th>Pack Size</th>--}}
 
                         <th></th>
                         </tr>
@@ -64,9 +64,9 @@
                                                         <td>{{ $product->key_word }}</td>
                             <td>{{ optional($product->brand)->brand_name }}</td>
                             <td>{{ optional($product->skue)->sku_name }}</td>
-                            <td>{{ $product->price }}</td>
-                            <td>{{ $product->quantity }}</td>
-                            <td>{{ $product->pack_size }}</td>
+                            {{--<td>{{ $product->price }}</td>--}}
+                            {{--<td>{{ $product->quantity }}</td>--}}
+                            {{--<td>{{ $product->pack_size }}</td>--}}
 
                             <td>
 
