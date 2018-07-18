@@ -45,6 +45,10 @@
             <dd>{{ $skue->sku_name }}</dd>
             <dt>Short Name</dt>
             <dd>{{ $skue->short_name }}</dd>
+            <dt>House Price</dt>
+            <dd>{{ $skue->house_price }}</dd>
+            <dt>Sell Price</dt>
+            <dd>{{ $skue->price }}</dd>
             <dt>Description</dt>
             <dd>{{ $skue->description }}</dd>
             <dt>Ordering</dt>
