@@ -109,12 +109,27 @@ class ReportsController extends Controller
             ->leftJoin('distribution_houses','distribution_houses.id','=','sales.dbid')
             ->where('sales.id',$id)->first();
 
-        $data['sales'] = DB::table('sale_details')
+//        $data['sales'] = DB::table('sale_details')
+//            ->select('skues.id as sid','sale_details.*','skues.sku_name','brands.brand_name')
+//            ->leftJoin('sales', 'sales.id', '=', 'sale_details.sales_id')
+//            ->leftJoin('skues', 'skues.short_name', '=', 'sale_details.short_name')
+//            ->leftJoin('brands','brands.id','=','skues.brands_id')
+//            ->where('sale_details.sales_id',$id)->get();
+
+
+        $data['sales'] = DB::table('skues')
             ->select('skues.id as sid','sale_details.*','skues.sku_name','brands.brand_name')
-            ->leftJoin('sales', 'sales.id', '=', 'sale_details.sales_id')
-            ->leftJoin('skues', 'skues.short_name', '=', 'sale_details.short_name')
-            ->leftJoin('brands','brands.id','=','skues.brands_id')
-            ->where('sale_details.sales_id',$id)->get();
+            ->leftJoin('sale_details',function ($join)use($id){
+                $join->on('sale_details.short_name','=','skues.short_name')
+                    ->where('sale_details.sales_id',$id);
+            })
+            ->leftJoin('sales',function ($join2){
+                $join2->on('sales.id','=','sale_details.sales_id')
+                    ->where('sales.sale_status','Processed');
+            })
+            ->leftJoin('brands','brands.id','=','skues.brands_id')->groupBy('sale_details.short_name')->get();
+
+//        debug($data['sales'],1);
 
         $data['memo'] = memoStructure();
 

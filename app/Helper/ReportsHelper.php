@@ -51,12 +51,22 @@ class ReportsHelper
             $dateselect = explode(' - ', $post['created_at']);
         }
         $query = DB::table('sales');
-        $query->select('sales.*','distribution_houses.point_name','distribution_houses.current_balance','orders.total_outlet','orders.visited_outlet','orders.total_no_of_memo','orders.order_total_sku','orders.order_amount');
+        $query->select('sales.*');
+        $query->addSelect('distribution_houses.point_name','distribution_houses.current_balance');
+        if($type != 'promotional')
+        {
+            $query->addSelect('orders.total_outlet','orders.visited_outlet','orders.total_no_of_memo','orders.order_total_sku','orders.order_amount');
+            $query->leftJoin('orders','orders.id','=','sales.order_id');
+        }
         $query->leftJoin('distribution_houses','distribution_houses.id','=','sales.dbid');
-        $query->leftJoin('orders','orders.id','=','sales.order_id');
-        if($type)
+
+        if(($type == 'primary') || ($type == 'secondary'))
         {
             $query->where('order_type',ucfirst($type));
+        }
+        else if($type == 'promotional')
+        {
+            $query->where('sale_type',ucfirst($type));
         }
 
         if($post)
@@ -71,6 +81,7 @@ class ReportsHelper
         }
 
         $result = $query->whereNotIn('sale_status',['Rejected'])->get();
+//        debug($result,1);
         return $result;
     }
 
