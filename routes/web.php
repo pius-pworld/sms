@@ -119,14 +119,14 @@ Route::post('order-vs-sale-secondary-route-search/{aso_id}','ReportsController@o
 Route::get('order-vs-sale-secondary-date/{aso_id}/{route_id}/{postdata}','ReportsController@orderVsSaleSecondaryDate');
 Route::post('order-vs-sale-secondary-date-search/{aso_id}/{route_id}','ReportsController@orderVsSaleSecondaryDateSearch');
 
-
-
-
-
 /* End Report routings */
 
 
 //Route::get('test','SaleController@index');
+
+
+
+
 
 
 
@@ -404,6 +404,13 @@ Route::post('/dashboard', function () {
 //Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('dashboard-target-outlet','HomeController@dashboardTargetOutlet');
+Route::get('dashboard-visited-outlet','HomeController@dashboardVisitedOutlet');
+Route::get('dashboard-successfull-call','HomeController@dashboardSuccessfullCall');
+Route::get('dashboard-no-lifter','HomeController@dashboardNoLifter');
+Route::get('dashboard-no-orders','HomeController@dashboardNoOrders');
+Route::get('dashboard-no-sales','HomeController@dashboardNoSales');
+Route::get('dashboard-strike-rate','HomeController@dashboardStrikeRate');
 Route::group(
 [
     'prefix' => 'posts',

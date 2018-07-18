@@ -44,7 +44,7 @@
               
               <li>
                 <!-- inner menu: contains the actual data -->
-                <ul class="menu" style="background: #3C8DBC;">
+                <ul class="menu" style="background: #2E3192;">
                      @inject('module', 'App\Http\Controllers\ModuleController')
                      
                     @foreach ($module->getModuleList() as $val)
@@ -111,6 +111,6 @@
 <style>
   .menu>li>a:hover
   {
-    background: #ccc !important;
+    background: #367fa9 !important;
   }
 </style>

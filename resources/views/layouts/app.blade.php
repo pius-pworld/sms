@@ -212,13 +212,13 @@
     <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
-<div style="padding: 10px 15px; position: fixed; bottom: 0; width: 100%; overflow: hidden; background: #ccc; z-index: 9999">
+<div style="padding: 10px 15px; position: fixed; bottom: 0; width: 100%; overflow: hidden; background: #1A2663; z-index: 9999">
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-6" style="color:#fff;">
             <strong>Copyright &copy; 2018 <a target="_blank" href="http://www.apsissolutions.com">Apsis Solutions</a>.</strong> All rights
             reserved.
         </div>
-        <div class="col-lg-6 text-right">
+        <div class="col-lg-6 text-right" style="color:#fff;">
             <b>Version</b> 1.0.1
         </div>
     </div>
