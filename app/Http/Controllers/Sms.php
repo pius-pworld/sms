@@ -23,7 +23,7 @@ class Sms extends Controller
      * @param array $input
      * @return array
      */
-    private function prepareData(array $input,$number,$identifier)
+    private function prepareData(array $input,$number,$identifier,$additionals=[])
     {
         $result_array = [];
 
@@ -34,8 +34,12 @@ class Sms extends Controller
                 $result_array[$dt[0]] = count($dt) - 1 > 1 ? implode('-', array_slice($dt, 1)) : $dt[1];
             } else {
                 $error_message = !empty($val) ? 'Invalid SMS Format from String Contains (' . $val . ') !!' : 'Invalid SMS Format !!';
-                SmsOutboxesController::writeOutbox($number,$error_message,['order_type'=>$identifier,'priority'=>3]);
-                return ['status' => false, 'message' => $error_message];
+                return [
+                    'status' => false,
+                    'message' => $error_message,
+                    'additional'=> $additionals,
+                    'identifier'=>$identifier
+                ];
             }
         }
 
@@ -50,7 +54,7 @@ class Sms extends Controller
      */
     private function validateData($identifier, $input_array,$additionals=[])
     {
-        $result_array = self::prepareData($input_array,$additionals['sender'],$identifier);
+        $result_array = self::prepareData($input_array,$additionals['sender'],$identifier,$additionals);
         $result_array['type'] = strtolower($identifier);
 
         if ($result_array['status'] === false) {
@@ -65,8 +69,12 @@ class Sms extends Controller
         if (!$validator->isValid()) {
             foreach ($validator->getErrors() as $error) {
                 $error_message = sprintf("%s %s in $identifier SMS \n", $error['property'], $error['constraint']);
-                SmsOutboxesController::writeOutbox($additionals['sender'],$error_message,['id'=>$additionals['id'],'order_type'=>$identifier,'priority'=>3]);
-                return ['status' => false, 'message' => $error_message];
+                return [
+                    'status' => false,
+                    'message' => $error_message,
+                    'additional'=> $additionals,
+                    'identifier'=>$identifier
+                ];
             }
         } else {
 
@@ -90,9 +98,9 @@ class Sms extends Controller
     }
 
     private function validatePromotionData($identifier, $input_array,$additionals=[]){
-        $result_array = self::prepareData($input_array,$additionals['sender'],$identifier);
+        $result_array = self::prepareData($input_array,$additionals['sender'],$identifier,$additionals);
         $result_array['type'] = strtolower($identifier);
-        $result_array['data']['pdn'] = $this->packageInformation($result_array['data']['pdn']);
+
         $data = json_decode(json_encode($result_array['data']));
         $validator = new JsonSchema\Validator;
         $validator->validate($data, (object)['$ref' => 'file://' . realpath('resources/schemas/' . strtolower($identifier) . '.json')]);
@@ -101,10 +109,15 @@ class Sms extends Controller
         if (!$validator->isValid()) {
             foreach ($validator->getErrors() as $error) {
                 $error_message = sprintf("%s %s in $identifier SMS \n", $error['property'], $error['constraint']);
-                SmsOutboxesController::writeOutbox($additionals['sender'],$error_message,['id'=>$additionals['id'],'order_type'=>$identifier,'priority'=>3]);
-                return ['status' => false, 'message' => $error_message];
+                return [
+                    'status' => false,
+                    'message' => $error_message,
+                    'additional'=> $additionals,
+                    'identifier'=>$identifier
+                ];
             }
         } else {
+            $result_array['data']['pdn'] = $this->packageInformation($result_array['data']['pdn']);
             return $result_array;
         }
     }
@@ -119,7 +132,15 @@ class Sms extends Controller
 
         if (strpos($input_data, '/') === false) {
 
-            return ['status' => false, 'message' => 'Invalid message string'];
+            return [
+                   'status' => false,
+                   'message' => 'Invalid message string',
+                   'additional'=>[
+                       'sender'=>$additionals['sender'],
+                       'id'=>$additionals['id']
+                   ],
+                   'identifier'=>''
+            ];
         } else {
 
             list($identifier, $input) = explode('/', $input_data, 2);
@@ -144,10 +165,19 @@ class Sms extends Controller
                     break;
                 default:
 
-                    echo "Invalid message format!";
+                    return [
+                        'status' => false,
+                        'message' => 'Invalid message format!',
+                        'additional'=>[
+                            'sender'=>$additionals['sender'],
+                            'id'=>$additionals['id']
+                        ],
+                        'identifier'=>$identifier
+                    ];
 
             }
-
+            $res['additional'] = $additionals;
+            $res['identifier'] = $identifier;
             return $res;
         }
 

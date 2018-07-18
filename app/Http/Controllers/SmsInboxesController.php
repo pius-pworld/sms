@@ -225,7 +225,7 @@ class SmsInboxesController extends Controller
      * @param $data
      * @return bool
      */
-    private function prepareOrderData(&$data)
+    private function prepareOrderData(&$data,$extra_data=[])
     {
         $aso_id = $data['asoid'];
         $order_date = $data['dt'];
@@ -240,9 +240,14 @@ class SmsInboxesController extends Controller
         if(is_null($get_information)){
             $order_information['status'] = false;
             $order_information['message'] = "Invalid ASO Information!!";
+            $order_information['additional'] = $extra_data['additional'];
+            $order_information['identifier'] = $extra_data['identifier'];
             return $order_information;
         }
-        Order::where('aso_id',$aso_id)->where('order_date',$order_date)->where('order_type','Secondary')->where('created_at','>',Carbon::now()->subHours(48)->toDateTimeString())->update(['order_status'=>'Rejected']);
+        Order::where('aso_id',$aso_id)->where('order_date',$order_date)
+            ->where('order_type','Secondary')
+            ->where('created_at','>',Carbon::now()->subHours(48)->toDateTimeString())
+            ->update(['order_status'=>'Rejected']);
         $total_sku_count = $this->totalCheck($data, 'order',$order_total_amount);
         $order_information=[];
         if ($total_sku_count === (int)$order_total_sku) {
@@ -281,7 +286,7 @@ class SmsInboxesController extends Controller
      * @param $data
      * @return bool
      */
-    private function prepareSaleData(&$data)
+    private function prepareSaleData(&$data,$extra_data)
     {
         $aso_id = $data['asoid'];
         $order_date = $data['dt'];
@@ -292,12 +297,16 @@ class SmsInboxesController extends Controller
         if($order_id== 0){
             $sale_information['status'] = false;
             $sale_information['message'] = "Invalid Order Date!!";
+            $sale_information['additional'] = $extra_data['additional'];
+            $sale_information['identifier'] = $extra_data['identifier'];
             return $sale_information;
         }
         $get_information=get_info_by_aso($aso_id);
         if(is_null($get_information)){
             $sale_information['status'] = false;
             $sale_information['message'] = "Invalid ASO Information!!";
+            $sale_information['additional'] = $extra_data['additional'];
+            $sale_information['identifier'] = $extra_data['identifier'];
             return $sale_information;
         }
         $sale_information=[];
@@ -328,6 +337,8 @@ class SmsInboxesController extends Controller
         else {
             $sale_information['status'] = false;
             $sale_information['message'] = "Invalid Sale Total SKU !!";
+            $sale_information['additional'] = $extra_data['additional'];
+            $sale_information['identifier'] = $extra_data['identifier'];
             return $sale_information;
         }
     }
@@ -337,7 +348,7 @@ class SmsInboxesController extends Controller
      * @param $data
      * @return bool
      */
-    private function preparePrimaryData(&$data){
+    private function preparePrimaryData(&$data,$extra_data){
         $asm_rms_id = $data['asm_rsm_id'];
         $dbid= $data['dbid'];
         $order_date = $data['dt'];
@@ -350,12 +361,16 @@ class SmsInboxesController extends Controller
         if(is_null($get_information)){
             $primary_order_information['status'] = false;
             $primary_order_information['message'] = "Invalid ASM/RSM Information!!";
+            $primary_order_information['additional'] = $extra_data['additional'];
+            $primary_order_information['identifier'] = $extra_data['identifier'];
             return $primary_order_information;
         }
 
         if($get_information->distribution_house_id != $dbid ){
             $primary_order_information['status'] = false;
             $primary_order_information['message'] = "Invalid Distribution House Information !!";
+            $primary_order_information['additional'] = $extra_data['additional'];
+            $primary_order_information['identifier'] = $extra_data['identifier'];
             return $primary_order_information;
         }
 
@@ -384,12 +399,14 @@ class SmsInboxesController extends Controller
         else{
             $primary_order_information['status'] = false;
             $primary_order_information['message'] = "Invalid Primary Order Total SKU !!";
+            $primary_order_information['additional'] = $extra_data['additional'];
+            $primary_order_information['identifier'] = $extra_data['identifier'];
             return $primary_order_information;
         }
 
     }
 
-    private function preparePromotionData(&$data){
+    private function preparePromotionData(&$data,$extra_data){
         $aso_id = $data['asoid'];
         $order_date = $data['dt'];
         $route_id= $data['rt'];
@@ -399,6 +416,8 @@ class SmsInboxesController extends Controller
         if(is_null($get_information)){
             $promotional_sale['status'] = false;
             $promotional_sale['message'] = "Invalid ASO Information!!";
+            $promotional_sale['additional'] = $extra_data['additional'];
+            $promotional_sale['identifier'] = $extra_data['identifier'];
             return $promotional_sale;
         }
 
@@ -427,7 +446,11 @@ class SmsInboxesController extends Controller
             return $promotional_sale;
         }
        else{
-            return false;
+           $promotional_sale['status'] = false;
+           $promotional_sale['message'] = "Invalid Primary Order Total SKU !!";
+           $promotional_sale['additional'] = $extra_data['additional'];
+           $promotional_sale['identifier'] = $extra_data['identifier'];
+           return $promotional_sale;
        }
     }
 
@@ -439,7 +462,7 @@ class SmsInboxesController extends Controller
      */
 
     private function processOrder($id,$parseData){
-        $order_information = $this->prepareOrderData($parseData['data']);
+        $order_information = $this->prepareOrderData($parseData['data'],$parseData);
 
         if (isset($order_information['status']) && $order_information['status']!= false) {
             foreach ($parseData['data'] as $key => $value){
@@ -459,10 +482,8 @@ class SmsInboxesController extends Controller
                     ->with('success_message', 'Order successfully placed!');
             }
         } else {
-
-            SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
-            return redirect()->route('sms_inboxes.sms_inbox.index')
-                ->with('error_message', isset($order_information['message']) ? $order_information['message'] : 'Invalid Order !!');
+            //return error with additional information
+            return $order_information;
         }
     }
 
@@ -473,7 +494,7 @@ class SmsInboxesController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     private function processSell($id,$parseData){
-        $sale_information = $this->prepareSaleData($parseData['data']);
+        $sale_information = $this->prepareSaleData($parseData['data'],$parseData);
         if (isset($sale_information['status']) &&  $sale_information['status']!= false) {
 
             foreach ($parseData['data'] as $key => $value){
@@ -484,6 +505,7 @@ class SmsInboxesController extends Controller
                     "created_by" =>1
                 ];
             }
+            //modify stock
             modify_stock($sale_information['order']['aso_id'],$sale_information['order_details'],isset($sale_information['update']) && $sale_information['update'] ? $sale_information['previous_data']: []);
             if (Sale::insertSale($sale_information['order'], $sale_information['order_details'])) {
                 SmsInbox::find($id)->update(['sms_status' => 'Processed']);
@@ -492,9 +514,9 @@ class SmsInboxesController extends Controller
                     ->with('success_message', 'Sale successfully placed!');
             }
         } else {
-            SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
-            return redirect()->route('sms_inboxes.sms_inbox.index')
-                ->with('error_message', isset($sale_information['message']) ? $sale_information['message'] : 'Invalid Sale !!');
+            //return error with additional information
+            return $sale_information;
+
         }
     }
 
@@ -505,7 +527,7 @@ class SmsInboxesController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     private function processPrimary($id,$parseData){
-        $primary_information = $this->preparePrimaryData($parseData['data']);
+        $primary_information = $this->preparePrimaryData($parseData['data'],$parseData);
 
         if (isset($primary_information['status']) && $primary_information['status']!= false) {
 
@@ -526,15 +548,16 @@ class SmsInboxesController extends Controller
             }
         }
         else{
-            SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
-            return redirect()->route('sms_inboxes.sms_inbox.index')
-                ->with('error_message', isset($primary_information['message']) ? $primary_information['message'] : 'Invalid Primary Order!!');
+
+            //return error with additional information
+            return $primary_information;
+
         }
     }
 
     private function processPromotion($id,$parseData){
         $get_info=SmsInbox::where('id',$id)->first()->toArray();
-        $promotion_information = $this->preparePromotionData($parseData['data']);
+        $promotion_information = $this->preparePromotionData($parseData['data'],$parseData);
 
         $promotion_information['order_details']=[];
         if (isset($promotion_information['status']) && $promotion_information['status'] != false) {
@@ -558,6 +581,7 @@ class SmsInboxesController extends Controller
                     ];
                 }
             }
+            //modify stock
             modify_stock($promotion_information['order']['aso_id'],$promotion_information['order_details'],isset($promotion_information['update']) && $promotion_information['update'] ? $promotion_information['previous_data']: []);
             if (Sale::insertSale($promotion_information['order'], $promotion_information['order_details'])) {
                 SmsInbox::find($id)->update(['sms_status' => 'Processed']);
@@ -568,11 +592,8 @@ class SmsInboxesController extends Controller
 
         }
         else{
-            $error_message = isset($promotion_information['message']) ? $promotion_information['message'] : 'Invalid Promotinal Sale!!';
-            SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
-            SmsOutboxesController::writeOutbox($get_info['sender'],$error_message,['id'=>$id,'order_type'=>'promotional','priority'=>3]);
-            return redirect()->route('sms_inboxes.sms_inbox.index')
-                ->with('error_message', $error_message);
+            //return error with additional information
+            return $promotion_information;
         }
     }
 
@@ -588,30 +609,60 @@ class SmsInboxesController extends Controller
         if ($parseData['status'] === true) {
             switch ($parseData['type']){
                 case ORDER:
-                    return $this->processOrder($id,$parseData);
 
-                    break;
-                case SALE:
-
-                    return $this->processSell($id,$parseData);
-                    break;
-                case PRIMARY:
-
-                    return $this->processPrimary($id,$parseData);
-                    break;
-                case PROMOTION:
-
-                    return $this->processPromotion($id,$parseData);
-                    break;
-                default:
+                    $result= $this->processOrder($id,$parseData);
+                    $error_message = isset($result['message']) ? $result['message'] : 'Invalid Order !';
+                    SmsOutboxesController::writeOutbox($parseData['additional']['sender'],$error_message,['id'=>$parseData['additional']['id'],'order_type'=>strtolower($parseData['identifier']),'priority'=>3]);
                     SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
                     return redirect()->route('sms_inboxes.sms_inbox.index')
-                        ->with('error_message','Invalid message format !');
+                        ->with('error_message', $error_message);
+                    break;
+
+                case SALE:
+
+                    $result= $this->processSell($id,$parseData);
+                    $error_message = isset($result['message']) ? $result['message'] : 'Invalid Sale !!';
+                    SmsOutboxesController::writeOutbox($parseData['additional']['sender'],$error_message,['id'=>$parseData['additional']['id'],'order_type'=>strtolower($parseData['identifier']),'priority'=>3]);
+                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
+                    return redirect()->route('sms_inboxes.sms_inbox.index')
+                        ->with('error_message', $error_message);
+                    break;
+
+                case PRIMARY:
+
+                    $result= $this->processPrimary($id,$parseData);
+                    $error_message = isset($result['message']) ? $result['message'] : 'Invalid Primary Order!!';
+                    SmsOutboxesController::writeOutbox($parseData['additional']['sender'],$error_message,['id'=>$parseData['additional']['id'],'order_type'=>strtolower($parseData['identifier']),'priority'=>3]);
+                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
+                    return redirect()->route('sms_inboxes.sms_inbox.index')
+                        ->with('error_message',$error_message);
+                    break;
+
+                case PROMOTION:
+
+                    $result= $this->processPromotion($id,$parseData);
+                    $error_message = isset($result['message']) ? $result['message'] : 'Invalid Promotinal Sale!!';
+                    SmsOutboxesController::writeOutbox($parseData['additional']['sender'],$error_message,['id'=>$parseData['additional']['id'],'order_type'=>strtolower($parseData['identifier']),'priority'=>3]);
+                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
+                    return redirect()->route('sms_inboxes.sms_inbox.index')
+                        ->with('error_message', $error_message);
+                    break;
+
+                default:
+
+                    $error_message='Invalid message format !';
+                    SmsOutboxesController::writeOutbox($parseData['additional']['sender'],$error_message,['id'=>$parseData['additional']['id'],'order_type'=>strtolower($parseData['identifier']),'priority'=>3]);
+                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
+                    return redirect()->route('sms_inboxes.sms_inbox.index')
+                        ->with('error_message',$error_message);
+                    break;
             }
         } else {
+            $error_message = $parseData['message'];
             SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
+            SmsOutboxesController::writeOutbox($parseData['additional']['sender'],$error_message,['id'=>$parseData['additional']['id'],'order_type'=>strtolower($parseData['identifier']),'priority'=>3]);
             return redirect()->route('sms_inboxes.sms_inbox.index')
-                ->with('error_message', $parseData['message']);
+                ->with('error_message', $error_message);
         }
     }
 
