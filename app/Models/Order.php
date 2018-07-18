@@ -38,6 +38,7 @@ class Order extends Model
         'tso_name',
         'tso_phone',
         'order_total_sku',
+        'route_id',
         'route_name',
         'total_outlet',
         'visited_outlet',

@@ -18,7 +18,8 @@
     "rt":{
       "$id": "/properties/rt",
       "type": "string",
-      "title": "The dt Schema "
+      "pattern":"^[0-9]+$",
+      "title": "The rt Schema "
     },
     "ou":{
       "$id": "/properties/ou",

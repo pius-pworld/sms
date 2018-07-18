@@ -96,3 +96,13 @@ if(!function_exists('modify_stock')){
         }
     }
 }
+
+if(!function_exists('get_route_info')){
+    function get_route_info($id){
+        $data=DB::table('routes')
+            ->select('routes.routes_name')
+            ->where('routes.id',$id)
+            ->first();
+       return $data;
+    }
+}
