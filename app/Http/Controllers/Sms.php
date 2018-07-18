@@ -128,19 +128,19 @@ class Sms extends Controller
             switch (strtolower($identifier)) {
                 case ORDER:
 
-                    $res = $this->validateData($identifier, $input_array,['sender'=>$additionals['sender']]);
+                    $res = $this->validateData($identifier, $input_array,['sender'=>$additionals['sender'],'id'=>$additionals['id']]);
                     break;
                 case SALE:
 
-                    $res = $this->validateData($identifier, $input_array,['sender'=>$additionals['sender']]);
+                    $res = $this->validateData($identifier, $input_array,['sender'=>$additionals['sender'],'id'=>$additionals['id']]);
                     break;
                 case PRIMARY:
 
-                    $res = $this->validateData($identifier, $input_array,['sender'=>$additionals['sender']]);
+                    $res = $this->validateData($identifier, $input_array,['sender'=>$additionals['sender'],'id'=>$additionals['id']]);
                     break;
                 case PROMOTION:
 
-                    $res= $this->validatePromotionData($identifier,$input_array,['sender'=>$additionals['sender']]);
+                    $res= $this->validatePromotionData($identifier,$input_array,['sender'=>$additionals['sender'],'id'=>$additionals['id']]);
                     break;
                 default:
 
@@ -151,23 +151,6 @@ class Sms extends Controller
             return $res;
         }
 
-    }
-
-    /**
-     * @param $input_data
-     * @return int
-     */
-    private function getTotal($input_data)
-    {
-        $total = 0;
-
-        foreach ($this->count_list as $key => $value) {
-            if (array_key_exists($value, $input_data)) {
-                $total = $total + $input_data[$value];
-            }
-        }
-
-        return $total;
     }
 
     /**

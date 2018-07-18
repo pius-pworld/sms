@@ -229,11 +229,12 @@ class SmsInboxesController extends Controller
     {
         $aso_id = $data['asoid'];
         $order_date = $data['dt'];
-        $route_name = isset($data['rt']) ? $data['rt'] : '';
+        $route_id = isset($data['rt']) ? $data['rt'] : '';
         $total_outlet= $data['ou'];
         $visited_outlet = $data['vo'];
         $total_memo_order= $data['me'];
         $order_total_sku =  $data['total'];
+        $route_name=!is_null($route=get_route_info($route_id)) ? $route->routes_name : '';
         unset($data['asoid'],$data['rt'],$data['dt'],$data['ou'],$data['vo'],$data['me'],$data['total']);
         $get_information=get_info_by_aso($aso_id);
         if(is_null($get_information)){
@@ -255,6 +256,7 @@ class SmsInboxesController extends Controller
                 'dh_name' => $get_information->dhphone,
                 'tso_name' => $get_information->tsoname,
                 'tso_phone' => $get_information->tsophone,
+                'route_id'  => $route_id,
                 'route_name' => $route_name,
                 'total_outlet' => $total_outlet,
                 'visited_outlet'=>$visited_outlet,
@@ -390,9 +392,10 @@ class SmsInboxesController extends Controller
     private function preparePromotionData(&$data){
         $aso_id = $data['asoid'];
         $order_date = $data['dt'];
-        $route_name = $data['rt'];
+        $route_id= $data['rt'];
+        $route_name=!is_null($route=get_route_info($route_id)) ? $route->routes_name : '';
         unset($data['asoid'],$data['dt'],$data['rt']);
-        $get_information=get_info_by_aso($aso_id,'territory');
+        $get_information=get_info_by_aso($aso_id);
         if(is_null($get_information)){
             $promotional_sale['status'] = false;
             $promotional_sale['message'] = "Invalid ASO Information!!";
@@ -403,7 +406,7 @@ class SmsInboxesController extends Controller
         if(!getPreviousSale($aso_id,$order_date,'Promotional')->isEmpty()){
             rejectPreviousSale($aso_id,$order_date,$promotional_sale,'Promotional');
         }
-        if(!empty($aso_id) && !empty($order_date) && !empty($route_name)){
+        if(!empty($aso_id) && !empty($order_date)){
             $promotional_sale['order'] = [
                 'aso_id'=> $aso_id,
                 'dbid' => $get_information->distribution_house_id,
@@ -415,6 +418,7 @@ class SmsInboxesController extends Controller
                 'dh_name' => $get_information->dhphone,
                 'tso_name' => $get_information->tsoname,
                 'tso_phone' => $get_information->tsophone,
+                'sale_route_id'=>$route_id,
                 'sale_route' => $route_name,
                 'sale_type'=>'Promotional',
                 'created_by' => Auth::Id()
