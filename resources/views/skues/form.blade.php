@@ -31,6 +31,22 @@
     </div>
 </div>
 
+<div class="form-group {{ $errors->has('house_price') ? 'has-error' : '' }}">
+    <label for="house_price" class="col-md-2 control-label">House Price</label>
+    <div class="col-md-10">
+        <input class="form-control" name="house_price" type="text" id="house_price" value="{{ old('house_price', optional($skue)->house_price) }}" maxlength="255" placeholder="Enter House price here...">
+        {!! $errors->first('house_price', '<p class="help-block">:message</p>') !!}
+    </div>
+</div>
+
+<div class="form-group {{ $errors->has('price') ? 'has-error' : '' }}">
+    <label for="price" class="col-md-2 control-label">Sell Price</label>
+    <div class="col-md-10">
+        <input class="form-control" name="price" type="text" id="price" value="{{ old('price', optional($skue)->price) }}" maxlength="255" placeholder="Enter Sell price here...">
+        {!! $errors->first('price', '<p class="help-block">:message</p>') !!}
+    </div>
+</div>
+
 <div class="form-group {{ $errors->has('description') ? 'has-error' : '' }}">
     <label for="description" class="col-md-2 control-label">Description</label>
     <div class="col-md-10">

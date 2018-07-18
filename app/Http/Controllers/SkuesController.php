@@ -153,6 +153,8 @@ class SkuesController extends Controller
             'brands_id' => 'nullable',
             'sku_name' => 'required|string|min:1|max:255',
             'short_name' => 'nullable|string|min:0|max:255',
+            'price' => 'nullable|numeric|min:-999999999.99|max:999999999.99',
+            'house_price' => 'nullable|numeric|min:-999999999.99|max:999999999.99',
             'description' => 'nullable',
             'settings' => 'nullable|numeric|min:-2147483648|max:2147483647',
             'is_active' => 'nullable|boolean',
