@@ -698,7 +698,7 @@ if(!function_exists('gerOrderVsSaleByHouseIds')){
     function gerOrderVsSaleByHouseIds($house_ids,$selected_date_range){
 
         $data =DB::table('skues')
-            ->select('distribution_houses.id as house_id','distribution_houses.point_name','orders.order_date','orders.aso_id','distribution_houses.point_name','skues.short_name','orders.requester_name','skues.short_name',DB::raw('SUM(order_details.quantity) as order_quantity'),DB::raw('SUM(sale_details.quantity) as sale_quantity'))
+            ->select('distribution_houses.id as house_id','distribution_houses.current_balance','distribution_houses.point_name','orders.order_date','orders.aso_id','distribution_houses.point_name','skues.short_name','orders.requester_name','skues.short_name',DB::raw('SUM(order_details.quantity) as order_quantity'),DB::raw('SUM(sale_details.quantity) as sale_quantity'))
             ->leftJoin('order_details','order_details.short_name','=','skues.short_name')
             ->leftJoin('orders','orders.id','=','order_details.orders_id')
             ->leftJoin('sales',function($join){
@@ -739,6 +739,7 @@ if(!function_exists('order_vs_sale_primary_by_house')){
                 $response[$value->point_name][$value->short_name]['requested'] = $value->order_quantity;
                 $response[$value->point_name][$value->short_name]['delivered'] = $value->sale_quantity;
             }
+            $response[$value->point_name]['current_balace'] = $value->current_balance;
             $response[$value->point_name]['house_id'] = $value->house_id;
         }
         $response_data=[];
@@ -755,7 +756,8 @@ if(!function_exists('order_vs_sale_primary_by_house')){
                 }
             }
             $response_data[$h_key]['additional']=[
-                'house_id'=> $h_value['house_id']
+                'house_id'=> $h_value['house_id'],
+                'current_balance'=>$h_value['current_balace']
             ];
 
 

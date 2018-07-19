@@ -981,6 +981,7 @@ class ReportsController extends Controller
         $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
         $selected_houses =array_filter($selected_houses);
         $data['post_data'] = $post;
+        $data['current_balance']= true;
         $data['order_vs_sale_primary'] = order_vs_sale_primary_by_house($selected_houses, $data['memo_structure'],$selected_date_range);
 
 //        dd( $data['order_vs_sale_primary'] );
