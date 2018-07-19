@@ -62,4 +62,19 @@ class HomeController extends Controller
     {
         return '532%';
     }
+
+    public function brandWiseProductivity(Request $request)
+    {
+        $post = $request->all();
+        $html = '<span class="brand_name">'.$post['brand_name'].'</span>
+                  <span class="brand_cal">80.04</span>
+                  <span class="brand_prev">
+                    <span class="arrow_sign">
+                      <i class="fa fa-sort-down"></i>
+                      &nbsp;-71.79
+    </span>
+                    <span class="sdlw">(SDLW)</span>
+                  </span>';
+        return $html;
+    }
 }

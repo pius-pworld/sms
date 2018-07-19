@@ -68,7 +68,7 @@
                     }));
                     var _token = '<?php echo csrf_token() ?>';
                     $.ajax({
-                        url: "<?php echo URL::to('orderingBrandSkueAction'); ?>",
+                        url: "<?php echo URL::to('brand-wise-productivity'); ?>",
                         type: "POST",
                         data: {_token:_token,order:p},
                         success: function(feedback){
