@@ -5,15 +5,15 @@
 <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        Dashboard
-      </h1>
+    {{--<section class="content-header">--}}
+      {{--<h1>--}}
+        {{--Dashboard--}}
+      {{--</h1>--}}
       {{--<ol class="breadcrumb">--}}
         {{--<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>--}}
         {{--<li class="active">Dashboard</li>--}}
       {{--</ol>--}}
-    </section>
+    {{--</section>--}}
 
     <!-- Main content -->
     <section class="content">
@@ -21,7 +21,7 @@
 
       {{-------------------------------------------------------------------------------------------------------}}
       <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-9">
           <div class="col-md-4">
             <div class="widget target-outlet">
               <div class="widget-controls">
@@ -110,23 +110,39 @@
 
         </div>
 
-        <div class="col-lg-4">
-          <div class="row">
-            <div style="background: #2E3192; margin-top: 14px; border-radius: 5px; color: #fff;">
-              <div class="" style="font-weight: bold; color:#fff; text-align: center; font-size: 20px; border-bottom: 1px solid #008000">Brand Wise Productivity</div>
-              @foreach($brands as $brand)
-                <div class="row" style="padding: 10px;">
-                  <div class="col-lg-6">{{$brand->brand_name}}</div>
-                  <div class="col-lg-2">80.04</div>
-                  <div class="col-lg-4"><i class="fa fa-sort-down"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-71.79(SDLW)</div>
+        <div class="col-lg-3 bwproductivity" style="">
+          <div class="row bwproductivitytitle" style="">Brand Wise Productivity</div>
+            @foreach($brands as $brand)
+                <div class="row bwproductivityeachrow dynamic_{{$brand->id}}" id="{{$brand->id}}" name="{{$brand->brand_name}}" style=" ">
+                  <img src="{{URL::to('public/img/horijontalloader.gif')}}">
                 </div>
               @endforeach
-            </div>
-          </div>
-        </div>
       </div>
+<style>
 
+
+</style>
       {{------------------------------------------------------------------------------------------------------------------------------}}
+        <script>
+            $(document).ready(function () {
+                var _token = '<?php echo csrf_token() ?>';
+                $('.bwproductivityeachrow').each(function () {
+                    var brand_id = $(this).attr('id');
+                    var brand_name = $(this).attr('name');
+
+                    $.ajax({
+                        url: "<?php echo URL::to('dashboard-brand-wise-productivity'); ?>",
+                        type: "POST",
+                        data: {_token:_token,brand_id:brand_id,brand_name:brand_name},
+                        success: function(feedback){
+                            $('.dynamic_'+brand_id).html(feedback);
+                        }
+                    });
+
+                });
+            });
+
+        </script>
       <script>
           function target_outlet() {
               $(".target-outlet .refresh-content").addClass('fa-spin');
@@ -273,7 +289,7 @@
           -o-border-radius: 5px;
           border-radius: 5px;
           float: left;
-          padding: 25px 30px;
+          padding: 25px 15px;
           position: relative;
           width: 100%;
         }
@@ -287,12 +303,12 @@
           border-radius: 50%;
           color: #fff;
           float: left;
-          font-size: 20px;
-          height: 57px;
-          line-height: 56px;
-          margin-right: 15px;
+          font-size: 21px;
+          height: 40px;
+          line-height: 40px;
+          margin-right: 10px;
           text-align: center;
-          width: 57px;
+          width: 40px;
         }
 
         .red-skin {
@@ -388,6 +404,45 @@
           -o-transition: all 0.4s ease 0s;
           transition: all 0.4s ease 0s;
           visibility: hidden;
+        }
+
+
+        .bwproductivity{
+          background: #2E3192;
+          border-radius:5px;
+        }
+        .bwproductivitytitle{
+          color: #fff;
+          text-align: center;
+          font-size: 23px;
+          border-bottom: 1px solid #fff;
+          padding: 5px;
+        }
+        .bwproductivityeachrow{
+          padding: 10px;
+          color: #fff;
+          border-bottom:1px solid #fff;
+        }
+        .bwproductivityeachrow:last-child { border-bottom: none; }
+
+
+        span.brand_name {
+          font-weight: bold;
+          margin-right: 18px;
+        }
+
+        span.brand_cal {
+          font-size: 25px;
+          font-weight: bold;
+          color: aqua;
+          margin-right: 8px;
+        }
+        span.arrow_sign {
+          color: red;
+          margin-right: 7px;
+        }
+        span.sdlw {
+          font-size: 10px;
         }
 
       </style>

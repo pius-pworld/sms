@@ -411,6 +411,11 @@ Route::get('dashboard-no-lifter','HomeController@dashboardNoLifter');
 Route::get('dashboard-no-orders','HomeController@dashboardNoOrders');
 Route::get('dashboard-no-sales','HomeController@dashboardNoSales');
 Route::get('dashboard-strike-rate','HomeController@dashboardStrikeRate');
+Route::post('dashboard-brand-wise-productivity','HomeController@brandWiseProductivity');
+
+
+
+
 Route::group(
 [
     'prefix' => 'posts',
