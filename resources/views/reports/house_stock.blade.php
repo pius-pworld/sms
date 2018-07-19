@@ -30,7 +30,7 @@
                             </button>
                         </span>
                     </div>
-                    <div class="box-body showSearchDataUnique" style="overflow: scroll;">
+                    <div class="box-body showSearchDataUnique">
                         @include('reports.house_stock_ajax')
                     </div>
 
