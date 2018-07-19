@@ -428,7 +428,7 @@
 
         span.brand_name {
           font-weight: bold;
-          margin-right: 18px;
+          margin-right: 10px;
         }
 
         span.brand_cal {

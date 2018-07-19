@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DistributionHouse;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use DB;
 
@@ -30,32 +32,53 @@ class HomeController extends Controller
 
     public function dashboardTargetOutlet()
     {
-        return 1200;
+        $query = Order::selectRaw('sum(total_outlet) as total')->where('order_status','Processed')->first();
+        return $query->total;
     }
 
     public function dashboardVisitedOutlet()
     {
-        return 1000;
+        $query = Order::selectRaw('sum(visited_outlet) as total')->where('order_status','Processed')->first();
+        return $query->total;
     }
 
     public function dashboardSuccessfullCall()
     {
-        return 350;
+        $query = Order::selectRaw('sum(total_no_of_memo) as total')->where('order_status','Processed')->first();
+        return $query->total;
     }
 
     public function dashboardNoLifter()
     {
-        return 300;
+        $query = DB::select('SELECT count(distribution_houses.id) as house, (SELECT
+                Count(distribution_houses.id)
+                FROM
+                distribution_houses 
+                WHERE distribution_houses.id IN(SELECT orders.dbid FROM orders GROUP BY orders.dbid)) as lifting
+                FROM distribution_houses');
+        return (($query[0]->house)-($query[0]->lifting));
     }
 
     public function dashboardNoOrders()
     {
-        return 650;
+        $query = DB::select('SELECT count(distribution_houses.id) as house, (SELECT
+                Count(distribution_houses.id)
+                FROM
+                distribution_houses 
+                WHERE distribution_houses.id IN(SELECT orders.dbid FROM orders GROUP BY orders.dbid)) as lifting
+                FROM distribution_houses');
+        return (($query[0]->house)-($query[0]->lifting));
     }
 
     public function dashboardNoSales()
     {
-        return 532;
+        $query = DB::select('SELECT count(distribution_houses.id) as house, (SELECT
+                Count(distribution_houses.id)
+                FROM
+                distribution_houses 
+                WHERE distribution_houses.id IN(SELECT orders.dbid FROM orders GROUP BY orders.dbid)) as lifting
+                FROM distribution_houses');
+        return (($query[0]->house)-($query[0]->lifting));
     }
 
     public function dashboardStrikeRate()
@@ -66,8 +89,24 @@ class HomeController extends Controller
     public function brandWiseProductivity(Request $request)
     {
         $post = $request->all();
+        $totalMemo = DB::table('orders')
+            ->select(DB::raw('Sum(total_no_of_memo) AS ttmemo'))
+            ->where('orders.order_type','Secondary')
+            ->where('orders.order_status','Processed')->first();
+
+
+        $query = DB::table('brands')
+            ->select('brands.brand_name',DB::raw('Sum(order_details.no_of_memo) AS individual_mamo'))
+            ->leftJoin('skues','skues.brands_id','=','brands.id')
+            ->leftJoin('order_details','skues.short_name','=','order_details.short_name')
+            ->leftJoin('orders','order_details.orders_id','=','orders.id')
+            ->where('brands.id',$post['brand_id'])
+            ->where('orders.order_type','Secondary')
+            ->where('orders.order_status','Processed')->first();
+//        debug($query,1);
+
         $html = '<span class="brand_name">'.$post['brand_name'].'</span>
-                  <span class="brand_cal">80.04</span>
+                  <span class="brand_cal">'.number_format(($totalMemo->ttmemo/$query->individual_mamo),2).'</span>
                   <span class="brand_prev">
                     <span class="arrow_sign">
                       <i class="fa fa-sort-down"></i>
