@@ -613,7 +613,7 @@ class SmsInboxesController extends Controller
                     $result= $this->processOrder($id,$parseData);
                     $error_message = isset($result['message']) ? $result['message'] : 'Invalid Order !';
                     SmsOutboxesController::writeOutbox($parseData['additional']['sender'],$error_message,['id'=>$parseData['additional']['id'],'order_type'=>strtolower($parseData['identifier']),'priority'=>3]);
-                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
+                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected','reason'=>$error_message]);
                     return redirect()->route('sms_inboxes.sms_inbox.index')
                         ->with('error_message', $error_message);
                     break;
@@ -623,7 +623,7 @@ class SmsInboxesController extends Controller
                     $result= $this->processSell($id,$parseData);
                     $error_message = isset($result['message']) ? $result['message'] : 'Invalid Sale !!';
                     SmsOutboxesController::writeOutbox($parseData['additional']['sender'],$error_message,['id'=>$parseData['additional']['id'],'order_type'=>strtolower($parseData['identifier']),'priority'=>3]);
-                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
+                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected','reason'=>$error_message]);
                     return redirect()->route('sms_inboxes.sms_inbox.index')
                         ->with('error_message', $error_message);
                     break;
@@ -633,7 +633,7 @@ class SmsInboxesController extends Controller
                     $result= $this->processPrimary($id,$parseData);
                     $error_message = isset($result['message']) ? $result['message'] : 'Invalid Primary Order!!';
                     SmsOutboxesController::writeOutbox($parseData['additional']['sender'],$error_message,['id'=>$parseData['additional']['id'],'order_type'=>strtolower($parseData['identifier']),'priority'=>3]);
-                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
+                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected','reason'=>$error_message]);
                     return redirect()->route('sms_inboxes.sms_inbox.index')
                         ->with('error_message',$error_message);
                     break;
@@ -643,7 +643,7 @@ class SmsInboxesController extends Controller
                     $result= $this->processPromotion($id,$parseData);
                     $error_message = isset($result['message']) ? $result['message'] : 'Invalid Promotinal Sale!!';
                     SmsOutboxesController::writeOutbox($parseData['additional']['sender'],$error_message,['id'=>$parseData['additional']['id'],'order_type'=>strtolower($parseData['identifier']),'priority'=>3]);
-                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
+                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected','reason'=>$error_message]);
                     return redirect()->route('sms_inboxes.sms_inbox.index')
                         ->with('error_message', $error_message);
                     break;
@@ -652,14 +652,14 @@ class SmsInboxesController extends Controller
 
                     $error_message='Invalid message format !';
                     SmsOutboxesController::writeOutbox($parseData['additional']['sender'],$error_message,['id'=>$parseData['additional']['id'],'order_type'=>strtolower($parseData['identifier']),'priority'=>3]);
-                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
+                    SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected','reason'=>$error_message]);
                     return redirect()->route('sms_inboxes.sms_inbox.index')
                         ->with('error_message',$error_message);
                     break;
             }
         } else {
             $error_message = $parseData['message'];
-            SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected']);
+            SmsInbox::where('id',$id)->update(['sms_status'=>'Rejected','reason'=>$error_message]);
             SmsOutboxesController::writeOutbox($parseData['additional']['sender'],$error_message,['id'=>$parseData['additional']['id'],'order_type'=>strtolower($parseData['identifier']),'priority'=>3]);
             return redirect()->route('sms_inboxes.sms_inbox.index')
                 ->with('error_message', $error_message);
