@@ -39,7 +39,8 @@ if(!function_exists('getHouseStockInfo')){
                }
             }
 
-            $house_stock_list[$house['market_name']]=$sku_quantity;
+            $house_stock_list[$house['market_name']]['data']=$sku_quantity;
+            $house_stock_list[$house['market_name']]['current_balance']=$house['current_balance'];
 
         }
         return $house_stock_list;

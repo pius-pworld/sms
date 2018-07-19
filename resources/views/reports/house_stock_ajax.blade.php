@@ -8,6 +8,8 @@
                      <th colspan="{{ array_sum(array_map("count", $category_value)) * $level }}" style="text-align: center">{{$category_key}}</th>
             @endforeach
         @endif
+        <th rowspan="3" style="vertical-align: middle">Current Balance</th>
+
     </tr>
     <tr>
         @if(isset($memo_structure))
@@ -34,10 +36,11 @@
             @if(isset($house_stock_list))
                 @foreach($house_stock_list as $house_key=> $house_value)
                     <tr>
-                    <th>{{$house_key}}</th>
-                        @foreach($house_value as $key => $value)
+                        <th>{{$house_key}}</th>
+                        @foreach($house_value['data'] as $key => $value)
                               <td>{{$value}}</td>
                         @endforeach
+                        <td>{{$house_stock_list[$house_key]['current_balance']}}</td>
                     </tr>
                  @endforeach
             @endif

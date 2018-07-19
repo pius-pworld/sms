@@ -310,6 +310,7 @@ class ReportsController extends Controller
 
         $data['house_stock_list'] = getHouseStockInfo($selected_houses,$memo);
 
+
         return view('reports.house_stock_ajax',$data);
 
     }
