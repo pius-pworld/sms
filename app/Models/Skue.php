@@ -31,6 +31,8 @@ class Skue extends Model
                   'brands_id',
                   'sku_name',
                   'short_name',
+                  'house_price',
+                  'price',
                   'description',
                   'settings',
                   'is_active'

@@ -164,10 +164,10 @@ class ProductsController extends Controller
             'key_word' => 'nullable|string|min:0|max:255',
             'brands_id' => 'required',
             'skues_id' => 'required',
-            'price' => 'nullable|numeric|min:-999999999.99|max:999999999.99',
-            'quantity' => 'nullable|numeric|min:-999999999.99|max:999999999.99',
+//            'price' => 'nullable|numeric|min:-999999999.99|max:999999999.99',
+//            'quantity' => 'nullable|numeric|min:-999999999.99|max:999999999.99',
             'description' => 'nullable',
-            'pack_size' => 'nullable|string|min:0|max:50',
+//            'pack_size' => 'nullable|string|min:0|max:50',
      
         ];
         

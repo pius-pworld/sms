@@ -48,9 +48,11 @@
                 <table id="example2" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                                                    <th>Brands</th>
+                            <th>Brands</th>
                             <th>Sku Name</th>
                             <th>Short Name</th>
+                            <th>House Price</th>
+                            <th>Sell Price</th>
 
                         <th></th>
                         </tr>
@@ -58,9 +60,11 @@
                     <tbody>
                     @foreach($skues as $skue)
                         <tr>
-                                                        <td>{{ optional($skue->brand)->brand_name }}</td>
+                            <td>{{ optional($skue->brand)->brand_name }}</td>
                             <td>{{ $skue->sku_name }}</td>
                             <td>{{ $skue->short_name }}</td>
+                            <td>{{ $skue->house_price }}</td>
+                            <td>{{ $skue->price }}</td>
 
                             <td>
 

@@ -57,8 +57,13 @@
 					</div>
 				@else
 				<div class="box-body">
-                <table id="example2" class="table table-bordered table-striped">
+                <table id="dataTableId"  class="table table-bordered table-striped dataTable no-footer">
                     <thead>
+                        <tr>
+                            <th><input  id="senderPhone" class="form-control" type="text"  placeholder="Search Sender Phone"></th>
+                            <th><input  id="smsContent" class="form-control" type="text"  placeholder="Search SMS By Text"></th>
+                            <th id="smsStatus" ></th>
+                        </tr>
                         <tr>
                             <th>Sender</th>
                             <th>SMS Content</th>
@@ -109,12 +114,58 @@
             </div>
         </div>
 
-        <div class="panel-footer">
-            {!! $smsInboxes->render() !!}
-        </div>
+        {{--<div class="panel-footer">--}}
+            {{--{!! $smsInboxes->render() !!}--}}
+        {{--</div>--}}
         
         @endif
     
     </div>
     </div>
+        <script>
+            $(document).ready(function(){
+                var table = $('#dataTableId').DataTable({
+                    "lengthChange": false,
+                    initComplete: function () {
+                        this.api().columns(2).every( function () {
+                            var column = this;
+                            var select = $('<select class="form-control"><option value="">Select SMS Status</option></select>')
+                                .appendTo( $("#smsStatus").empty() )
+                                .on( 'change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex(
+                                        $(this).val()
+                                    );
+
+                                    column
+                                        .search( val ? '^'+val+'$' : '', true, false )
+                                        .draw();
+                                } );
+
+                            column.data().unique().sort().each( function ( d, j ) {
+                                select.append( '<option value="'+d+'">'+d+'</option>' )
+                            } );
+                        } );
+                    }
+                });
+                $('#senderPhone').on('keyup change', function(){
+                    table.column(0).search(this.value).draw();
+                });
+                $('#smsContent').on('keyup change', function(){
+                    table.column(1).search(this.value).draw();
+                });
+
+                $(".dataTables_info").hide();
+
+
+
+            });
+        </script>
+
+        <style>
+            .dataTables_wrapper .dataTables_filter {
+                float: right;
+                text-align: right;
+                visibility: hidden;
+            }
+        </style>
 @endsection

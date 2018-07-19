@@ -31,10 +31,10 @@ class Product extends Model
         'key_word',
         'brands_id',
         'skues_id',
-        'price',
-        'quantity',
+//        'price',
+//        'quantity',
         'description',
-        'pack_size',
+//        'pack_size',
         'created_by',
         'updated_by'
     ];

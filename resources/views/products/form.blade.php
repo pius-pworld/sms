@@ -39,21 +39,21 @@
     </div>
 </div>
 
-<div class="form-group {{ $errors->has('price') ? 'has-error' : '' }}">
-    <label for="price" class="col-md-2 control-label">Price</label>
-    <div class="col-md-10">
-        <input class="form-control" name="price" type="number" id="price" value="{{ old('price', optional($product)->price) }}" min="-999999999" max="999999999" placeholder="Enter price here..." step="any">
-        {!! $errors->first('price', '<p class="help-block">:message</p>') !!}
-    </div>
-</div>
+{{--<div class="form-group {{ $errors->has('price') ? 'has-error' : '' }}">--}}
+    {{--<label for="price" class="col-md-2 control-label">Price</label>--}}
+    {{--<div class="col-md-10">--}}
+        {{--<input class="form-control" name="price" type="number" id="price" value="{{ old('price', optional($product)->price) }}" min="-999999999" max="999999999" placeholder="Enter price here..." step="any">--}}
+        {{--{!! $errors->first('price', '<p class="help-block">:message</p>') !!}--}}
+    {{--</div>--}}
+{{--</div>--}}
 
-<div class="form-group {{ $errors->has('quantity') ? 'has-error' : '' }}">
-    <label for="quantity" class="col-md-2 control-label">Quantity</label>
-    <div class="col-md-10">
-        <input class="form-control" name="quantity" type="number" id="quantity" value="{{ old('quantity', optional($product)->quantity) }}" min="-999999999" max="999999999" placeholder="Enter quantity here...">
-        {!! $errors->first('quantity', '<p class="help-block">:message</p>') !!}
-    </div>
-</div>
+{{--<div class="form-group {{ $errors->has('quantity') ? 'has-error' : '' }}">--}}
+    {{--<label for="quantity" class="col-md-2 control-label">Quantity</label>--}}
+    {{--<div class="col-md-10">--}}
+        {{--<input class="form-control" name="quantity" type="number" id="quantity" value="{{ old('quantity', optional($product)->quantity) }}" min="-999999999" max="999999999" placeholder="Enter quantity here...">--}}
+        {{--{!! $errors->first('quantity', '<p class="help-block">:message</p>') !!}--}}
+    {{--</div>--}}
+{{--</div>--}}
 
 <div class="form-group {{ $errors->has('description') ? 'has-error' : '' }}">
     <label for="description" class="col-md-2 control-label">Description</label>
@@ -63,11 +63,11 @@
     </div>
 </div>
 
-<div class="form-group {{ $errors->has('pack_size') ? 'has-error' : '' }}">
-    <label for="pack_size" class="col-md-2 control-label">Pack Size</label>
-    <div class="col-md-10">
-        <input class="form-control" name="pack_size" type="text" id="pack_size" value="{{ old('pack_size', optional($product)->pack_size) }}" maxlength="50" placeholder="Enter pack size here...">
-        {!! $errors->first('pack_size', '<p class="help-block">:message</p>') !!}
-    </div>
-</div>
+{{--<div class="form-group {{ $errors->has('pack_size') ? 'has-error' : '' }}">--}}
+    {{--<label for="pack_size" class="col-md-2 control-label">Pack Size</label>--}}
+    {{--<div class="col-md-10">--}}
+        {{--<input class="form-control" name="pack_size" type="text" id="pack_size" value="{{ old('pack_size', optional($product)->pack_size) }}" maxlength="50" placeholder="Enter pack size here...">--}}
+        {{--{!! $errors->first('pack_size', '<p class="help-block">:message</p>') !!}--}}
+    {{--</div>--}}
+{{--</div>--}}
 
