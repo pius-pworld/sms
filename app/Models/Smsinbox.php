@@ -39,6 +39,7 @@ class SmsInbox extends Model
                   'sender',
                   'sms_content',
                   'sms_status',
+                  'reason',
                   'is_active'
               ];
 

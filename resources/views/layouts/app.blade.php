@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Apsis | Registration</title>
@@ -86,6 +87,7 @@
     <script src="{{asset('public/dist/js/demo.js')}}"></script>
 
     <script src="{{asset('public/bower_components/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/fixedcolumns/3.2.1/js/dataTables.fixedColumns.min.js"></script>
     <script src="{{asset('public/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
 
 
@@ -99,11 +101,32 @@
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js')}}"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js')}}"></script>
+
     <![endif]-->
 
     <!-- Google Font -->
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <style>
+        th{background: #fff;}
+        th, td { white-space: nowrap; }
+        div.dataTables_wrapper {
+            width: 100%;
+            margin: 0 auto;
+        }
+        thead th{
+            padding:3px 18px;
+        }
+        .boo-table thead th{
+            vertical-align:middle;
+        }
+        table.dataTable thead th, table.dataTable thead td {
+            border-bottom: 0!important;
+        }
+        .DTFC_LeftBodyWrapper{
+            top:-14px !important;
+        }
+    </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <script>
@@ -308,4 +331,5 @@
 </script>
 
 </body>
+
 </html>

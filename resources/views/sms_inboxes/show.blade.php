@@ -45,6 +45,8 @@
             <dd>{{ $smsInbox->sms_content }}</dd>
             <dt>Sms Status</dt>
             <dd>{{ $smsInbox->sms_status }}</dd>
+            <dt>Reason</dt>
+            <dd>{{ $smsInbox->reason }}</dd>
             <dt>Is Active</dt>
             <dd>{{ ($smsInbox->is_active) ? 'Yes' : 'No' }}</dd>
 

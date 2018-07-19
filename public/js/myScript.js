@@ -1,6 +1,13 @@
 function myConfiguration()
 {
     $('#dataTableId').dataTable({
+        scrollY: "calc(125vh - 380px)",
+        scrollX: true,
+        scrollCollapse: true,
+        fixedColumns:   {
+            leftColumns: 1
+        },
+
         bPaginate: true,
         dom: 'Bfrtip',
         responsive: true,

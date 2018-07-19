@@ -1,4 +1,4 @@
-<table id="dataTableId" class="table table-bordered table-striped dataTable no-footer">
+<table id="dataTableId" class="table-bordered table dataTable">
     <thead>
     <tr>
         @if(isset($date_wise) && $date_wise)
@@ -10,6 +10,9 @@
             @foreach($memo_structure as $category_key=>$category_value)
                 <th colspan="{{ array_sum(array_map("count", $category_value)) * $level }}" style="text-align: center">{{$category_key}}</th>
             @endforeach
+        @endif
+        @if(isset($current_balance) && $current_balance)
+            <th rowspan="4" style="vertical-align: middle">Current balance</th>
         @endif
     </tr>
     <tr>
@@ -55,11 +58,17 @@
                     @else
                         <th><a> {{$house_key}} </a></th>
                     @endif
+
                     @foreach($house_info['data'] as $key => $value)
                         @for($i=0;$i<$level;$i++)
                             <td>{{$value[$i]}}</td>
                         @endfor
                     @endforeach
+                    @if(isset($current_balance) && $current_balance)
+                        <th>{{$house_info['additional']['current_balance']}}</th>
+                    @endif
+
+
                 </tr>
         @endforeach
     @endif
