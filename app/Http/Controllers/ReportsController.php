@@ -363,7 +363,7 @@ class ReportsController extends Controller
 
 
 
-        $data['house_lifting_list'] = getHouseLifting($selected_houses, $data['memo_structure']);
+        $data['house_lifting_list'] = Reports::getHouseLifting($selected_houses, $data['memo_structure']);
 
 
         return view('reports.ajax.house_lifting_ajax',$data);
@@ -411,7 +411,7 @@ class ReportsController extends Controller
         $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
         $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
         $selected_houses =array_filter($selected_houses);
-        $data['house_wise_performance'] = houseWisePerformance($selected_houses, $data['memo_structure'],$selected_months);
+        $data['house_wise_performance'] = Reports::houseWisePerformance($selected_houses, $data['memo_structure'],$selected_months);
 
 
         return view('reports.ajax.db_wise_performance_ajax',$data);
@@ -464,7 +464,7 @@ class ReportsController extends Controller
         }else{
             $selected_route=Reports::getRouteInfoByAso($route_ids);
         }
-        $data['route_wise_performance'] = routeWisePerformance($selected_route, $data['memo_structure'],$selected_months);
+        $data['route_wise_performance'] = Reports::routeWisePerformance($selected_route, $data['memo_structure'],$selected_months);
 
         return view('reports.route_wise_performence_by_category_ajax',$data);
 
@@ -523,7 +523,7 @@ class ReportsController extends Controller
             $selected_route=Reports::getRouteInfoByAso($route_ids);
         }
 
-        $data['route_wise_strike_rate'] = routeWiseStrikeRate($selected_route, $data['memo_structure'],$selected_months);
+        $data['route_wise_strike_rate'] = Reports::routeWiseStrikeRate($selected_route, $data['memo_structure'],$selected_months);
 
         //dd($data['route_wise_strike_rate']);
 
@@ -910,7 +910,7 @@ class ReportsController extends Controller
         }else{
             $selected_route=Reports::getRouteInfoByAso($route_ids);
         }
-        $data['order_vs_sale_secondary'] = orderVsSaleSecondaryDate($route_id,$selected_route, $data['memo_structure'],$selected_date_range);
+        $data['order_vs_sale_secondary'] = Reports::orderVsSaleSecondaryDate($route_id,$selected_route, $data['memo_structure'],$selected_date_range);
 
 //        --------
 
@@ -954,7 +954,7 @@ class ReportsController extends Controller
         }
 //        debug($selected_route,1);
         //$data['order_vs_sale_secondary'] = orderVsSaleSecondaryRoute($selected_route, $data['memo_structure'],$selected_date_range);
-        $data['order_vs_sale_secondary'] = orderVsSaleSecondaryDate($route_id,$selected_route, $data['memo_structure'],$selected_date_range);
+        $data['order_vs_sale_secondary'] = Reports::orderVsSaleSecondaryDate($route_id,$selected_route, $data['memo_structure'],$selected_date_range);
 
         return view('reports.ajax.order_vs_sale_secondary_date_ajax',$data);
     }
@@ -1003,7 +1003,7 @@ class ReportsController extends Controller
         $selected_houses =array_filter($selected_houses);
         $data['post_data'] = $post;
         $data['current_balance']= true;
-        $data['order_vs_sale_primary'] = order_vs_sale_primary_by_house($selected_houses, $data['memo_structure'],$selected_date_range);
+        $data['order_vs_sale_primary'] = Reports::order_vs_sale_primary_by_house($selected_houses, $data['memo_structure'],$selected_date_range);
 
 //        dd( $data['order_vs_sale_primary'] );
         return view('reports.ajax.order_vs_sale_primary_ajax',$data);
@@ -1030,7 +1030,7 @@ class ReportsController extends Controller
         $data['level_col_data'] =['Req','Del'];
         $data['post_data'] = $post_data;
         $data['date_wise'] = true;
-        $data['order_vs_sale_primary'] = order_vs_sale_primary_by_date($house_id, $data['memo_structure'],$selected_date_range);
+        $data['order_vs_sale_primary'] = Reports::order_vs_sale_primary_by_date($house_id, $data['memo_structure'],$selected_date_range);
         return view('reports.order_vs_sale_primary',$data);
     }
 
@@ -1052,7 +1052,7 @@ class ReportsController extends Controller
         $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
 
         $data['post_data'] = $post;
-        $data['order_vs_sale_primary'] = order_vs_sale_primary_by_date($house_id, $data['memo_structure'],$selected_date_range);
+        $data['order_vs_sale_primary'] = Reports::order_vs_sale_primary_by_date($house_id, $data['memo_structure'],$selected_date_range);
 
 
         return view('reports.order_vs_sale_primary_ajax',$data);
