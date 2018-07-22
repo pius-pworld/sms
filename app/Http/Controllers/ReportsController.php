@@ -466,7 +466,7 @@ class ReportsController extends Controller
         }
         $data['route_wise_performance'] = Reports::routeWisePerformance($selected_route, $data['memo_structure'],$selected_months);
 
-        return view('reports.route_wise_performence_by_category_ajax',$data);
+        return view('reports.ajax.route_wise_performence_by_category_ajax',$data);
 
     }
     public function strikeRateByCategory(Request $request){
