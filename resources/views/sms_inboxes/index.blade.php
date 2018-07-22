@@ -68,7 +68,6 @@
                             <th>Sender</th>
                             <th>SMS Content</th>
                             <th>SMS Status</th>
-                            <th>Reason</th>
                             <th>Action</th>
                             <th>Process</th>
                         </tr>
@@ -79,7 +78,6 @@
                             <td>{{ $smsInbox->sender }}</td>
                             <td>{{ $smsInbox->sms_content }}</td>
                             <td>{{ $smsInbox->sms_status }}</td>
-                            <td>{{ $smsInbox->reason }}</td>
                             <td>
                                 <form method="POST" action="{!! route('sms_inboxes.sms_inbox.destroy', $smsInbox->id) !!}" accept-charset="UTF-8">
                                 <input name="_method" value="DELETE" type="hidden">
@@ -102,7 +100,7 @@
                                 
                             </td>
                             <td>
-                                <?php if($smsInbox->sms_status === 'Active'):?>
+                                <?php if(in_array($smsInbox->sms_status ,['Active','Rejected'])):?>
                                 <a href="{{ route('sms_inboxes.sms_inbox.process', $smsInbox->id ) }}" class="btn btn-primary" title="Process Sms Inbox">
                                     <span class="glyphicon glyphicon-plane" aria-hidden="true"></span>
                                 </a>
@@ -131,7 +129,7 @@
                     initComplete: function () {
                         this.api().columns(2).every( function () {
                             var column = this;
-                            var select = $('<select class="form-control"><option value="">Select SMS Status</option></select>')
+                            var select = $('<select class="form-control"><option value="Select Status"></option></select>')
                                 .appendTo( $("#smsStatus").empty() )
                                 .on( 'change', function () {
                                     var val = $.fn.dataTable.util.escapeRegex(

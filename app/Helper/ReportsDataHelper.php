@@ -438,7 +438,6 @@ if(!function_exists('getSecondaryOrderSaleByIds')){
             ->leftJoin('distribution_houses','distribution_houses.id','=','orders.dbid')
             ->where('orders.order_type','Secondary')
             ->where('orders.order_status','Processed')
-            ->where('orders.order_status','Processed')
             ->whereIn('orders.aso_id',$ids)
             ->groupBy('skues.short_name')
             ->groupBy('distribution_houses.point_name')
@@ -456,10 +455,9 @@ if(!function_exists('orderVsSaleSecondary')){
                    foreach ($data as $value){
                        $response[$value->point_name][$value->short_name]['requested'] = $value->order_quantity;
                        $response[$value->point_name][$value->short_name]['delivered'] = $value->sale_quantity;
+                       $response[$value->point_name]['house_id'] = $value->id;
                    }
-                $response[$value->point_name]['house_id'] = $value->id;
             }
-
             $response_data=[];
              foreach ($response as $h_key=>$h_value){
                    $sku_gen_value=[];
@@ -474,14 +472,14 @@ if(!function_exists('orderVsSaleSecondary')){
 
                        }
                    }
+
                      $response_data[$h_key]['additional']=[
-                         'house_id'=> $h_value['house_id']
+                         'house_id'=> $response[$h_key]['house_id']
                      ];
 
 
                    $response_data[$h_key]['data'] = $sku_gen_value;
              }
-
            return $response_data;
 
 

@@ -107,26 +107,6 @@
     <!-- Google Font -->
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-    <style>
-        th{background: #fff;}
-        th, td { white-space: nowrap; }
-        div.dataTables_wrapper {
-            width: 100%;
-            margin: 0 auto;
-        }
-        thead th{
-            padding:3px 18px;
-        }
-        .boo-table thead th{
-            vertical-align:middle;
-        }
-        table.dataTable thead th, table.dataTable thead td {
-            border-bottom: 0!important;
-        }
-        .DTFC_LeftBodyWrapper{
-            top:-14px !important;
-        }
-    </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <script>
