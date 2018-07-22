@@ -5,13 +5,9 @@
 
         <section class="content-header">
             <h1>
-                Route Wise Performence By Category
+                {{$header_level}}
             </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li><a href="#">Reports</a></li>
-                <li class="active">Route Wise Performence By Category</li>
-            </ol>
+            {!! $breadcrumb !!}
         </section>
 
         @include('grid.search_area_unique')
@@ -20,7 +16,7 @@
             <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header" style="overflow: hidden">
-                        <span class="box-title" style="float: left;">Route Wise Performence By Category</span>
+                        <span class="box-title" style="float: left;">Stock List</span>
                         <span class="advanchedSearchToggle" style="float: right;">
                             <button
                                     type="button"
@@ -30,8 +26,8 @@
                             </button>
                         </span>
                     </div>
-                    <div class="box-body showSearchDataUnique" style="overflow: scroll;">
-                        @include('reports.route_wise_performence_by_category_ajax')
+                    <div class="box-body showSearchDataUnique">
+                        @include('reports.ajax.'.$view)
                     </div>
 
 

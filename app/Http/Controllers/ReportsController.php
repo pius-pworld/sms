@@ -271,13 +271,16 @@ class ReportsController extends Controller
 
     public function houseStock(Request $request){
         $data['ajaxUrl'] = URL::to('house-stock-search');
+        $data['view'] = 'house_stock_ajax';
+        $data['header_level'] = 'House Wise Stock';
         $data['searching_options'] = 'grid.search_elements_all';
         $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange','month'));
         $memo = repoStructure();
         $data['memo_structure']= $memo;
         $data['level'] = 1;
         $data['level_col_data'] =[];
-        return view('reports.house_stock',$data);
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'House Wise Stock'));
+        return view('reports.main',$data);
     }
 
     public function houseStockSearch(Request $request){
@@ -311,20 +314,22 @@ class ReportsController extends Controller
         $data['house_stock_list'] = getHouseStockInfo($selected_houses,$memo);
 
 
-        return view('reports.house_stock_ajax',$data);
+        return view('reports.ajax.house_stock_ajax',$data);
 
     }
 
     public function houseLifting(Request $request){
         $data['ajaxUrl'] = URL::to('house-lifting-search');
+        $data['view'] = 'house_lifting_ajax';
+        $data['header_level'] = ' House Wise Lifting';
         $data['searching_options'] = 'grid.search_elements_all';
-        //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
         $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange','month'));
         $memo = repoStructure();
         $data['level'] = 2;
         $data['level_col_data'] =['Requested','Delivery'];
         $data['memo_structure']= $memo;
-        return view('reports.house_lifting',$data);
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'House Wise Lifting'));
+        return view('reports.main',$data);
     }
 
     public function houseLiftingSearch(Request $request){
@@ -360,20 +365,22 @@ class ReportsController extends Controller
         $data['house_lifting_list'] = getHouseLifting($selected_houses, $data['memo_structure']);
 
 
-        return view('reports.house_lifting_ajax',$data);
+        return view('reports.ajax.house_lifting_ajax',$data);
 
     }
 
     public function houseWisePerformance(Request $request){
         $data['ajaxUrl'] = URL::to('db-wise-performance-search');
         $data['searching_options'] = 'grid.search_elements_all';
-        //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
+        $data['view'] = 'db_wise_performance_ajax';
+        $data['header_level'] = ' DB House Wise Performance';
         $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange'));
         $memo = repoStructure();
         $data['level'] = 3;
         $data['level_col_data'] =['Target','Sales','Ach%'];
         $data['memo_structure']= $memo;
-        return view('reports.db_wise_performance',$data);
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'DB House Wise Performance'));
+        return view('reports.main',$data);
     }
 
     public function houseWisePerformanceSearch(Request $request){
@@ -406,19 +413,21 @@ class ReportsController extends Controller
         $data['house_wise_performance'] = houseWisePerformance($selected_houses, $data['memo_structure'],$selected_months);
 
 
-        return view('reports.db_wise_performance_ajax',$data);
+        return view('reports.ajax.db_wise_performance_ajax',$data);
     }
 
     public function routeWisePerformenceByCategory(){
         $data['ajaxUrl'] = URL::to('route-wise-performence-by-category-ajax');
         $data['searching_options'] = 'grid.search_elements_all';
-        //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
+        $data['view'] = 'route_wise_performence_by_category_ajax';
+        $data['header_level'] = 'Route Wise Performence By Category';
         $data['searchAreaOption'] = searchAreaOption(array('show','daterange'));
         $memo = repoStructure();
         $data['memo_structure']= $memo;
         $data['level'] = 3;
         $data['level_col_data'] =['Target','Sale','Ach%'];
-        return view('reports.route_wise_performence_by_category',$data);
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'Route Wise Performence By Category'));
+        return view('reports.main',$data);
     }
 
     public function routeWisePerformenceByCategoryAjax(Request $request)
@@ -456,19 +465,21 @@ class ReportsController extends Controller
         }
         $data['route_wise_performance'] = routeWisePerformance($selected_route, $data['memo_structure'],$selected_months);
 
-        return view('reports.route_wise_performence_by_category_ajax',$data);
+        return view('reports.ajax.route_wise_performence_by_category_ajax',$data);
 
     }
     public function strikeRateByCategory(Request $request){
         $data['ajaxUrl'] = URL::to('strike-rate-search');
         $data['searching_options'] = 'grid.search_elements_all';
-        //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
+        $data['view'] = 'strike_rate_ajax';
+        $data['header_level'] = 'Strike Rate By Category';
         $data['searchAreaOption'] = searchAreaOption(array('show','month'));
         $memo = repoStructure();
         $data['memo_structure']= $memo;
         $data['level'] = 5;
         $data['level_col_data'] =['Prod','Avg/Mem','Vol/Mem','Prot','Bouc Call'];
-        return view('reports.strike_rate',$data);
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'Strike Rate By Category'));
+        return view('reports.main',$data);
     }
 
     public function strikeRateByCategoryAjax(Request $request){
@@ -516,7 +527,7 @@ class ReportsController extends Controller
         //dd($data['route_wise_strike_rate']);
 
 
-        return view('reports.strike_rate_ajax',$data);
+        return view('reports.ajax.strike_rate_ajax',$data);
 
 
     }
@@ -626,13 +637,14 @@ class ReportsController extends Controller
     public function orderVsSaleSecondary(Request $request){
         $data['ajaxUrl'] = URL::to('order-vs-sale-secondary-search');
         $data['searching_options'] = 'grid.search_elements_all';
-        //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
+        $data['view'] = 'order_vs_sale_secondary_ajax';
+        $data['header_level'] = 'Order VS Sale Secondary';
         $data['searchAreaOption'] = searchAreaOption(array('show','month'));
         $data['memo_structure']=repoStructure();
         $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'order vs sale secondary'));
         $data['level'] = 2;
         $data['level_col_data'] =['Req','Del'];
-        return view('reports.order_vs_sale_secondary',$data);
+        return view('reports.main',$data);
     }
 
     public function orderVsSaleSecondaryAjax(Request $request){
@@ -677,7 +689,7 @@ class ReportsController extends Controller
         $data['order_vs_sale_secondary'] = orderVsSaleSecondary($selected_route, $data['memo_structure'],$selected_date_range);
 
 
-        return view('reports.order_vs_sale_secondary_ajax',$data);
+        return view('reports.ajax.order_vs_sale_secondary_ajax',$data);
     }
 
 
@@ -685,6 +697,8 @@ class ReportsController extends Controller
         $post= json_decode($postdata,true);
         $data['post_data'] = $post;
         $data['ajaxUrl'] = URL::to('order-vs-sale-secondary-aso-search/'.$dbid);
+        $data['view'] = 'order_vs_sale_secondary_aso_ajax';
+        $data['header_level'] = ' Order VS Sale Secondary By ASO';
         $data['searching_options'] = 'grid.search_elements_all';
         $data['searchAreaOption'] = searchAreaOption(array('show','month','zone','region','territory','house'));
         $data['memo_structure']=repoStructure();
@@ -721,7 +735,7 @@ class ReportsController extends Controller
 
 
 
-        return view('reports.order_vs_sale_secondary-aso',$data);
+        return view('reports.main',$data);
     }
 
     public function orderVsSaleSecondaryAsoSearch(Request $request, $dbid=null){
@@ -762,7 +776,7 @@ class ReportsController extends Controller
 
         $data['order_vs_sale_secondary'] = orderVsSaleSecondaryAso($selected_route, $data['memo_structure'],$selected_date_range);
 
-        return view('reports.order_vs_sale_secondary_aso_ajax',$data);
+        return view('reports.ajax.order_vs_sale_secondary_aso_ajax',$data);
     }
 
 
@@ -771,6 +785,8 @@ class ReportsController extends Controller
         $post= json_decode($postdata,true);
         $data['post_data'] = $post;
         $data['ajaxUrl'] = URL::to('order-vs-sale-secondary-route-search/'.$aso_id);
+        $data['view'] = 'order_vs_sale_secondary_route_ajax';
+        $data['header_level'] = ' Order VS Sale Secondary By Route';
         $data['searching_options'] = 'grid.search_elements_all';
         $data['searchAreaOption'] = searchAreaOption(array('show','month','zone','region','territory','house'));
         $data['memo_structure']=repoStructure();
@@ -813,7 +829,7 @@ class ReportsController extends Controller
 
 
 
-        return view('reports.order_vs_sale_secondary-route',$data);
+        return view('reports.main',$data);
     }
 
 
@@ -851,7 +867,7 @@ class ReportsController extends Controller
         $data['order_vs_sale_secondary'] = orderVsSaleSecondaryRoute($selected_route, $data['memo_structure'],$selected_date_range);
 //        debug($data['order_vs_sale_secondary'],1);
 
-        return view('reports.order_vs_sale_secondary_route_ajax',$data);
+        return view('reports.ajax.order_vs_sale_secondary_route_ajax',$data);
     }
 
 
@@ -859,6 +875,8 @@ class ReportsController extends Controller
         $post= json_decode($postdata,true);
         $data['post_data'] = $post;
         $data['ajaxUrl'] = URL::to('order-vs-sale-secondary-date-search/'.$aso_id.'/'.$route_id);
+        $data['view'] = 'order_vs_sale_secondary_date_ajax';
+        $data['header_level'] = 'Order VS Sale Secondary By Date';
         $data['searching_options'] = 'grid.search_elements_all';
         $data['searchAreaOption'] = searchAreaOption(array('show','month','zone','region','territory','house'));
         $data['memo_structure']=repoStructure();
@@ -898,7 +916,7 @@ class ReportsController extends Controller
 
 
 
-        return view('reports.order_vs_sale_secondary-date',$data);
+        return view('reports.main',$data);
     }
 
 
@@ -937,7 +955,7 @@ class ReportsController extends Controller
         //$data['order_vs_sale_secondary'] = orderVsSaleSecondaryRoute($selected_route, $data['memo_structure'],$selected_date_range);
         $data['order_vs_sale_secondary'] = orderVsSaleSecondaryDate($route_id,$selected_route, $data['memo_structure'],$selected_date_range);
 
-        return view('reports.order_vs_sale_secondary_date_ajax',$data);
+        return view('reports.ajax.order_vs_sale_secondary_date_ajax',$data);
     }
 
 
@@ -945,13 +963,14 @@ class ReportsController extends Controller
     public function orderVsSalePrimary(Request $request){
         $data['ajaxUrl'] = URL::to('order-vs-sale-primary-search');
         $data['searching_options'] = 'grid.search_elements_all';
-        //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
+        $data['view'] = 'order_vs_sale_primary_ajax';
+        $data['header_level'] = 'Order Vs Sale (Primary)';
         $data['searchAreaOption'] = searchAreaOption(array('show','month','route'));
         $data['memo_structure']=repoStructure();
         $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'order vs sale secondary'));
         $data['level'] = 2;
         $data['level_col_data'] =['Req','Del'];
-        return view('reports.order_vs_sale_primary',$data);
+        return view('reports.main',$data);
     }
 
     public function orderVsSalePrimarySearch(Request $request){
@@ -986,7 +1005,7 @@ class ReportsController extends Controller
         $data['order_vs_sale_primary'] = order_vs_sale_primary_by_house($selected_houses, $data['memo_structure'],$selected_date_range);
 
 //        dd( $data['order_vs_sale_primary'] );
-        return view('reports.order_vs_sale_primary_ajax',$data);
+        return view('reports.ajax.order_vs_sale_primary_ajax',$data);
     }
 
     public function orderVsSalePrimaryDateWise(Request $request,$house_id,$post_data){

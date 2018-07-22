@@ -75,8 +75,8 @@ Route::post('order-vs-sale-primary-search','ReportsController@orderVsSalePrimary
 Route::get('order-vs-sale-primary-date-wise/{house_id}/{post_date}','ReportsController@orderVsSalePrimaryDateWise');
 Route::post('order-vs-sale-primary-date-wise-search/{house_id}','ReportsController@orderVsSalePrimaryDateWiseSearch');
 
-Route::get('current-stock','ReportsController@currentStock');
-Route::post('current-stock-search','ReportsController@currentStockSearch');
+//Route::get('current-stock','ReportsController@currentStock');
+//Route::post('current-stock-search','ReportsController@currentStockSearch');
 
 //Reports
 Route::get('house-stock','ReportsController@houseStock');
