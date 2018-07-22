@@ -524,8 +524,8 @@ if(!function_exists('orderVsSaleSecondaryAso')){
             foreach ($data as $value){
                 $response[$value->requester_name][$value->short_name]['requested'] = $value->order_quantity;
                 $response[$value->requester_name][$value->short_name]['delivered'] = $value->sale_quantity;
+                $response[$value->requester_name]['aso_id'] = $value->aso_id;
             }
-            $response[$value->requester_name]['aso_id'] = $value->aso_id;
         }
 //        debug($response,1);
         $response_data=[];
