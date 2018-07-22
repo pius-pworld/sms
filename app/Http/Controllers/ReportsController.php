@@ -1014,6 +1014,8 @@ class ReportsController extends Controller
         unset($request_pass_data['_token']);
         $request_data = filter_array($request_pass_data);
         $data['ajaxUrl'] = URL::to('order-vs-sale-primary-date-wise-search/'.$house_id);
+        $data['view'] = 'order_vs_sale_primary_ajax';
+        $data['header_level'] = 'Order Vs Sale (Primary)';
 
         $data['searching_options'] = 'grid.search_elements_all';
         //$data['searchAreaOption'] = array('show'=>1,'daterange'=>0);
@@ -1031,7 +1033,7 @@ class ReportsController extends Controller
         $data['post_data'] = $post_data;
         $data['date_wise'] = true;
         $data['order_vs_sale_primary'] = Reports::order_vs_sale_primary_by_date($house_id, $data['memo_structure'],$selected_date_range);
-        return view('reports.order_vs_sale_primary',$data);
+        return view('reports.main',$data);
     }
 
     public function orderVsSalePrimaryDateWiseSearch(Request $request,$house_id){
