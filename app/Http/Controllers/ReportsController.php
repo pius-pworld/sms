@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 //use App\Models\Ordering;
 use App\Models\DistributionHouse;
+use App\Models\Reports;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
@@ -307,11 +308,11 @@ class ReportsController extends Controller
         $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
         $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
         $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
-        $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+        $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
         $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
         $selected_houses =array_filter($selected_houses);
 
-        $data['house_stock_list'] = getHouseStockInfo($selected_houses,$memo);
+        $data['house_stock_list'] = Reports::getHouseStockInfo($selected_houses,$memo);
 
 
         return view('reports.ajax.house_stock_ajax',$data);
@@ -356,7 +357,7 @@ class ReportsController extends Controller
         $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
         $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
         $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
-        $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+        $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
         $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
         $selected_houses =array_filter($selected_houses);
 
@@ -407,7 +408,7 @@ class ReportsController extends Controller
         $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
         $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
         $selected_months=array_key_exists('month',$request_data) ? $request_data['month'] : [];
-        $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+        $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
         $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
         $selected_houses =array_filter($selected_houses);
         $data['house_wise_performance'] = houseWisePerformance($selected_houses, $data['memo_structure'],$selected_months);
@@ -456,16 +457,16 @@ class ReportsController extends Controller
         $route_ids=array_key_exists('aso_id',$request_data) ? $request_data['aso_id'] : [];
         $selected_months=array_key_exists('month',$request_data) ? $request_data['month'] : [];
         if(count($route_ids) == 0 ){
-            $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+            $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
             $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
             $selected_houses =array_filter($selected_houses);
-            $selected_route=getRouteInfoByHouse($selected_houses);
+            $selected_route=Reports::getRouteInfoByHouse($selected_houses);
         }else{
-            $selected_route=getRouteInfoByAso($route_ids);
+            $selected_route=Reports::getRouteInfoByAso($route_ids);
         }
         $data['route_wise_performance'] = routeWisePerformance($selected_route, $data['memo_structure'],$selected_months);
 
-        return view('reports.ajax.route_wise_performence_by_category_ajax',$data);
+        return view('reports.route_wise_performence_by_category_ajax',$data);
 
     }
     public function strikeRateByCategory(Request $request){
@@ -513,13 +514,13 @@ class ReportsController extends Controller
         $route_ids=array_key_exists('aso_id',$request_data) ? $request_data['aso_id'] : [];
         $selected_months=array_key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
         if(count($route_ids) == 0){
-            $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+            $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
             $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
             $selected_houses =array_filter($selected_houses);
-            $selected_route=getRouteInfoByHouse($selected_houses);
+            $selected_route=Reports::getRouteInfoByHouse($selected_houses);
         }
         else{
-            $selected_route=getRouteInfoByAso($route_ids);
+            $selected_route=Reports::getRouteInfoByAso($route_ids);
         }
 
         $data['route_wise_strike_rate'] = routeWiseStrikeRate($selected_route, $data['memo_structure'],$selected_months);
@@ -570,7 +571,7 @@ class ReportsController extends Controller
         $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
         $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
         $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
-        $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+        $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
         $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
         $selected_houses =array_filter($selected_houses);
         $selected_months=array_key_exists('month',$request_data) ? $request_data['month'] : [];
@@ -620,12 +621,12 @@ class ReportsController extends Controller
         $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
 
         if(count($route_ids) == 0 ){
-            $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+            $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
             $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
             $selected_houses =array_filter($selected_houses);
-            $selected_route=getRouteInfoByHouse($selected_houses);
+            $selected_route=Reports::getRouteInfoByHouse($selected_houses);
         }else{
-            $selected_route=getRouteInfoByAso($route_ids);
+            $selected_route=Reports::getRouteInfoByAso($route_ids);
         }
 
         $data['sale_summary_by_month'] = dailySaleSummaryByMonth($selected_route, $data['memo_structure'],$selected_months,$selected_date_range);
@@ -677,12 +678,12 @@ class ReportsController extends Controller
         $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
 
         if(count($route_ids) == 0 ){
-            $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+            $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
             $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
             $selected_houses =array_filter($selected_houses);
-            $selected_route=getRouteInfoByHouse($selected_houses);
+            $selected_route=Reports::getRouteInfoByHouse($selected_houses);
         }else{
-            $selected_route=getRouteInfoByAso($route_ids);
+            $selected_route=Reports::getRouteInfoByAso($route_ids);
         }
 
 
@@ -722,12 +723,12 @@ class ReportsController extends Controller
         $route_ids=array_key_exists('aso_id',$request_data) ? $request_data['aso_id'] : [];
         $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
         if(count($route_ids) == 0 ){
-            $get_info= getInfo([],[],[],$house_ids);
+            $get_info= Reports::getInfo([],[],[],$house_ids);
             $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
             $selected_houses =array_filter($selected_houses);
-            $selected_route=getRouteInfoByHouse($selected_houses);
+            $selected_route=Reports::getRouteInfoByHouse($selected_houses);
         }else{
-            $selected_route=getRouteInfoByAso($route_ids);
+            $selected_route=Reports::getRouteInfoByAso($route_ids);
         }
         $data['order_vs_sale_secondary'] = orderVsSaleSecondaryAso($selected_route, $data['memo_structure'],$selected_date_range);
 //        --------
@@ -766,12 +767,12 @@ class ReportsController extends Controller
         $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
 
         if(count($route_ids) == 0 ){
-            $get_info= getInfo([],[],[],$house_ids);
+            $get_info= Reports::getInfo([],[],[],$house_ids);
             $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
             $selected_houses =array_filter($selected_houses);
-            $selected_route=getRouteInfoByHouse($selected_houses);
+            $selected_route=Reports::getRouteInfoByHouse($selected_houses);
         }else{
-            $selected_route=getRouteInfoByAso($route_ids);
+            $selected_route=Reports::getRouteInfoByAso($route_ids);
         }
 
         $data['order_vs_sale_secondary'] = orderVsSaleSecondaryAso($selected_route, $data['memo_structure'],$selected_date_range);
@@ -815,12 +816,12 @@ class ReportsController extends Controller
         $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
 
         if(count($route_ids) == 0 ){
-            $get_info= getInfo([],[],[],[]);
+            $get_info= Reports::getInfo([],[],[],[]);
             $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
             $selected_houses =array_filter($selected_houses);
-            $selected_route=getRouteInfoByHouse($selected_houses);
+            $selected_route=Reports::getRouteInfoByHouse($selected_houses);
         }else{
-            $selected_route=getRouteInfoByAso($route_ids);
+            $selected_route=Reports::getRouteInfoByAso($route_ids);
         }
 
         $data['order_vs_sale_secondary'] = orderVsSaleSecondaryRoute($selected_route, $data['memo_structure'],$selected_date_range);
@@ -856,12 +857,12 @@ class ReportsController extends Controller
         $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
 
         if(count($route_ids) == 0 ){
-            $get_info= getInfo([],[],[],[]);
+            $get_info= Reports::getInfo([],[],[],[]);
             $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
             $selected_houses =array_filter($selected_houses);
-            $selected_route=getRouteInfoByHouse($selected_houses);
+            $selected_route=Reports::getRouteInfoByHouse($selected_houses);
         }else{
-            $selected_route=getRouteInfoByAso($route_ids);
+            $selected_route=Reports::getRouteInfoByAso($route_ids);
         }
 //        debug($selected_route,1);
         $data['order_vs_sale_secondary'] = orderVsSaleSecondaryRoute($selected_route, $data['memo_structure'],$selected_date_range);
@@ -902,12 +903,12 @@ class ReportsController extends Controller
         $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
 
         if(count($route_ids) == 0 ){
-            $get_info= getInfo([],[],[],[]);
+            $get_info= Reports::getInfo([],[],[],[]);
             $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
             $selected_houses =array_filter($selected_houses);
-            $selected_route=getRouteInfoByHouse($selected_houses);
+            $selected_route=Reports::getRouteInfoByHouse($selected_houses);
         }else{
-            $selected_route=getRouteInfoByAso($route_ids);
+            $selected_route=Reports::getRouteInfoByAso($route_ids);
         }
         $data['order_vs_sale_secondary'] = orderVsSaleSecondaryDate($route_id,$selected_route, $data['memo_structure'],$selected_date_range);
 
@@ -944,12 +945,12 @@ class ReportsController extends Controller
         $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
 
         if(count($route_ids) == 0 ){
-            $get_info= getInfo([],[],[],[]);
+            $get_info= Reports::getInfo([],[],[],[]);
             $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
             $selected_houses =array_filter($selected_houses);
-            $selected_route=getRouteInfoByHouse($selected_houses);
+            $selected_route=Reports::getRouteInfoByHouse($selected_houses);
         }else{
-            $selected_route=getRouteInfoByAso($route_ids);
+            $selected_route=Reports::getRouteInfoByAso($route_ids);
         }
 //        debug($selected_route,1);
         //$data['order_vs_sale_secondary'] = orderVsSaleSecondaryRoute($selected_route, $data['memo_structure'],$selected_date_range);
@@ -996,7 +997,7 @@ class ReportsController extends Controller
         $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
         $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
         $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
-        $get_info= getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+        $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
         $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
         $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
         $selected_houses =array_filter($selected_houses);
