@@ -68,6 +68,7 @@
                             <th>Sender</th>
                             <th>SMS Content</th>
                             <th>SMS Status</th>
+                            <th>Reason</th>
                             <th>Action</th>
                             <th>Process</th>
                         </tr>
@@ -78,6 +79,7 @@
                             <td>{{ $smsInbox->sender }}</td>
                             <td>{{ $smsInbox->sms_content }}</td>
                             <td>{{ $smsInbox->sms_status }}</td>
+                            <td>{{ $smsInbox->reason }}</td>
                             <td>
                                 <form method="POST" action="{!! route('sms_inboxes.sms_inbox.destroy', $smsInbox->id) !!}" accept-charset="UTF-8">
                                 <input name="_method" value="DELETE" type="hidden">
