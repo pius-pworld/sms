@@ -165,10 +165,21 @@ class ReportsController extends Controller
         }
     }
 
+    private function getTotalAmount($post){
+        $total_order_amount=0;
+        foreach($post['quantity'] as $k=>$q)
+        {
+            $total_order_amount = $total_order_amount+($q*$post['price'][$k]);
+        }
+        return $total_order_amount;
+
+    }
+
     public function primary_sales_create(Request $request)
     {
         $post = $request->all();
-//        debug($post,1);
+
+
         $salesdata = array(
             'asm_rsm_id'=>$post['asm_rsm_id'],
             'dbid'=>$post['dh_id'],
@@ -180,12 +191,14 @@ class ReportsController extends Controller
             'dh_name'=>$post['dh_name'],
             'dh_phone'=>$post['dh_phone'],
             'sale_type'=>'Primary',
+            'house_current_balance'=> ($post['current_balance']+$post['order_da']) - $this->getTotalAmount($post),
             'sale_total_sku'=>array_sum($post['quantity']),
             'created_by'=>Auth::id()
         );
-        $sale_id = DB::table('sales')->insertGetId($salesdata);
+
 
         $sales_details_data = array();
+        $sale_id = DB::table('sales')->insertGetId($salesdata);
         $total_order = 0;
 //        debug($post,1);
         foreach($post['quantity'] as $k=>$q)
@@ -199,6 +212,7 @@ class ReportsController extends Controller
 
             DB::table('sale_details')->insert($sales_details_data);
         }
+
         DB::table('orders')->where('id', $post['order_id'])->update(['order_status' => 'Processed']);
         DB::table('sales')->where('id', $sale_id)->update(['total_sale_amount' => $total_order]);
 
