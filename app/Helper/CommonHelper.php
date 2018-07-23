@@ -212,7 +212,7 @@
                     \App\Models\DistributionHouse::where('id',$house_id)->update(['current_balance'=>$update_current_balance]);
                 }
                 else{
-                    $update_current_balance = $present_current_balance['current_balance'] + $total_amount;
+                    $update_current_balance = $present_current_balance['current_balance'] - $total_amount;
                     \App\Models\DistributionHouse::where('id',$house_id)->update(['current_balance'=>$update_current_balance]);
                 }
 
