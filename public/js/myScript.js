@@ -16,6 +16,18 @@ function myConfiguration()
         buttons: ['excel','print', 'pageLength']
     });
 
+    $('#dataTableIdWithoutFixed').dataTable({
+        scrollY: "calc(125vh - 380px)",
+        scrollX: true,
+        scrollCollapse: true,
+        bPaginate: true,
+        dom: 'Bfrtip',
+        responsive: true,
+        "lengthMenu": [[50, 25, 50, 100, -1], [50, 25, 50, 100, "All"]],
+        "pageLength": 50,
+        buttons: ['excel','print', 'pageLength']
+    });
+
     $('#dataTableId_withoutPaginate').dataTable({
         bPaginate: false,
         dom: 'Bfrtip',
