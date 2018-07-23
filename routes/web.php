@@ -871,3 +871,35 @@ Route::group(
         ->where('id', '[0-9]+');
 
 });
+
+Route::group(
+[
+    'prefix' => 'sms_outboxxes',
+], function () {
+
+    Route::get('/', 'SmsOutboxxesController@index')
+         ->name('sms_outboxxes.sms_outboxx.index');
+
+    Route::get('/create','SmsOutboxxesController@create')
+         ->name('sms_outboxxes.sms_outboxx.create');
+
+    Route::get('/show/{smsOutboxx}','SmsOutboxxesController@show')
+         ->name('sms_outboxxes.sms_outboxx.show')
+         ->where('id', '[0-9]+');
+
+    Route::get('/{smsOutboxx}/edit','SmsOutboxxesController@edit')
+         ->name('sms_outboxxes.sms_outboxx.edit')
+         ->where('id', '[0-9]+');
+
+    Route::post('/', 'SmsOutboxxesController@store')
+         ->name('sms_outboxxes.sms_outboxx.store');
+               
+    Route::put('sms_outboxx/{smsOutboxx}', 'SmsOutboxxesController@update')
+         ->name('sms_outboxxes.sms_outboxx.update')
+         ->where('id', '[0-9]+');
+
+    Route::delete('/sms_outboxx/{smsOutboxx}','SmsOutboxxesController@destroy')
+         ->name('sms_outboxxes.sms_outboxx.destroy')
+         ->where('id', '[0-9]+');
+
+});

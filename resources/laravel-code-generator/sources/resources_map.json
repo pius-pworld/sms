@@ -109,5 +109,9 @@
         "model-name": "Product",
         "resource-file": "products.json",
         "table-name": "products"
+    },
+    {
+        "model-name": "Sms_outboxx",
+        "resource-file": "sms_outboxxes.json"
     }
 ]
