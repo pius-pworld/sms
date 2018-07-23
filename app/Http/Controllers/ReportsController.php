@@ -1016,7 +1016,6 @@ class ReportsController extends Controller
         $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
         $selected_houses =array_filter($selected_houses);
         $data['post_data'] = $post;
-        $data['current_balance']= true;
         $data['order_vs_sale_primary'] = Reports::order_vs_sale_primary_by_house($selected_houses, $data['memo_structure'],$selected_date_range);
 
 //        dd( $data['order_vs_sale_primary'] );
@@ -1046,6 +1045,7 @@ class ReportsController extends Controller
         $data['level_col_data'] =['Req','Del'];
         $data['post_data'] = $post_data;
         $data['date_wise'] = true;
+        $data['current_balance']= true;
         $data['order_vs_sale_primary'] = Reports::order_vs_sale_primary_by_date($house_id, $data['memo_structure'],$selected_date_range);
         return view('reports.main',$data);
     }
@@ -1068,6 +1068,7 @@ class ReportsController extends Controller
         $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
 
         $data['post_data'] = $post;
+        $data['current_balance']= true;
         $data['order_vs_sale_primary'] = Reports::order_vs_sale_primary_by_date($house_id, $data['memo_structure'],$selected_date_range);
 
 

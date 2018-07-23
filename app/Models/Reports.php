@@ -45,8 +45,8 @@ class Reports extends Model
                 }
             }
 
-            $house_stock_list[$house['market_name']]['data']=$sku_quantity;
-            $house_stock_list[$house['market_name']]['current_balance']=$house['current_balance'];
+            $house_stock_list[$house['point_name']]['data']=$sku_quantity;
+            $house_stock_list[$house['point_name']]['current_balance']=$house['current_balance'];
 
         }
         return $house_stock_list;
@@ -103,7 +103,7 @@ class Reports extends Model
                 }
             }
 
-            $house_lifting_list[$house['market_name']]=$sku_order_info;
+            $house_lifting_list[$house['point_name']]=$sku_order_info;
         }
         return $house_lifting_list;
     }
@@ -276,7 +276,7 @@ class Reports extends Model
     public static  function gerOrderVsSaleByHouseIds($house_ids,$selected_date_range){
 
         $data =DB::table('skues')
-            ->select('distribution_houses.id as house_id','distribution_houses.current_balance','distribution_houses.point_name','orders.order_date','orders.aso_id','distribution_houses.point_name','skues.short_name','orders.requester_name','skues.short_name',DB::raw('SUM(order_details.quantity) as order_quantity'),DB::raw('SUM(sale_details.quantity) as sale_quantity'))
+            ->select('distribution_houses.id as house_id','distribution_houses.current_balance','distribution_houses.point_name','orders.order_date','orders.aso_id','sales.house_current_balance','distribution_houses.point_name','skues.short_name','orders.requester_name','skues.short_name',DB::raw('SUM(order_details.quantity) as order_quantity'),DB::raw('SUM(sale_details.quantity) as sale_quantity'))
             ->leftJoin('order_details','order_details.short_name','=','skues.short_name')
             ->leftJoin('orders','orders.id','=','order_details.orders_id')
             ->leftJoin('sales',function($join){
@@ -309,6 +309,7 @@ class Reports extends Model
 
     public static function order_vs_sale_primary_by_house($house_ids,$selected_memo,$selected_date_range){
         $data =\App\Models\Reports::gerOrderVsSaleByHouseIds($house_ids,$selected_date_range);
+
         $response =[];
         if(!$data->isEmpty()){
             foreach ($data as $value){
@@ -346,13 +347,16 @@ class Reports extends Model
 
     public static  function order_vs_sale_primary_by_date($house_ids,$selected_memo,$selected_date_range){
         $data =\App\Models\Reports::gerOrderVsSaleByHouseIds($house_ids,$selected_date_range);
+
         $response =[];
         if(!$data->isEmpty()){
             foreach ($data as $value){
                 $response[$value->order_date][$value->short_name]['requested'] = $value->order_quantity;
                 $response[$value->order_date][$value->short_name]['delivered'] = $value->sale_quantity;
+                $response[$value->order_date]['house_current_balance'] = $value->house_current_balance;
             }
         }
+
 
         $response_data=[];
         foreach ($response as $h_key=>$h_value){
@@ -369,7 +373,7 @@ class Reports extends Model
                 }
             }
             $response_data[$h_key]['additional']=[
-
+                'current_balance'=>$h_value['house_current_balance']
             ];
 
 
@@ -408,7 +412,7 @@ class Reports extends Model
 
             }
 
-            $db_house_wise_performance[$house['market_name']]=$sku_target;
+            $db_house_wise_performance[$house['point_name']]=$sku_target;
         }
         return $db_house_wise_performance;
     }
