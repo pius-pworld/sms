@@ -370,7 +370,7 @@ if(!function_exists('get_order_id_by_sale')){
         $data=\App\Models\Order::where('aso_id',$aso_id)->where('order_date',$order_date)->where('order_type','Secondary')->where('order_status','Processed')->orderBy('id', 'DESC')->first();
         if(!is_null($data)){
             $result=$data->toArray();
-            return $result['id'];
+            return $result;
         }
        return 0;
 

@@ -293,7 +293,10 @@ class SmsInboxesController extends Controller
         $sale_total_sku =  $data['total'];
         unset($data['asoid'],$data['dt'],$data['total']);
         $total = $this->totalCheck($data,SALE,$total_sale_amount);
-        $order_id = get_order_id_by_sale($aso_id,$order_date);
+        $order_details = get_order_id_by_sale($aso_id,$order_date);
+        $order_id = $order_details['id'];
+        $route_id = $order_details['route_id'];
+        $route_name= $order_details['route_name'];
         if($order_id== 0){
             $sale_information['status'] = false;
             $sale_information['message'] = "Invalid Order Date!!";
@@ -329,6 +332,8 @@ class SmsInboxesController extends Controller
                 'sale_type'=>'Secondary',
                 'sale_total_sku' => $total,
                 'total_sale_amount'=>$total_sale_amount,
+                'sale_route_id'=>$route_id,
+                'sale_route' => $route_name,
                 'created_by' => Auth::Id()
             ];
             $sale_information['status'] = true;
