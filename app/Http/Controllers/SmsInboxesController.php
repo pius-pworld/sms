@@ -686,33 +686,47 @@ class SmsInboxesController extends Controller
     }
 
     public function captureSms(Request $request){
-        session_start();
+
         $post = $request->all();
-        $message_id   =array_key_exists('id',$post) ? $post['id'] : '';
-        session_id($message_id);
+        $message_id   = $post['id'];
+        $sender =  $post['sender'];
+        $send_at = strtotime($post['send_at']);
+        $message_body = $post['body'];
+        session_id($sender);
+        session_start();
+//        session_destroy();
+//        die;
+        if(!isset($_SESSION['message'])){
+            $_SESSION['message'] ="";
+        }
+        if(strpos($message_body,'Total') === false){
+
+            $_SESSION['message'].=$message_body;
+            return 0;
+        }
+        else{
+            $_SESSION['message'].=$message_body;
+        }
 
 
 
-        $message_body = array_key_exists('body',$post) ? $post['body'] : '';
-//        $_SESSION['message']="";
-
-        $_SESSION['message'].=$message_body;
-
-        dd($_SESSION['message']);
 
 
 
-        $sender = array_key_exists('sender',$post) ? $post['sender'] : '';
-        $send_at =array_key_exists('sent_at',$post) ? strtotime($post['sent_at']) : '';
+
+
+
+
 
 //        //dd(unserialize("a:4:{s:4:\"body\";s:153:\"Order/ASOID-11/Dt-2018-02-17/Rt-1/OU-10/VO-8/ME-17/Tp-000,001/Tc-001,01/BHp-000,0/BHc-000,1/Fp-000,1/Fc-000,1/F(h)-000,1/F(1)-000,1/F(2)-000,1/UCp-000,1/\";s:2:\"id\";s:2:\"19\";s:6:\"sender\";s:14:\"+8801719415744\";s:7:\"sent_at\";s:25:\"Tue, 24 Jul 2018 16:51:12\";}"));
 //        session_start();
         $data=[
            "transactionId"=> $message_id,
            "sender"=>$sender,
-           "sms_content" => $message_body,
+           "sms_content" =>  $_SESSION['message'],
            "sms_received"=> date('Y-m-d H:i:s', $send_at)
         ];
+        session_destroy();
 
         try{
             $result = DB::table('sms_inboxes')->insertGetId(
