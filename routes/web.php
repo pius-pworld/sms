@@ -10,7 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::post('sms-capture', 'SmsInboxesController@captureSms')->name('captureSms');
 Route::get('users', 'Auth\RegisterController@users')->name('users');
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 Route::post('register', 'Auth\RegisterController@register');
