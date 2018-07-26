@@ -616,7 +616,7 @@ class SmsInboxesController extends Controller
                 case ORDER:
 
                     $result= $this->processOrder($id,$parseData);
-                 
+
                     if(!is_a($result,'Illuminate\Http\RedirectResponse')) {
                         $error_message = isset($result['message']) ? $result['message'] : 'Invalid Order !';
                         SmsOutboxesController::writeOutbox($parseData['additional']['sender'], $error_message, ['id' => $parseData['additional']['id'], 'order_type' => strtolower($parseData['identifier']), 'priority' => 3]);
@@ -692,9 +692,9 @@ class SmsInboxesController extends Controller
 //        file_put_contents('1.txt',serialize($post));
 //        die;
 
-        $sender =  $post['number'];
-        $message_body = $post['text'];
-        $send_at = $post['timestampMillis']/1000;
+        $sender =  $post['from'];
+        $message_body = $post['message'];
+        $send_at = $post['sent_timestamp'];
 //        session_id($sender);
 //        session_start();
 //        session_destroy();
