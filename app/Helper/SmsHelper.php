@@ -106,3 +106,25 @@ if(!function_exists('get_route_info')){
        return $data;
     }
 }
+
+
+if(!function_exists('sendSms')){
+    function sendSms($mobile_number = '8801755557265', $sms_content = ""){
+        $sms_send_api_url = urlencode($sms_content);
+        $operators = array("017","016","015","019","018");
+        $mobile_number = trim($mobile_number);
+        if(substr($mobile_number, 0, 3) == '880' ){
+            $mobile_number = $mobile_number;
+        }else if(in_array(substr($mobile_number, 0, 3),$operators)){
+            $mobile_number = "88".$mobile_number;
+        }
+        //echo $sms_send_api_url;
+        if( strlen($sms_send_api_url) < 159 ){
+            $payload = file_get_contents("http://app.planetgroupbd.com/api/v3/sendsms/plain?user=apsis786&password=apsis1234&sender=SRParcel&GSM=".$mobile_number."&SMSText=".$sms_send_api_url);
+        }else{
+            $payload = file_get_contents("http://app.planetgroupbd.com/api/v3/sendsms/plain?user=apsis786&password=apsis1234&type=longSMS&sender=SRParcel&GSM=".$mobile_number."&SMSText=".$sms_send_api_url);
+        }
+        return $payload;
+    }
+
+}

@@ -747,4 +747,19 @@ class SmsInboxesController extends Controller
 //        file_put_contents('1.txt',serialize($post));
     }
 
+    public function sendOutboxSend(Request $request){
+        $outbox_pending=SmsOutbox::where('status','Draft')->get();
+        foreach ($outbox_pending as $pending){
+            $number = $pending['sms_receiver_number'];
+            $content = $pending['sms_content'];
+            $response=sendSms($number,$content);
+            $xml = simplexml_load_string($response, "SimpleXMLElement", LIBXML_NOCDATA);
+            $json = json_encode($xml);
+            $response_array = json_decode($json,TRUE);
+            if(isset($response_array['result']['status']) && $response_array['result']['status']== 0){
+                SmsOutbox::where('id',$pending['id'])->update(['status'=>'Sent']);
+            }
+        }
+    }
+
 }
