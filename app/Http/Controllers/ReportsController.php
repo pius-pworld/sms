@@ -119,7 +119,7 @@ class ReportsController extends Controller
 
 
         $data['sales'] = DB::table('skues')
-            ->select('skues.id as sid','sale_details.*','skues.sku_name','brands.brand_name')
+            ->select('skues.id as sid','sale_details.*','order_details.quantity as order_quantity','skues.sku_name','brands.brand_name')
             ->leftJoin('sale_details',function ($join)use($id){
                 $join->on('sale_details.short_name','=','skues.short_name')
                     ->where('sale_details.sales_id',$id);
@@ -127,6 +127,14 @@ class ReportsController extends Controller
             ->leftJoin('sales',function ($join2){
                 $join2->on('sales.id','=','sale_details.sales_id')
                     ->where('sales.sale_status','Processed');
+            })
+            ->leftJoin('orders',function($join){
+                $join->on('orders.aso_id','=','sales.aso_id')
+                    ->on('orders.order_date','=','sales.order_date');
+            })
+            ->leftJoin('order_details',function ($join){
+                $join->on('order_details.orders_id','=','orders.id')
+                    ->on('order_details.short_name','=','sale_details.short_name');
             })
             ->leftJoin('brands','brands.id','=','skues.brands_id')->groupBy('sale_details.short_name')->get();
 
@@ -200,6 +208,7 @@ class ReportsController extends Controller
         $sales_details_data = array();
         $sale_id = DB::table('sales')->insertGetId($salesdata);
         $total_order = 0;
+//        debug($post,1);
 //        debug($post,1);
         foreach($post['quantity'] as $k=>$q)
         {

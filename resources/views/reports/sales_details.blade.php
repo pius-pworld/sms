@@ -81,7 +81,7 @@
                                             }
 
 
-                                            echo '<td class="request_quantity">'.floor($convertArrayOrder[$key]->quantity).'</td>';
+                                            echo '<td class="request_quantity">'.floor($convertArrayOrder[$key]->order_quantity).'</td>';
                                             echo '<td>
                                                 <input type="hidden" name="short_name[]" value="'.$convertArrayOrder[$key]->short_name.'">
                                                 <input type="hidden" name="price['.$convertArrayOrder[$key]->short_name.']" value="'.$convertArrayOrder[$key]->price.'">

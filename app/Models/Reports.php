@@ -172,7 +172,7 @@ class Reports extends Model
         return $data;
     }
 
-    public static  function getSecondaryOrderAsoSaleByIds($ids){
+    public static  function getSecondaryOrderAsoSaleByIds($ids,$selected_date_range){
 //        debug($ids,1);
         $data =DB::table('skues')
             ->select('distribution_houses.id','orders.aso_id','distribution_houses.point_name','skues.short_name','orders.requester_name','skues.short_name',DB::raw('SUM(order_details.quantity) as order_quantity'),DB::raw('SUM(sale_details.quantity) as sale_quantity'))
@@ -191,6 +191,7 @@ class Reports extends Model
             ->where('orders.order_status','Processed')
             ->where('orders.order_status','Processed')
             ->whereIn('orders.aso_id',$ids)
+            ->whereBetween('orders.order_date',array_map('trim', explode(" - ",$selected_date_range[0])))
             ->groupBy('skues.short_name')
             ->get();
         return $data;
@@ -225,7 +226,8 @@ class Reports extends Model
         $data->whereIn('orders.aso_id',$ids)
             ->whereBetween('orders.order_date',array_map('trim', explode(" - ",$selected_date_range[0])))
             ->groupBy('skues.short_name')
-            ->groupBy('routes.routes_name');
+            ->groupBy('routes.routes_name')
+            ->groupBy('orders.order_date');
         $result = $data->get();
 //            debug($result,1);
         return $result;
