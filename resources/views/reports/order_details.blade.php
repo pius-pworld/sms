@@ -32,8 +32,12 @@
                                         <h5 style="overflow: hidden;">
                                             <span style="float: left;">Request Date : {{$orders_info->order_date}}</span>
                                             <span style="float: right; color: #0000F0; font-weight: bold;">
-                                                Deposited Amount : <span>{{number_format($orders_info->order_da,2)}}</span>&nbsp;&nbsp;
+                                                Deposited Amount : <span>{{number_format($orders_info->order_da,2)}}</span>&nbsp;&nbsp
+                                                @if($orders_info->order_status === 'Pending')
                                                 Current Balance : <span class="current_balance">{{number_format(($orders_info->current_balance+$orders_info->order_da),2)}}</span>
+                                                @else
+                                                    Current Balance : <span class="current_balance">{{number_format(($orders_info->current_balance),2)}}</span>
+                                                @endif
                                             </span>
                                         </h5>
                                     </div>
