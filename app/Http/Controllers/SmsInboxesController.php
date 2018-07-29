@@ -370,7 +370,7 @@ class SmsInboxesController extends Controller
         $da=$data['da'];
         unset($data['asm_rsm_id'],$data['dbid'],$data['dt'],$data['total'],$data['da']);
         $total = $this->totalCheck($data,PRIMARY,$primary_order_total);
-        $get_information=get_info_by_asm($asm_rms_id);
+        $get_information=get_info_by_asm($asm_rms_id,$dbid);
 
         if(is_null($get_information)){
             $primary_order_information['status'] = false;
@@ -397,10 +397,10 @@ class SmsInboxesController extends Controller
                 'order_date'=>$order_date,
                 'requester_name' => $get_information->name,
                 'requester_phone' => $get_information->mobile,
-                'dh_phone' => $get_information->dhname,
-                'dh_name' => $get_information->dhphone,
-                'tso_name' => $get_information->tsoname,
-                'tso_phone' => $get_information->tsophone,
+//                'dh_phone' => $get_information->dhname,
+//                'dh_name' => $get_information->dhphone,
+//                'tso_name' => $get_information->tsoname,
+//                'tso_phone' => $get_information->tsophone,
                 'order_type'=>'Primary',
                 'order_total_sku' => $primary_order_total_sku,
                 'order_amount'    => $primary_order_total,

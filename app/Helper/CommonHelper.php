@@ -331,11 +331,11 @@ if(!function_exists('get_info_by_aso')){
 }
 
 if(!function_exists('get_info_by_asm')){
-    function get_info_by_asm($id,$type="territory"){
+    function get_info_by_asm($id,$house_id,$type="territory"){
         $data=DB::table('users')
-            ->select('users.name','users.mobile','users.distribution_house_id','distribution_houses.incharge_name as dhname','distribution_houses.incharge_phone as dhphone','territories.incharge_name as tsoname','territories.incharge_phone as tsophone')
-            ->join('territories','territories.id','=','users.territories_id')
-            ->join('distribution_houses','distribution_houses.id','users.distribution_house_id')
+            ->select('users.name','users.mobile','distribution_houses.id as distribution_house_id')
+            ->join('distribution_houses','distribution_houses.territories_id','users.territories_id')
+            ->where('distribution_houses.id',$house_id)
             ->where('users.user_type',$type)
             ->where('users.id',$id)
             ->first();
