@@ -47,7 +47,7 @@
         @foreach($order_vs_sale_secondary as $house_key=> $house_info)
 
             <tr>
-                <th><a target="_blank" href=""> {{date('d-m-Y',strtotime($house_key))}} </a></th>
+                <th>{{date('d-m-Y',strtotime($house_key))}}</th>
                 @foreach($house_info['data'] as $key => $value)
                     @for($i=0;$i<$level;$i++)
                         <td>{{$value[$i]}}</td>

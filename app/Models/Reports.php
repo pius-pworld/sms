@@ -192,7 +192,7 @@ class Reports extends Model
             ->where('orders.order_status','Processed')
             ->whereIn('orders.aso_id',$ids)
             ->whereBetween('orders.order_date',array_map('trim', explode(" - ",$selected_date_range[0])))
-            ->groupBy('skues.short_name')
+            ->groupBy('orders.aso_id','skues.short_name')
             ->get();
         return $data;
     }
@@ -212,7 +212,7 @@ class Reports extends Model
             })
             ->leftJoin('distribution_houses','distribution_houses.id','=','orders.dbid')
 //            ->leftJoin('routes','routes.so_aso_user_id','=','orders.aso_id')
-            ->join('routes',function ($join){
+            ->leftjoin('routes',function ($join){
                 $join->on('routes.so_aso_user_id','=','orders.aso_id')
                     ->on('routes.id','=','orders.route_id')
                     ->on('routes.id','=','sales.sale_route_id');
@@ -225,9 +225,8 @@ class Reports extends Model
         }
         $data->whereIn('orders.aso_id',$ids)
             ->whereBetween('orders.order_date',array_map('trim', explode(" - ",$selected_date_range[0])))
-            ->groupBy('skues.short_name')
-            ->groupBy('routes.routes_name')
-            ->groupBy('orders.order_date');
+            ->groupBy('orders.route_id','orders.aso_id','skues.short_name');
+
         $result = $data->get();
 //            debug($result,1);
         return $result;
