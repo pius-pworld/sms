@@ -62,6 +62,7 @@
                                     <tbody>
                                     <?php
                                     $grand_total = 0;
+                                    $order_quantity = 0;
                                     foreach($memo as $k=>$v)
                                     {
                                         $sl = 0;
@@ -71,6 +72,7 @@
                                             $convertArrayOrder = collect($sales)->toArray();
                                             $key = array_search($vk, array_column($convertArrayOrder, 'short_name'));
                                             $grand_total += ($convertArrayOrder[$key]->quantity*$convertArrayOrder[$key]->price);
+                                            $order_quantity = $order_quantity+$convertArrayOrder[$key]->order_quantity;
                                             if($sl == 0)
                                             {
                                                 echo '<tr><td rowspan="'.count($v).'" style="text-align: left; vertical-align: middle;">'.$k.'</td><td>'.$vv.'</td>';
@@ -103,7 +105,7 @@
                                     <tr>
                                         <th style="text-align: right">Total</th>
                                         <th>&nbsp;</th>
-                                        <th class="total_quantity">{{$sales_info->sale_total_sku}}</th>
+                                        <th class="total_quantity">{{$order_quantity}}</th>
                                         <th class="total_order_quantity">{{$sales_info->sale_total_sku}}</th>
                                         <th>&nbsp;</th>
                                         <th class="grand_total" style="text-align: right">
