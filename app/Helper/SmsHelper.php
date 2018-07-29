@@ -98,11 +98,15 @@ if(!function_exists('modify_stock')){
 }
 
 if(!function_exists('get_route_info')){
-    function get_route_info($id){
+    function get_route_info($id,$user_id=null){
         $data=DB::table('routes')
             ->select('routes.routes_name')
-            ->where('routes.id',$id)
-            ->first();
+            ->where('routes.id',$id);
+        if(!is_null($user_id)){
+            $data= $data->where('routes.so_aso_user_id',$user_id);
+        }
+
+        $data= $data ->first();
        return $data;
     }
 }

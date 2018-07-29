@@ -230,11 +230,19 @@ class SmsInboxesController extends Controller
         $aso_id = $data['asoid'];
         $order_date = $data['dt'];
         $route_id = isset($data['rt']) ? $data['rt'] : '';
+        $get_information=get_route_info($route_id,111);
+        if(is_null($get_information)){
+            $order_information['status'] = false;
+            $order_information['message'] = "Invalid Route Information!!";
+            $order_information['additional'] = $extra_data['additional'];
+            $order_information['identifier'] = $extra_data['identifier'];
+            return $order_information;
+        }
         $total_outlet= $data['ou'];
         $visited_outlet = $data['vo'];
         $total_memo_order= $data['me'];
         $order_total_sku =  $data['total'];
-        $route_name=!is_null($route=get_route_info($route_id)) ? $route->routes_name : '';
+        $route_name= $get_information->routes_name;
         unset($data['asoid'],$data['rt'],$data['dt'],$data['ou'],$data['vo'],$data['me'],$data['total']);
         $get_information=get_info_by_aso($aso_id);
         if(is_null($get_information)){
