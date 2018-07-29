@@ -323,7 +323,7 @@ class SmsInboxesController extends Controller
         }
         $sale_information=[];
         if(!getPreviousSale($aso_id,$order_date,$route_id)->isEmpty()){
-            rejectPreviousSale($aso_id,$order_date,$sale_information);
+            rejectPreviousSale($aso_id,$order_date,$sale_information,$route_id);
         }
         if ($total === (int)$sale_total_sku) {
             $sale_information['order'] = [
