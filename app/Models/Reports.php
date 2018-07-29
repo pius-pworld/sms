@@ -196,7 +196,42 @@ class Reports extends Model
             ->get();
         return $data;
     }
+    public static function getSecondaryOrderDateSaleByIds($ids,$selected_date_range,$route_id=null)
+    {
+        $data =DB::table('skues')
+            ->select('distribution_houses.id','orders.order_date','orders.aso_id','distribution_houses.point_name','routes.id as route_id','routes.routes_name','skues.short_name','orders.requester_name','skues.short_name',DB::raw('SUM(order_details.quantity) as order_quantity'),DB::raw('SUM(sale_details.quantity) as sale_quantity'))
+            ->leftJoin('order_details','order_details.short_name','=','skues.short_name')
+            ->leftJoin('orders','orders.id','=','order_details.orders_id')
+            ->leftJoin('sales',function($join){
+                $join->on('sales.aso_id','=','orders.aso_id')
+                    ->on('sales.order_date','=','orders.order_date');
+            })
+            ->leftJoin('sale_details',function ($join){
+                $join->on('sale_details.sales_id','=','sales.id')
+                    ->on('sale_details.short_name','=','order_details.short_name');
+            })
+            ->leftJoin('distribution_houses','distribution_houses.id','=','orders.dbid')
+//            ->leftJoin('routes','routes.so_aso_user_id','=','orders.aso_id')
+            ->leftjoin('routes',function ($join){
+                $join->on('routes.so_aso_user_id','=','orders.aso_id')
+                    ->on('routes.id','=','orders.route_id')
+                    ->on('routes.id','=','sales.sale_route_id');
+            })
+            ->where('orders.order_type','Secondary')
+            ->where('orders.order_status','Processed');
+        if($route_id)
+        {
+            $data->where('orders.route_id',$route_id);
+        }
+        $data->whereIn('orders.aso_id',$ids)
+            ->whereBetween('orders.order_date',array_map('trim', explode(" - ",$selected_date_range[0])))
+            ->groupBy('orders.order_date','orders.aso_id','skues.short_name');
 
+        $result = $data->get();
+//            debug($result,1);
+        return $result;
+
+    }
     public static function getSecondaryOrderRouteSaleByIds($ids,$selected_date_range,$route_id=null){
         $data =DB::table('skues')
             ->select('distribution_houses.id','orders.order_date','orders.aso_id','distribution_houses.point_name','routes.id as route_id','routes.routes_name','skues.short_name','orders.requester_name','skues.short_name',DB::raw('SUM(order_details.quantity) as order_quantity'),DB::raw('SUM(sale_details.quantity) as sale_quantity'))
@@ -236,7 +271,7 @@ class Reports extends Model
         $response=[];
         $selected_aso=array_column($asos,'id');
 
-        $data= \App\Models\Reports::getSecondaryOrderRouteSaleByIds($selected_aso,$selected_date_range,$route_id);
+        $data= \App\Models\Reports::getSecondaryOrderDateSaleByIds($selected_aso,$selected_date_range,$route_id);
 //            debug($data,1);
         if(!$data->isEmpty()){
             foreach ($data as $value){
