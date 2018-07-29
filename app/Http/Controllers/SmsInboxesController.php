@@ -230,7 +230,7 @@ class SmsInboxesController extends Controller
         $aso_id = $data['asoid'];
         $order_date = $data['dt'];
         $route_id = isset($data['rt']) ? $data['rt'] : '';
-        $get_information=get_route_info($route_id,111);
+        $get_information=get_route_info($route_id,$aso_id);
         if(is_null($get_information)){
             $order_information['status'] = false;
             $order_information['message'] = "Invalid Route Information!!";
