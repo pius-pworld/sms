@@ -68,7 +68,7 @@
                             <th>Sender</th>
                             <th>SMS Content</th>
                             <th>SMS Status</th>
-                            <th>Reason</th>
+                            <th>Last Rejected Reason</th>
                             <th>Action</th>
                             <th>Process</th>
                         </tr>
