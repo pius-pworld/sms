@@ -253,6 +253,7 @@ class SmsInboxesController extends Controller
             return $order_information;
         }
         Order::where('aso_id',$aso_id)->where('order_date',$order_date)
+            ->where('route_id',$route_id)
             ->where('order_type','Secondary')
             ->where('created_at','>',Carbon::now()->subHours(48)->toDateTimeString())
             ->update(['order_status'=>'Rejected']);
@@ -299,7 +300,7 @@ class SmsInboxesController extends Controller
         $aso_id = $data['asoid'];
         $order_date = $data['dt'];
         $sale_total_sku =  $data['total'];
-        unset($data['asoid'],$data['dt'],$data['total']);
+        unset($data['asoid'],$data['dt'],$data['rt'],$data['total']);
         $total = $this->totalCheck($data,SALE,$total_sale_amount);
         $order_details = get_order_id_by_sale($aso_id,$order_date,$data['rt']);
         $order_id = $order_details['id'];
@@ -321,7 +322,7 @@ class SmsInboxesController extends Controller
             return $sale_information;
         }
         $sale_information=[];
-        if(!getPreviousSale($aso_id,$order_date)->isEmpty()){
+        if(!getPreviousSale($aso_id,$order_date,$route_id)->isEmpty()){
             rejectPreviousSale($aso_id,$order_date,$sale_information);
         }
         if ($total === (int)$sale_total_sku) {

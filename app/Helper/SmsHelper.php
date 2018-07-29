@@ -1,9 +1,10 @@
 <?php
 define("REPLACE_TIME",48);
 if(!function_exists('getPreviousSale')){
-    function getPreviousSale($aso_id,$order_date,$order_type='Secondary'){
+    function getPreviousSale($aso_id,$order_date,$route_id,$order_type='Secondary'){
         $data=\App\Models\Sale::where('aso_id',$aso_id)
             ->where('order_date',$order_date)
+            ->where('sale_route_id',$route_id)
             ->where('sale_type',$order_type)
             ->where('created_at','>',\Carbon\Carbon::now()->subHours(REPLACE_TIME)->toDateTimeString())
             ->where('sale_status','Processed')
@@ -35,11 +36,12 @@ if(!function_exists('rejectPreviousOrder')){
     }
 }
 
-function getPreviousStockByAsoDate($aso_id,$order_date){
+function getPreviousStockByAsoDate($aso_id,$order_date,$route_id){
     $data =DB::table('sales')
          ->select('sale_details.short_name','sale_details.quantity')
         ->leftJoin('sale_details','sale_details.sales_id','=','sales.id')
         ->where('sales.aso_id',$aso_id)
+        ->where('sale_route_id',$route_id)
         ->where('sales.order_date',$order_date)
         ->where('sales.sale_status','Processed')
         ->get();
@@ -51,11 +53,12 @@ function getPreviousStockByAsoDate($aso_id,$order_date){
 }
 
 if(!function_exists('rejectPreviousSale')){
-    function rejectPreviousSale($aso_id,$order_date,&$sale_information,$sale_type='Secondary'){
-        $sale_information['previous_data'] = getPreviousStockByAsoDate($aso_id,$order_date);
+    function rejectPreviousSale($aso_id,$order_date,&$sale_information,$route_id,$sale_type='Secondary'){
+        $sale_information['previous_data'] = getPreviousStockByAsoDate($aso_id,$order_date,$route_id);
         $sale=\App\Models\Sale::where('aso_id',$aso_id)
             ->where('order_date',$order_date)
             ->where('sale_type',$sale_type)
+            ->where('sale_route_id',$route_id)
             ->where('created_at','>',\Carbon\Carbon::now()->subHours(REPLACE_TIME)->toDateTimeString())
             ->update(['sale_status'=>'Rejected']);
         $sale_information['update']=true;
