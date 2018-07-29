@@ -300,9 +300,9 @@ class SmsInboxesController extends Controller
         $aso_id = $data['asoid'];
         $order_date = $data['dt'];
         $sale_total_sku =  $data['total'];
+        $order_details = get_order_id_by_sale($aso_id,$order_date,$data['rt']);
         unset($data['asoid'],$data['dt'],$data['rt'],$data['total']);
         $total = $this->totalCheck($data,SALE,$total_sale_amount);
-        $order_details = get_order_id_by_sale($aso_id,$order_date,$data['rt']);
         $order_id = $order_details['id'];
         $route_id = $order_details['route_id'];
         $route_name= $order_details['route_name'];
