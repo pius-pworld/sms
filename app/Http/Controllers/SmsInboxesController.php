@@ -388,7 +388,7 @@ class SmsInboxesController extends Controller
             return $primary_order_information;
         }
 
-        Order::where('asm_rsm_id',$asm_rms_id)->where('order_date',$order_date)->where('order_type','Primary')->where('created_at','>',Carbon::now()->subHours(48)->toDateTimeString())->update(['order_status'=>'Rejected']);
+        Order::where('asm_rsm_id',$asm_rms_id)->where('order_date',$order_date)->where('order_status','Pending')->where('order_type','Primary')->where('created_at','>',Carbon::now()->subHours(48)->toDateTimeString())->update(['order_status'=>'Rejected']);
 
         if ($total === (int)$primary_order_total_sku) {
             $primary_order_information['order'] = [

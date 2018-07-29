@@ -1080,8 +1080,7 @@ class ReportsController extends Controller
         $data['current_balance']= true;
         $data['order_vs_sale_primary'] = Reports::order_vs_sale_primary_by_date($house_id, $data['memo_structure'],$selected_date_range);
 
-
-        return view('reports.order_vs_sale_primary_ajax',$data);
+        return view('reports.ajax.order_vs_sale_primary_ajax',$data);
     }
 
 
