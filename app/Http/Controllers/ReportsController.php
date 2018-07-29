@@ -105,10 +105,13 @@ class ReportsController extends Controller
         $data['type'] = $type;
         $data['pageTitle'] = ucfirst($type).' Sales Details';
         $data['breadcrumb'] = breadcrumb(array('Reports'=>'sales-list/'.$type,'active'=>ucfirst($type).' Sales Details'));
+
         $data['sales_info'] = DB::table('sales')
             ->select('sales.*','distribution_houses.current_balance','distribution_houses.market_name','distribution_houses.point_name','distribution_houses.current_balance')
             ->leftJoin('distribution_houses','distribution_houses.id','=','sales.dbid')
             ->where('sales.id',$id)->first();
+
+//        debug($data['sales_info'],1);
 
 //        $data['sales'] = DB::table('sale_details')
 //            ->select('skues.id as sid','sale_details.*','skues.sku_name','brands.brand_name')
