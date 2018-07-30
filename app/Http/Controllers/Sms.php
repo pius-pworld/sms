@@ -31,7 +31,10 @@ class Sms extends Controller
             $val = strtolower($val);
             if (strpos($val, '-')) {
                 $dt = explode("-", $val);
-                $result_array[$dt[0]] = count($dt) - 1 > 1 ? implode('-', array_slice($dt, 1)) : $dt[1];
+                $result_array[$dt[0]] = count($dt) - 1 > 1 ?
+                    ($dt[0]==='pdn'?
+                        explode(',',implode('-', array_slice($dt, 1))) : implode('-', array_slice($dt, 1)))
+                    : $dt[1];
             } else {
                 $error_message = !empty($val) ? 'Invalid SMS Format from String Contains (' . $val . ') !!' : 'Invalid SMS Format !!';
                 return [
@@ -41,6 +44,7 @@ class Sms extends Controller
                     'identifier'=>$identifier
                 ];
             }
+
         }
 
         return ['status' => true, 'data' => $result_array];
@@ -82,9 +86,7 @@ class Sms extends Controller
         }
     }
 
-    private function packageInformation($data){
-       $packages = explode(',',$data);
-
+    private function packageInformation($packages){
        $result_array=[];
        foreach ($packages as $package){
             $package_data = explode('-',$package);

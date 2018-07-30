@@ -194,6 +194,7 @@ class SmsInboxesController extends Controller
     private function totalCheck($input_data, $type = "sale",&$calculate_total_amount=0)
     {
         $total = 0;
+        $calculate_total_amount=0;
         foreach ($input_data as $key => $value) {
 
             if ($type === SALE) {
@@ -214,6 +215,24 @@ class SmsInboxesController extends Controller
                 if($val[0] > 0){
                     $calculate_total_amount = $calculate_total_amount+($val[0]*(int)get_regular_price_by_sku($key));
                 }
+            }
+
+            if($type === PROMOTION){
+                $package_total=0;
+                $total=0;
+                foreach ($value as $val){
+                    $package_details = get_package_by_name('package2');
+                    $package_details['free']=[];
+                    $package_merge = promotion_package_merge($package_details['purchase'],$package_details['free'],$val['short_name']);
+                    foreach ($package_merge as $key=>$value){
+                        $total = $total + (int) $value;
+                        $package_total = (int)$package_total+($value*(int)get_regular_price_by_sku($key));
+                    }
+
+                    $calculate_total_amount+=$package_total;
+
+                }
+
             }
         }
 
@@ -369,6 +388,7 @@ class SmsInboxesController extends Controller
         $primary_order_total_sku =  $data['total'];
         $da=$data['da'];
         unset($data['asm_rsm_id'],$data['dbid'],$data['dt'],$data['total'],$data['da']);
+        $primary_order_total=0;
         $total = $this->totalCheck($data,PRIMARY,$primary_order_total);
         $get_information=get_info_by_asm($asm_rms_id,$dbid);
 
@@ -426,6 +446,7 @@ class SmsInboxesController extends Controller
         $route_id= $data['rt'];
         $route_name=!is_null($route=get_route_info($route_id)) ? $route->routes_name : '';
         unset($data['asoid'],$data['dt'],$data['rt']);
+
         $get_information=get_info_by_aso($aso_id);
         if(is_null($get_information)){
             $promotional_sale['status'] = false;
@@ -434,11 +455,21 @@ class SmsInboxesController extends Controller
             $promotional_sale['identifier'] = $extra_data['identifier'];
             return $promotional_sale;
         }
+        $route_information=get_route_info($route_id,$aso_id);
+        if(is_null($route_information)){
+            $promotional_sale['status'] = false;
+            $promotional_sale['message'] = "Invalid Route Information!!";
+            $promotional_sale['additional'] = $extra_data['additional'];
+            $promotional_sale['identifier'] = $extra_data['identifier'];
+            return $promotional_sale;
+        }
 
         $promotional_sale=[];
-        if(!getPreviousSale($aso_id,$order_date,'Promotional')->isEmpty()){
-            rejectPreviousSale($aso_id,$order_date,$promotional_sale,'Promotional');
+        if(!getPreviousSale($aso_id,$order_date,$route_id,'Promotional')->isEmpty()){
+            rejectPreviousSale($aso_id,$order_date,$promotional_sale,$route_id,'Promotional');
         }
+
+        $total_sku_count = $this->totalCheck($data, 'promotion',$sale_total_amount);
         if(!empty($aso_id) && !empty($order_date)){
             $promotional_sale['order'] = [
                 'aso_id'=> $aso_id,
@@ -447,10 +478,12 @@ class SmsInboxesController extends Controller
                 'sale_date'=>date('Y-m-d'),
                 'sender_name' => $get_information->name,
                 'sender_phone' => $get_information->mobile,
-                'dh_phone' => $get_information->dhname,
-                'dh_name' => $get_information->dhphone,
-                'tso_name' => $get_information->tsoname,
-                'tso_phone' => $get_information->tsophone,
+//                'dh_phone' => $get_information->dhname,
+//                'dh_name' => $get_information->dhphone,
+//                'tso_name' => $get_information->tsoname,
+//                'tso_phone' => $get_information->tsophone,
+                'sale_total_sku'=>$total_sku_count,
+                'total_sale_amount'=>$sale_total_amount,
                 'sale_route_id'=>$route_id,
                 'sale_route' => $route_name,
                 'sale_type'=>'Promotional',
@@ -671,7 +704,7 @@ class SmsInboxesController extends Controller
                         SmsOutboxesController::writeOutbox($parseData['additional']['sender'], $error_message, ['id' => $parseData['additional']['id'], 'order_type' => strtolower($parseData['identifier']), 'priority' => 3]);
                         SmsInbox::where('id', $id)->update(['sms_status' => 'Rejected', 'reason' => $error_message]);
                         return redirect()->route('sms_inboxes.sms_inbox.index')
-                            ->with('error_message', $error_message);
+                            ->with('error_message',$error_message);
                     }
                     return $result;
                     break;
