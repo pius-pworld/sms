@@ -28,7 +28,6 @@
 
 	<section class="content-header">
       <h1>
-        Data Tables
         <small>SMS Inboxes</small>
       </h1>
       <ol class="breadcrumb">
@@ -68,6 +67,7 @@
                             <th>Sender</th>
                             <th>SMS Content</th>
                             <th>SMS Status</th>
+                            <th>SMS Received At</th>
                             <th>Last Rejected Reason</th>
                             <th>Action</th>
                             <th>Process</th>
@@ -79,6 +79,7 @@
                             <td>{{ $smsInbox->sender }}</td>
                             <td>{{ $smsInbox->sms_content }}</td>
                             <td>{{ $smsInbox->sms_status }}</td>
+                            <td>{{ $smsInbox->sms_received }}</td>
                             <td>{{ $smsInbox->reason }}</td>
                             <td>
                                 <form method="POST" action="{!! route('sms_inboxes.sms_inbox.destroy', $smsInbox->id) !!}" accept-charset="UTF-8">
