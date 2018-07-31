@@ -48,17 +48,26 @@
                 <table id="example2" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                                                    <th>Zone Name</th>
-
+                            <th>Zone Name</th>
+                            <th>No. Of Region</th>
+                            <th>No. Of Territory</th>
+                            <th>No. Of DB House</th>
+                            <th>No. Of ASO</th>
+                            <th>No. Of Routes</th>
                         <th></th>
                         </tr>
                     </thead>
                     <tbody>
                     @foreach($zones as $zone)
                         <tr>
-                                                        <td>{{ $zone->zone_name }}</td>
+                            <td>{{ $zone->zone_name }}</td>
+                            <td>{{$zone->tregion}}</td>
+                            <td>{{$zone->tterritory}}</td>
+                            <td>{{$zone->tdbhouse}}</td>
+                            <td>{{$zone->taso}}</td>
+                            <td>{{$zone->aroute}}</td>
 
-                            <td>
+                        <td>
 
                                 <form method="POST" action="{!! route('zones.zone.destroy', $zone->id) !!}" accept-charset="UTF-8">
                                 <input name="_method" value="DELETE" type="hidden">
@@ -79,7 +88,7 @@
 
                                 </form>
                                 
-                            </td>
+                        </td>
                         </tr>
                     @endforeach
                     </tbody>

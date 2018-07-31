@@ -54,6 +54,8 @@
                             <th>Market Name</th>
                             <th>Code</th>
                             <th>Point Name</th>
+                            <th>No. Of ASO</th>
+                            <th>NO. Of Routes</th>
 
                         <th></th>
                         </tr>
@@ -67,6 +69,8 @@
                             <td>{{ $distributionHouse->market_name }}</td>
                             <td>{{ $distributionHouse->code }}</td>
                             <td>{{ $distributionHouse->point_name }}</td>
+                            <td>{{ $distributionHouse->taso }}</td>
+                            <td>{{ $distributionHouse->aroute }}</td>
 
                             <td>
 
