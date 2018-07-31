@@ -10,6 +10,7 @@ use App\Models\DistributionHouse;
 use App\Http\Controllers\Controller;
 use Exception;
 use Auth;
+use DB;
 
 class DistributionHousesController extends Controller
 {
@@ -21,7 +22,10 @@ class DistributionHousesController extends Controller
      */
     public function index()
     {
-        $distributionHouses = DistributionHouse::with('zone','region','territory')->paginate(25);
+        $distributionHouses = DistributionHouse::select('distribution_houses.*',
+            DB::raw('(select COUNT(DISTINCT raso.id) from users raso where raso.distribution_house_id=distribution_houses.id AND raso.user_type="market")  as taso'),
+            DB::raw('(select COUNT(DISTINCT rr.id) from routes rr where rr.distribution_houses_id=distribution_houses.id)  as aroute'))
+            ->groupBy('distribution_houses.id')->with('zone','region','territory')->paginate(25);
 
         return view('distribution_houses.index', compact('distributionHouses'));
     }

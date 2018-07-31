@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Exception;
 use Auth;
+use DB;
 
 class RegionsController extends Controller
 {
@@ -18,7 +19,13 @@ class RegionsController extends Controller
      */
     public function index()
     {
-        $regions = Region::paginate(25);
+        $regions = Region::select('regions.*',DB::raw('COUNT(DISTINCT distribution_houses.territories_id) as tterritory'),
+            DB::raw('(select COUNT(DISTINCT db.id) from distribution_houses db where db.regions_id=regions.id)  as tdbhouse'),
+            DB::raw('(select COUNT(DISTINCT raso.id) from users raso where raso.regions_id=regions.id AND raso.user_type="market")  as taso'),
+            DB::raw('(select COUNT(DISTINCT rr.id) from routes rr left join distribution_houses rdb on rdb.id=rr.distribution_houses_id where rdb.regions_id=regions.id)  as aroute'))
+
+            ->leftJoin('distribution_houses','distribution_houses.regions_id','=','regions.id')
+            ->groupBy('regions.id')->paginate(25);
 
         return view('regions.index', compact('regions'));
     }

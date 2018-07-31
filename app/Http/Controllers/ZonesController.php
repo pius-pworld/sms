@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Exception;
 use Auth;
+use DB;
 
 class ZonesController extends Controller
 {
@@ -18,7 +19,15 @@ class ZonesController extends Controller
      */
     public function index()
     {
-        $zones = Zone::paginate(25);
+        $zones = Zone::select('zones.*',DB::raw('COUNT(DISTINCT distribution_houses.regions_id) as tregion'),
+            DB::raw('(select COUNT(DISTINCT dh.territories_id) from distribution_houses dh where dh.zones_id=zones.id)  as tterritory'),
+            DB::raw('(select COUNT(DISTINCT db.id) from distribution_houses db where db.zones_id=zones.id)  as tdbhouse'),
+            DB::raw('(select COUNT(DISTINCT raso.id) from users raso where raso.zones_id=zones.id AND raso.user_type="market")  as taso'),
+            DB::raw('(select COUNT(DISTINCT rr.id) from routes rr left join distribution_houses rdb on rdb.id=rr.distribution_houses_id where rdb.zones_id=zones.id)  as aroute')
+            )
+            ->leftJoin('distribution_houses','distribution_houses.zones_id','=','zones.id')
+
+            ->groupBy('zones.id')->paginate(25);
 
         return view('zones.index', compact('zones'));
     }

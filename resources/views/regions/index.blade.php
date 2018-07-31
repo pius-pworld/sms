@@ -48,7 +48,11 @@
                 <table id="example2" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                                                    <th>Region Name</th>
+                            <th>Region Name</th>
+                            <th>NO. Of Territory</th>
+                            <th>No. Of DB House</th>
+                            <th>No. Of ASO</th>
+                            <th>NO. Of Routes</th>
 
                         <th></th>
                         </tr>
@@ -56,7 +60,11 @@
                     <tbody>
                     @foreach($regions as $region)
                         <tr>
-                                                        <td>{{ $region->region_name }}</td>
+                            <td>{{ $region->region_name }}</td>
+                            <td>{{ $region->tterritory }}</td>
+                            <td>{{ $region->tdbhouse }}</td>
+                            <td>{{ $region->taso }}</td>
+                            <td>{{ $region->aroute }}</td>
 
                             <td>
 
