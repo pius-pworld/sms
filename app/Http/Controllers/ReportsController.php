@@ -8,6 +8,7 @@ use App\Models\Reports;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use reportsHelper;
 use Symfony\Component\Console\Helper\Helper;
@@ -18,8 +19,10 @@ use Symfony\Component\Console\Helper\Helper;
 
 class ReportsController extends Controller
 {
+    private $routes;
     public function __construct()
     {
+        $this->routes= json_decode(Session::get('routes_list'),true);
         $this->middleware('auth');
         DB::enableQueryLog();
     }
@@ -41,7 +44,7 @@ class ReportsController extends Controller
         $data['searching_options'] = 'grid.search_elements_all_single';
 
 
-        $data['orders'] = reportsHelper::order_list_query($type,array());
+        $data['orders'] = reportsHelper::order_list_query($type,array(),$this->routes);
         $data['aso_name'] = DB::table('orders')
             ->select('requester_name')
             ->groupBy('requester_name')->get();
@@ -68,15 +71,11 @@ class ReportsController extends Controller
     {
         $post = $request->all();
         $data['type'] = $type;
-        $data['orders'] = reportsHelper::order_list_query($type,$post);
+        $data['orders'] = reportsHelper::order_list_query($type,$post,$this->routes);
 
         return view('reports.order_list_ajax',$data);
     }
 
-    public function test_url()
-    {
-        return view('test_view');
-    }
     public function salesList($type)
     {
         $data['pageTitle'] = ucfirst($type).' Sales List';
