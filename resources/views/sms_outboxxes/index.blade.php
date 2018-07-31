@@ -16,7 +16,6 @@
 	
 	<section class="content-header">
       <h1>
-        Data Tables
         <small>Sms Outboxxes</small>
       </h1>
       <ol class="breadcrumb">
