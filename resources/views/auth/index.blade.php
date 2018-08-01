@@ -48,9 +48,17 @@
                             <table id="example2" class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
-                                    <th>User Name</th>
+                                    <th>Name</th>
+                                    <th>Contact No.</th>
                                     <th>Email</th>
-                                    <th>Action</th>
+                                    <th>Code</th>
+                                    <th>User Name</th>
+                                    <th>zone</th>
+                                    <th>Region</th>
+                                    <th>Territory</th>
+                                    <th>DB House</th>
+                                    <th>Routes</th>
+                                    <th style="text-align: right; width: 71px;">Action</th>
 
                                     <th></th>
                                 </tr>
@@ -58,8 +66,16 @@
                                 <tbody>
                                 @foreach($users as $user)
                                     <tr>
-                                        <td>{{ $user->username }}</td>
+                                        <td>{{ $user->name.' '.$user->last_name }}</td>
+                                        <td>{{ $user->mobile }}</td>
                                         <td>{{ $user->email }}</td>
+                                        <td>{{ $user->code }}</td>
+                                        <td>{{ $user->username }}</td>
+                                        <td>{{ $user->zname }}</td>
+                                        <td>{{ $user->rname }}</td>
+                                        <td>{{ $user->tname }}</td>
+                                        <td>{{ $user->dname }}</td>
+                                        <td>{{ getUsersRoutes($user->id) }}</td>
                                         <td>
 
                                             <form method="POST" action="{!! route('user.destroy', $user->id) !!}"

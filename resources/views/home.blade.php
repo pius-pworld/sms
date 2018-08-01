@@ -21,6 +21,7 @@
 
       {{-------------------------------------------------------------------------------------------------------}}
       <div class="row">
+        <div class="" style="background: #f00;margin-left: 29px;text-align: center;color: #fff;font-weight: bold;padding: 5px 0;border-radius: 5px; font-size: 20px;box-shadow: 0 3px 5px 0 #000"> Productivity Summary Of - {{date('F j, Y')}}</div>
         <div class="col-lg-9">
           <div class="col-md-4">
             <div class="widget target-outlet">
@@ -58,42 +59,6 @@
               </div>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="widget no-lifter">
-              <div class="widget-controls">
-                <span class="refresh-content"><i class="fa fa-refresh"></i></span>
-              </div><!-- Widget Controls -->
-              <div class="mini-stats ">
-                <span class="pink-skin"><i class="fa fa-shopping-cart"></i></span>
-                <p><i class="fa  fa-arrow-up up"></i> Non Lifter</p>
-                <h3></h3>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="widget no-orders">
-              <div class="widget-controls">
-                <span class="refresh-content"><i class="fa fa-refresh"></i></span>
-              </div><!-- Widget Controls -->
-              <div class="mini-stats ">
-                <span class="pink-skin"><i class="fa fa-shopping-cart"></i></span>
-                <p><i class="fa  fa-arrow-up up"></i> No Order</p>
-                <h3></h3>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="widget no-sales">
-              <div class="widget-controls">
-                <span class="refresh-content"><i class="fa fa-refresh"></i></span>
-              </div><!-- Widget Controls -->
-              <div class="mini-stats ">
-                <span class="pink-skin"><i class="fa fa-shopping-cart"></i></span>
-                <p><i class="fa  fa-arrow-up up"></i> No Sales</p>
-                <h3></h3>
-              </div>
-            </div>
-          </div>
 
           <div class="col-md-4">
             <div class="widget strike-rate">
@@ -108,9 +73,52 @@
             </div>
           </div>
 
+          @if((Auth::user()->user_type == 'devlopment') || (Auth::user()->user_type == 'zone') || (Auth::user()->user_type == 'region') || (Auth::user()->user_type == 'territory'))
+          <div class="col-md-4">
+            <div class="widget no-lifter">
+              <div class="widget-controls">
+                <span class="refresh-content"><i class="fa fa-refresh"></i></span>
+              </div><!-- Widget Controls -->
+              <div class="mini-stats ">
+                <span class="pink-skin"><i class="fa fa-shopping-cart"></i></span>
+                <p><i class="fa  fa-arrow-up up"></i> Non Lifter</p>
+                <h3></h3>
+              </div>
+            </div>
+          </div>
+
+          @endif
+
+          <div class="col-md-4">
+            <div class="widget no-orders">
+              <div class="widget-controls">
+                <span class="refresh-content"><i class="fa fa-refresh"></i></span>
+              </div><!-- Widget Controls -->
+              <div class="mini-stats ">
+                <span class="pink-skin"><i class="fa fa-shopping-cart"></i></span>
+                <p><i class="fa  fa-arrow-up up"></i> No. Of Order</p>
+                <h3></h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="widget no-sales">
+              <div class="widget-controls">
+                <span class="refresh-content"><i class="fa fa-refresh"></i></span>
+              </div><!-- Widget Controls -->
+              <div class="mini-stats ">
+                <span class="pink-skin"><i class="fa fa-shopping-cart"></i></span>
+                <p><i class="fa  fa-arrow-up up"></i> No. Of Sales</p>
+                <h3></h3>
+              </div>
+            </div>
+          </div>
+
+
+
         </div>
 
-        <div class="col-lg-3 bwproductivity" style="">
+        <div class="col-lg-3 bwproductivity" style="margin-top: 13px;">
           <div class="row bwproductivitytitle" style="">Brand Wise Productivity</div>
             @foreach($brands as $brand)
                 <div class="row bwproductivityeachrow dynamic_{{$brand->id}}" id="{{$brand->id}}" name="{{$brand->brand_name}}" style=" ">
@@ -437,7 +445,15 @@
           color: aqua;
           margin-right: 8px;
         }
-        span.arrow_sign {
+        /*span.arrow_sign {*/
+          /*color: red;*/
+          /*margin-right: 7px;*/
+        /*}*/
+        span.arrow_sort_sign_up{
+          color: green;
+          margin-right: 7px;
+        }
+        span.arrow_sort_sign_down{
           color: red;
           margin-right: 7px;
         }

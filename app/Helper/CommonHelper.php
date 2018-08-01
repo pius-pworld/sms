@@ -456,4 +456,19 @@ if(!function_exists('get_sku_price')){
     }
 }
 
+if(!function_exists('getUsersRoutes')){
+    function getUsersRoutes($asoSoId){
+        $data = DB::table('routes')
+            ->where('routes.so_aso_user_id',$asoSoId)
+            ->get();
+
+        $routes_name = '';
+        foreach ($data as $k=>$v)
+        {
+            $routes_name .= $v->routes_name.',';
+        }
+        return rtrim($routes_name,',');
+    }
+}
+
 ?>
