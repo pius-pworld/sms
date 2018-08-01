@@ -108,7 +108,12 @@ class RegisterController extends Controller
 
     public function users()
     {
-        $users = User::paginate(25);
+        $users = User::select('users.*','zones.zone_name as zname','regions.region_name as rname','territories.territory_name as tname','distribution_houses.point_name as dname')
+            ->leftJoin('zones','zones.id','=','users.zones_id')
+            ->leftJoin('regions','regions.id','=','users.regions_id')
+            ->leftJoin('territories','territories.id','=','users.territories_id')
+            ->leftJoin('distribution_houses','distribution_houses.id','=','users.distribution_house_id')
+            ->paginate(25);
         return view('auth.index', compact('users'));
     }
 
