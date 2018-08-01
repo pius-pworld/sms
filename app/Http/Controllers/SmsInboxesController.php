@@ -30,7 +30,7 @@ class SmsInboxesController extends Controller
     function __construct()
     {
 
-        //dd(sku_pack_quantity('tp',0.1),get_sku_price('tp',false));
+        //dd(sku_pack_quantity('tp',1.1),get_sku_price('tp',false));
         $this->sms = new Sms();
     }
 
@@ -200,22 +200,25 @@ class SmsInboxesController extends Controller
         foreach ($input_data as $key => $value) {
 
             if ($type === SALE) {
-                $total = $total + (int)$value;
-                if($value > 0){
-                    $calculate_total_amount = $calculate_total_amount+($value*(int)get_regular_price_by_sku($key));
+                $total_quantity_unit=sku_pack_quantity($key,$value);
+                if($total_quantity_unit > 0){
+                    $calculate_total_amount = $calculate_total_amount+($total_quantity_unit*get_sku_price($key,false));
+                    $total++;
                 }
             }
             if($type===PRIMARY){
-                $total = $total + (int)$value;
+//                $total = $total + (int)$value;
                 if($value > 0){
                     $calculate_total_amount = $calculate_total_amount+($value*(int)get_house_price_by_sku($key));
                 }
             }
             if ($type === ORDER) {
+
                 $val = explode(',', $value);
-                $total = $total + (int)$val[0];
-                if($val[0] > 0){
-                    $calculate_total_amount = $calculate_total_amount+($val[0]*(int)get_regular_price_by_sku($key));
+                $total_quantity_unit=sku_pack_quantity($key,(float)$val[0]);
+                if($total_quantity_unit > 0){
+                    $calculate_total_amount = $calculate_total_amount+($total_quantity_unit*get_sku_price($key,false));
+                    $total++;
                 }
             }
 
@@ -280,35 +283,25 @@ class SmsInboxesController extends Controller
             ->update(['order_status'=>'Rejected']);
         $total_sku_count = $this->totalCheck($data, 'order',$order_total_amount);
         $order_information=[];
-        if ($total_sku_count === (int)$order_total_sku) {
-            $order_information['order'] = [
-                'aso_id'=> $aso_id,
-                'dbid'  => $get_information->distribution_house_id,
-                'order_date'=>$order_date,
-                'requester_name' => $get_information->name,
-                'requester_phone' => $get_information->mobile,
-//                'dh_phone' => $get_information->dhname,
-//                'dh_name' => $get_information->dhphone,
-//                'tso_name' => $get_information->tsoname,
-//                'tso_phone' => $get_information->tsophone,
-                'route_id'  => $route_id,
-                'route_name' => $route_name,
-                'total_outlet' => $total_outlet,
-                'visited_outlet'=>$visited_outlet,
-                'order_type'=>'Secondary',
-                'total_no_of_memo'=> $total_memo_order,
-                'order_total_sku' => $order_total_sku,
-                'order_amount'    => $order_total_amount,
-                'order_status'    => 'Processed',
-                'created_by' => Auth::Id()
-            ];
-            $order_information['status'] = true;
-            return $order_information;
-        } else {
-            $order_information['status'] = false;
-            $order_information['message'] = "Invalid Order Total SKU !!";
-            return $order_information;
-        }
+        $order_information['order'] = [
+            'aso_id'=> $aso_id,
+            'dbid'  => $get_information->distribution_house_id,
+            'order_date'=>$order_date,
+            'requester_name' => $get_information->name,
+            'requester_phone' => $get_information->mobile,
+            'route_id'  => $route_id,
+            'route_name' => $route_name,
+            'total_outlet' => $total_outlet,
+            'visited_outlet'=>$visited_outlet,
+            'order_type'=>'Secondary',
+            'total_no_of_memo'=> $total_memo_order,
+            'order_total_sku' => $order_total_sku,
+            'order_amount'    => $order_total_amount,
+            'order_status'    => 'Processed',
+            'created_by' => Auth::Id()
+        ];
+        $order_information['status'] = true;
+        return $order_information;
     }
 
     /**
@@ -346,36 +339,26 @@ class SmsInboxesController extends Controller
         if(!getPreviousSale($aso_id,$order_date,$route_id)->isEmpty()){
             rejectPreviousSale($aso_id,$order_date,$sale_information,$route_id);
         }
-        if ($total === (int)$sale_total_sku) {
-            $sale_information['order'] = [
-                'aso_id'=> $aso_id,
-                'dbid' =>$get_information->distribution_house_id,
-                'order_id'=>$order_id,
-                'order_date'=>$order_date,
-                'sale_date'=>date('Y-m-d'),
-                'sender_name' => $get_information->name,
-                'sender_phone' => $get_information->mobile,
-//                'dh_phone' => $get_information->dhname,
-//                'dh_name' => $get_information->dhphone,
-//                'tso_name' => $get_information->tsoname,
-//                'tso_phone' => $get_information->tsophone,
-                'sale_type'=>'Secondary',
-                'sale_total_sku' => $total,
-                'total_sale_amount'=>$total_sale_amount,
-                'sale_route_id'=>$route_id,
-                'sale_route' => $route_name,
-                'created_by' => Auth::Id()
-            ];
-            $sale_information['status'] = true;
-            return $sale_information;
-        }
-        else {
-            $sale_information['status'] = false;
-            $sale_information['message'] = "Invalid Sale Total SKU !!";
-            $sale_information['additional'] = $extra_data['additional'];
-            $sale_information['identifier'] = $extra_data['identifier'];
-            return $sale_information;
-        }
+
+        $sale_information['order'] = [
+            'aso_id'=> $aso_id,
+            'dbid' =>$get_information->distribution_house_id,
+            'order_id'=>$order_id,
+            'order_date'=>$order_date,
+            'sale_date'=>date('Y-m-d'),
+            'sender_name' => $get_information->name,
+            'sender_phone' => $get_information->mobile,
+            'sale_type'=>'Secondary',
+            'sale_total_sku' => $sale_total_sku,
+            'total_sale_amount'=>$total_sale_amount,
+            'sale_route_id'=>$route_id,
+            'sale_route' => $route_name,
+            'created_by' => Auth::Id()
+        ];
+        $sale_information['status'] = true;
+        return $sale_information;
+
+
     }
 
     /**
