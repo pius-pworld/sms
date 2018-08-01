@@ -436,7 +436,7 @@ if(!function_exists('sku_details_generate')){
 
 if(!function_exists('sku_pack_quantity')){
     function sku_pack_quantity($sku,$quantity){
-        list($pack,$unit) = explode('.',$quantity);
+        list($pack,$unit) = strstr($quantity,'.') ? explode('.',$quantity) : [$quantity,0];
         $path=resource_path().'/schemas/sku.json';
         $data=\Illuminate\Support\Facades\File::get($path);
         $skues= json_decode($data,true);
