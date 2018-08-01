@@ -58,42 +58,6 @@
               </div>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="widget no-lifter">
-              <div class="widget-controls">
-                <span class="refresh-content"><i class="fa fa-refresh"></i></span>
-              </div><!-- Widget Controls -->
-              <div class="mini-stats ">
-                <span class="pink-skin"><i class="fa fa-shopping-cart"></i></span>
-                <p><i class="fa  fa-arrow-up up"></i> Non Lifter</p>
-                <h3></h3>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="widget no-orders">
-              <div class="widget-controls">
-                <span class="refresh-content"><i class="fa fa-refresh"></i></span>
-              </div><!-- Widget Controls -->
-              <div class="mini-stats ">
-                <span class="pink-skin"><i class="fa fa-shopping-cart"></i></span>
-                <p><i class="fa  fa-arrow-up up"></i> No Order</p>
-                <h3></h3>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="widget no-sales">
-              <div class="widget-controls">
-                <span class="refresh-content"><i class="fa fa-refresh"></i></span>
-              </div><!-- Widget Controls -->
-              <div class="mini-stats ">
-                <span class="pink-skin"><i class="fa fa-shopping-cart"></i></span>
-                <p><i class="fa  fa-arrow-up up"></i> No Sales</p>
-                <h3></h3>
-              </div>
-            </div>
-          </div>
 
           <div class="col-md-4">
             <div class="widget strike-rate">
@@ -107,6 +71,49 @@
               </div>
             </div>
           </div>
+
+          @if((Auth::user()->user_type == 'devlopment') || (Auth::user()->user_type == 'zone') || (Auth::user()->user_type == 'region') || (Auth::user()->user_type == 'territory'))
+          <div class="col-md-4">
+            <div class="widget no-lifter">
+              <div class="widget-controls">
+                <span class="refresh-content"><i class="fa fa-refresh"></i></span>
+              </div><!-- Widget Controls -->
+              <div class="mini-stats ">
+                <span class="pink-skin"><i class="fa fa-shopping-cart"></i></span>
+                <p><i class="fa  fa-arrow-up up"></i> Non Lifter</p>
+                <h3></h3>
+              </div>
+            </div>
+          </div>
+
+          @endif
+
+          <div class="col-md-4">
+            <div class="widget no-orders">
+              <div class="widget-controls">
+                <span class="refresh-content"><i class="fa fa-refresh"></i></span>
+              </div><!-- Widget Controls -->
+              <div class="mini-stats ">
+                <span class="pink-skin"><i class="fa fa-shopping-cart"></i></span>
+                <p><i class="fa  fa-arrow-up up"></i> No. Of Order</p>
+                <h3></h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="widget no-sales">
+              <div class="widget-controls">
+                <span class="refresh-content"><i class="fa fa-refresh"></i></span>
+              </div><!-- Widget Controls -->
+              <div class="mini-stats ">
+                <span class="pink-skin"><i class="fa fa-shopping-cart"></i></span>
+                <p><i class="fa  fa-arrow-up up"></i> No. Of Sales</p>
+                <h3></h3>
+              </div>
+            </div>
+          </div>
+
+
 
         </div>
 
@@ -437,7 +444,15 @@
           color: aqua;
           margin-right: 8px;
         }
-        span.arrow_sign {
+        /*span.arrow_sign {*/
+          /*color: red;*/
+          /*margin-right: 7px;*/
+        /*}*/
+        span.arrow_sort_sign_up{
+          color: green;
+          margin-right: 7px;
+        }
+        span.arrow_sort_sign_down{
           color: red;
           margin-right: 7px;
         }
