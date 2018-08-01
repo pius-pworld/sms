@@ -38,6 +38,13 @@ Route::post('password/email','Auth\ForgotPasswordController@sendResetLinkEmail')
 Route::get('password/reset/{token}','Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset','Auth\ResetPasswordController@reset');
 
+
+Route::get('profile', 'Auth\RegisterController@profileForm')->name('profile');
+Route::post('changepassword', 'Auth\RegisterController@changepassword')->name('changepassword');
+
+
+
+
 /* Settings routing */
 Route::get('settings/brand_skue','SettingsController@ordering_brand_skue');
 Route::post('orderingBrandSkueAction','SettingsController@ordering_brand_skue_action');

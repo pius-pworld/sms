@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
+
 use Illuminate\Http\Request;
 use App\User;
 use App\Http\Controllers\Controller;
@@ -36,13 +37,13 @@ class RegisterController extends Controller
         $desinations = DB::table('designations')->get();
         $allmodules = DB::table('modules')->get();
         $user_levels = DB::table('user_levels')->get();
-        return view('auth.register', compact('users','departments','desinations','allmodules','user_levels','user_settigns'));
+        return view('auth.register', compact('users', 'departments', 'desinations', 'allmodules', 'user_levels', 'user_settigns'));
     }
 
     /**
      * Handle a registration request for the application.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function register(Request $request)
@@ -56,6 +57,7 @@ class RegisterController extends Controller
         return $this->registered($request, $user)
             ?: redirect($this->redirectPath());
     }
+
     public function redirectPath()
     {
         if (method_exists($this, 'redirectTo')) {
@@ -64,6 +66,7 @@ class RegisterController extends Controller
 
         return property_exists($this, 'redirectTo') ? $this->redirectTo : '/users';
     }
+
     /**
      * Get the guard to be used during registration.
      *
@@ -77,8 +80,8 @@ class RegisterController extends Controller
     /**
      * The user has been registered.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  mixed  $user
+     * @param  \Illuminate\Http\Request $request
+     * @param  mixed $user
      * @return mixed
      */
     protected function registered(Request $request, $user)
@@ -172,7 +175,7 @@ class RegisterController extends Controller
             'designation_id' => $data['designation_id'],
             'default_module_id' => $data['default_module_id'],
             'created_by' => Auth::id(),
-            'status' =>$data['status'],
+            'status' => $data['status'],
         ]);
 
 
@@ -297,6 +300,42 @@ class RegisterController extends Controller
 
 
         return $data;
+    }
+
+
+    public function profileForm()
+    {
+        $profileData = DB::table('users')
+            ->select('users.id', 'users.name', 'users.email', 'users.code', 'locations.name as location', 'designations.name as designation')
+            ->leftJoin('locations', 'users.location_id', '=', 'locations.id')
+            ->leftJoin('designations', 'users.designation_id', '=', 'designations.id')
+            ->where('users.id', '=', Auth::Id())
+            ->get();
+        return view('auth.profileForm', compact('profileData'));
+    }
+
+    public function changepassword(Request $request){
+        if (!(Hash::check($request->get('current-password'), Auth::user()->password))) {
+            // The passwords matches
+            return redirect()->back()->with("error","Your current password does not matches with the password you provided. Please try again.");
+        }
+
+        if(strcmp($request->get('current-password'), $request->get('new-password')) == 0){
+            //Current password and new password are same
+            return redirect()->back()->with("error","New Password cannot be same as your current password. Please choose a different password.");
+        }
+
+        $validatedData = $request->validate([
+            'current-password' => 'required',
+            'new-password' => 'required|string|min:6|confirmed',
+        ]);
+
+        //Change Password
+        $user = Auth::user();
+        $user->password = bcrypt($request->get('new-password'));
+        $user->save();
+
+        return redirect()->back()->with("success","Password changed successfully !");
     }
 
 }
