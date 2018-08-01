@@ -50,7 +50,7 @@ class SkuesController extends Controller
             $data = $this->getData($request);
             $data['created_by'] = Auth::Id();
             Skue::create($data);
-
+            sku_details_generate();
             return redirect()->route('skues.skue.index')
                              ->with('success_message', 'Skue was successfully added!');
 
@@ -106,6 +106,7 @@ class SkuesController extends Controller
             $data['updated_by'] = Auth::Id();
             $skue = Skue::findOrFail($id);
             $skue->update($data);
+            sku_details_generate();
 
             return redirect()->route('skues.skue.index')
                              ->with('success_message', 'Skue was successfully updated!');
@@ -129,7 +130,7 @@ class SkuesController extends Controller
         try {
             $skue = Skue::findOrFail($id);
             $skue->delete();
-
+            sku_details_generate();
             return redirect()->route('skues.skue.index')
                              ->with('success_message', 'Skue was successfully deleted!');
 

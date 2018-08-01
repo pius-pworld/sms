@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Helper;
+use App\Models\Routes;
 use DB;
 use Auth;
 
@@ -11,8 +12,11 @@ class ReportsHelper
         DB::enableQueryLog();
     }
 
-    public static function order_list_query($type=null,$post)
+    public static function order_list_query($type=null,$post,$routes=[])
     {
+        $houses = Routes::whereIn('id',$routes)->groupBy('distribution_houses_id')->get(['distribution_houses_id'])->toArray();
+        $selected_house = array_column($houses,'distribution_houses_id');
+//        dd($selected_house);
         if($post)
         {
             $searchValue = getSearchDataAll($post);
@@ -23,7 +27,7 @@ class ReportsHelper
         $query->leftJoin('distribution_houses','distribution_houses.id','=','orders.dbid');
         if($type)
         {
-            $query->where('order_type',ucfirst($type));
+            $query->where('order_type',ucfirst($type))->whereIn('orders.dbid',$selected_house);
         }
 
         if($post)

@@ -29,6 +29,8 @@ class SmsInboxesController extends Controller
 
     function __construct()
     {
+
+        //dd(sku_pack_quantity('tp',0.1),get_sku_price('tp',false));
         $this->sms = new Sms();
     }
 
