@@ -228,6 +228,8 @@
                 $present_quantity = \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->first(['quantity']);
                 if(!empty($present_quantity)){
                     $present_quantity = $present_quantity->toArray();
+                    $present_sku_quantity = sku_pack_quantity($key,(float)$present_quantity['quantity']);
+                    dd($present_sku_quantity);
                     if(!$stock){
                         //secondary
                         $update_quantity = (int)$present_quantity['quantity'] - $value;

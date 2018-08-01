@@ -76,11 +76,14 @@ if(!function_exists('modify_stock')){
         if(count($previous_value) > 0){
             $total = 0;
             foreach ($sku_informations as $val){
-                $unit=\App\Models\Skue::where('short_name',$val['short_name'])->first(['price']);
+                //$unit=\App\Models\Skue::where('short_name',$val['short_name'])->first(['price']);
+                $unit= (float)$val['price'];
+                $quantity = sku_pack_quantity($val['short_name'],$val["quantity"]);
                 if(!empty($unit)){
-                    $unit = $unit->toArray();
-                    $total+= $unit['price'] * $val['quantity'];
-                    $updated_data[$val['short_name']] = $val['quantity'];
+                    //$unit = $unit->toArray();
+                    //$total+= $unit['price'] * $val['quantity'];
+                    $total+= $unit * $quantity;
+                    $updated_data[$val['short_name']] = $unit;
                 }
             }
             stock_update($distribution_house_info->distribution_house_id,$updated_data,$previous_value,$total);
@@ -88,11 +91,13 @@ if(!function_exists('modify_stock')){
         else{
             $total = 0;
             foreach ($sku_informations as $val){
-                $unit=\App\Models\Skue::where('short_name',$val['short_name'])->first(['price']);
+                //$unit=\App\Models\Skue::where('short_name',$val['short_name'])->first(['price']);
+                $unit= (float)$val['price'];
+                $quantity = sku_pack_quantity($val['short_name'],$val["quantity"]);
                 if(!empty($unit)){
-                    $unit = $unit->toArray();
-                    $total+= $unit['price'] * $val['quantity'];
-                    $updated_data[$val['short_name']] = $val['quantity'];
+                    //$unit = $unit->toArray();
+                    $total+= $unit * $quantity;
+                    $updated_data[$val['short_name']] = $unit;
                 }
             }
             stock_update($distribution_house_info->distribution_house_id,$updated_data,[],$total);
