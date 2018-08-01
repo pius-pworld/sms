@@ -416,4 +416,42 @@ if(!function_exists('get_package_by_name')){
     }
 }
 
+if(!function_exists('sku_details_generate')){
+    function sku_details_generate(){
+        $result=[];
+        $data=\App\Models\Skue::all();
+        foreach ($data as $value){
+            $result[$value->short_name]=[
+              'db_price'=>$value->house_price,
+              'price'=>$value->price,
+              'size'=>$value->pack_size,
+              'db_unit_price'=> number_format(($value->house_price/$value->pack_size),2),
+              'unit_price'=> number_format(($value->price/$value->pack_size),2)
+            ];
+        }
+
+       file_put_contents('resources/schemas/sku.json',json_encode($result,JSON_PRETTY_PRINT));
+    }
+}
+
+if(!function_exists('sku_pack_quantity')){
+    function sku_pack_quantity($sku,$quantity){
+        list($pack,$unit) = explode('.',$quantity);
+        $path=resource_path().'/schemas/sku.json';
+        $data=\Illuminate\Support\Facades\File::get($path);
+        $skues= json_decode($data,true);
+        return ($pack*$skues[$sku]['size'])+ $unit;
+
+    }
+}
+
+if(!function_exists('get_sku_price')){
+    function get_sku_price($sku,$house=true){
+        $path=resource_path().'/schemas/sku.json';
+        $data=\Illuminate\Support\Facades\File::get($path);
+        $skues= json_decode($data,true);
+        return $house ? $skues[$sku]['db_unit_price'] : $skues[$sku]['unit_price'];
+    }
+}
+
 ?>
