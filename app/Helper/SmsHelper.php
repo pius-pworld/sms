@@ -73,29 +73,46 @@ if(!function_exists('modify_stock')){
             ->where('users.id',$aso_id)
             ->first();
         $updated_data=[];
+        $previous_value=[];
         if(count($previous_value) > 0){
-            $total = 0;
-            foreach ($sku_informations as $val){
-                $unit=\App\Models\Skue::where('short_name',$val['short_name'])->first(['price']);
-                if(!empty($unit)){
-                    $unit = $unit->toArray();
-                    $total+= $unit['price'] * $val['quantity'];
-                    $updated_data[$val['short_name']] = $val['quantity'];
+            $previous_total = 0;
+            foreach ($previous_value as $key=>$val){
+                //$unit=\App\Models\Skue::where('short_name',$val['short_name'])->first(['price']);
+                $unit_price = (float)get_sku_price($key,false);
+                $quantity = sku_pack_quantity($key,$val);
+                if($quantity > 0){
+                    //$unit = $unit->toArray();
+                    //$total+= $unit['price'] * $val['quantity'];
+                    $previous_total+= $unit_price * $quantity;
+                    $previous_value[$key] = $val;
                 }
             }
-            stock_update($distribution_house_info->distribution_house_id,$updated_data,$previous_value,$total);
+            $total = 0;
+            foreach ($sku_informations as $val){
+                //$unit=\App\Models\Skue::where('short_name',$val['short_name'])->first(['price']);
+                $unit_price = (float)$val['price'];
+                $quantity = sku_pack_quantity($val['short_name'],$val["quantity"]);
+                if($quantity > 0){
+                    //$unit = $unit->toArray();
+                    $total+= $unit_price * $quantity;
+                    $updated_data[$val['short_name']] = $val["quantity"];
+                }
+            }
+           return stock_update($distribution_house_info->distribution_house_id,$updated_data,$total,$previous_value,$previous_total);
         }
         else{
             $total = 0;
             foreach ($sku_informations as $val){
-                $unit=\App\Models\Skue::where('short_name',$val['short_name'])->first(['price']);
-                if(!empty($unit)){
-                    $unit = $unit->toArray();
-                    $total+= $unit['price'] * $val['quantity'];
-                    $updated_data[$val['short_name']] = $val['quantity'];
+                //$unit=\App\Models\Skue::where('short_name',$val['short_name'])->first(['price']);
+                $unit_price = (float)$val['price'];
+                $quantity = sku_pack_quantity($val['short_name'],$val["quantity"]);
+                if($quantity > 0){
+                    //$unit = $unit->toArray();
+                    $total+= $unit_price * $quantity;
+                    $updated_data[$val['short_name']] = $val["quantity"];
                 }
             }
-            stock_update($distribution_house_info->distribution_house_id,$updated_data,[],$total);
+            return stock_update($distribution_house_info->distribution_house_id,$updated_data,$total);
         }
     }
 }
