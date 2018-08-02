@@ -500,10 +500,10 @@ class SmsInboxesController extends Controller
             foreach ($parseData['data'] as $key => $value){
                 $order_information['order_details'][] =[
                     "short_name" => $key,
-                    "quantity"   => (int)explode(',',$value)[0],
-                    "price"      => get_regular_price_by_sku($key),
+                    "quantity"   => (float)explode(',',$value)[0],
+                    "price"      => get_sku_price($key,false),
                     "no_of_memo" =>(int)explode(',',$value)[1],
-                    "created_by" => Auth::id()
+                    "created_by" =>1
                 ];
             }
 
@@ -533,7 +533,7 @@ class SmsInboxesController extends Controller
                 $sale_information['order_details'][] =[
                     "short_name" => $key,
                     "quantity"   => (float)explode(',',$value)[0],
-                    "price"      => get_sku_price($key),
+                    "price"      => get_sku_price($key,false),
                     "created_by" =>1
                 ];
             }

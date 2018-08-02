@@ -92,12 +92,12 @@ if(!function_exists('modify_stock')){
             $total = 0;
             foreach ($sku_informations as $val){
                 //$unit=\App\Models\Skue::where('short_name',$val['short_name'])->first(['price']);
-                $unit= (float)$val['price'];
+                $unit_price = (float)$val['price'];
                 $quantity = sku_pack_quantity($val['short_name'],$val["quantity"]);
-                if(!empty($unit)){
+                if($quantity > 0){
                     //$unit = $unit->toArray();
-                    $total+= $unit * $quantity;
-                    $updated_data[$val['short_name']] = $unit;
+                    $total+= $unit_price * $quantity;
+                    $updated_data[$val['short_name']] = $val["quantity"];
                 }
             }
             stock_update($distribution_house_info->distribution_house_id,$updated_data,[],$total);

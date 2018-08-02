@@ -193,16 +193,16 @@
 //            //stock release
             if(count($previous_value)>0){
                 foreach ($previous_value as $key => $value){
-                    $present_quantity = \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->first(['quantity']);
+                    //$present_quantity = \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->first(['quantity']);
                     if(!empty($present_quantity)){
                         $present_quantity = $present_quantity->toArray();
                         if(!$stock){
                             //secondary
-                            $update_quantity = (int)$present_quantity['quantity'] + $value;
+                            $update_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'plus');
                         }
                         else{
                             //primary
-                            $update_quantity = (int)$present_quantity['quantity'] - $value;
+                            $update_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'minus');
                         }
                         \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->update(['quantity'=>$update_quantity]);
                     }
@@ -211,15 +211,14 @@
                 $present_current_balance = \App\Models\DistributionHouse::where('id',$house_id)->first(['current_balance']);
                 if(!$stock){
                     //secondary house balance back
-                    $update_current_balance = $present_current_balance['current_balance'] + $total_amount;
-                    \App\Models\DistributionHouse::where('id',$house_id)->update(['current_balance'=>$update_current_balance]);
+                    calculate_house_current_balance($house_id,$present_current_balance['current_balance'],$total_amount,'plus');
                 }
                 else{
                     //prevoius order total
                     //********************************************************
                     //primary house balance back
-                    $update_current_balance = $present_current_balance['current_balance'] - $total_amount;
-                    \App\Models\DistributionHouse::where('id',$house_id)->update(['current_balance'=>$update_current_balance]);
+                    calculate_house_current_balance($house_id,$present_current_balance['current_balance'],$total_amount,'plus');
+
                 }
 
             }
@@ -228,15 +227,15 @@
                 $present_quantity = \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->first(['quantity']);
                 if(!empty($present_quantity)){
                     $present_quantity = $present_quantity->toArray();
-                    $present_sku_quantity = sku_pack_quantity($key,(float)$present_quantity['quantity']);
-                    dd($present_sku_quantity);
+                    //$present_sku_quantity = sku_pack_quantity($key,(float)$present_quantity['quantity']);
                     if(!$stock){
                         //secondary
-                        $update_quantity = (int)$present_quantity['quantity'] - $value;
+//                        dd($key,(float)$present_quantity['quantity'],$value,calculate_case($key,(float)$present_quantity['quantity'],$value,'minus'));
+                        $update_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'minus');
                     }
                     else{
                         //primary
-                        $update_quantity = (int)$present_quantity['quantity'] + $value;
+                        $update_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'plus');
                     }
                     \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->update(['quantity'=>$update_quantity]);
                 }
@@ -245,13 +244,10 @@
             $present_current_balance = \App\Models\DistributionHouse::where('id',$house_id)->first(['current_balance']);
             if(!$stock){
                 //secondary house balance deduct
-                $update__current_balance = $present_current_balance['current_balance'] - $total_amount;
-                \App\Models\DistributionHouse::where('id',$house_id)->update(['current_balance'=>$update__current_balance]);
+                calculate_house_current_balance($house_id,$present_current_balance['current_balance'],$total_amount,'minus');
             }
             else{
-
-                $update__current_balance = $present_current_balance['current_balance'] - $total_amount;
-                \App\Models\DistributionHouse::where('id',$house_id)->update(['current_balance'=>$update__current_balance]);
+                calculate_house_current_balance($house_id,$present_current_balance['current_balance'],$total_amount,'minus');
             }
             return true;
         }
@@ -468,6 +464,44 @@ if(!function_exists('getUsersRoutes')){
             $routes_name .= $v->routes_name.',';
         }
         return rtrim($routes_name,',');
+    }
+}
+
+if(!function_exists('calculate_case')){
+    function calculate_case($sku,$number1,$number2,$operation='plus'){
+        $path=resource_path().'/schemas/sku.json';
+        $data=\Illuminate\Support\Facades\File::get($path);
+        $skues= json_decode($data,true);
+        switch ($operation){
+            case 'plus':
+                $result = sku_pack_quantity($sku,$number1) +  sku_pack_quantity($sku,$number2);
+                break;
+            case 'minus':
+                $result = sku_pack_quantity($sku,$number1) -  sku_pack_quantity($sku,$number2);
+                break;
+
+        }
+
+        $remainder  = fmod($result,$skues[$sku]['size']);
+        $without_remainder = $result - $remainder;
+        return (float)($without_remainder/$skues[$sku]['size'].'.'.abs($remainder));
+
+
+    }
+}
+if(!function_exists('calculate_house_current_balance')){
+    function calculate_house_current_balance($house_id,$current_balance,$total_amount,$operation="plus"){
+        switch ($operation){
+            case 'plus':
+                $update__current_balance = $current_balance + $total_amount;
+                \App\Models\DistributionHouse::where('id',$house_id)->update(['current_balance'=>$update__current_balance]);
+                break;
+            case 'minus':
+                $update__current_balance = $current_balance - $total_amount;
+                \App\Models\DistributionHouse::where('id',$house_id)->update(['current_balance'=>$update__current_balance]);
+                break;
+
+        }
     }
 }
 
