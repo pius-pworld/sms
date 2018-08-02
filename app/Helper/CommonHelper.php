@@ -188,39 +188,31 @@
         }
     }
 
-    if(!function_exists('stock_update')){
-        function stock_update($house_id,$present_value=[],$previous_value=[],$total_amount=0,$stock=false){
-//            //stock release
-            if(count($previous_value)>0){
-                foreach ($previous_value as $key => $value){
-                    //$present_quantity = \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->first(['quantity']);
-                    if(!empty($present_quantity)){
-                        $present_quantity = $present_quantity->toArray();
-                        if(!$stock){
-                            //secondary
-                            $update_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'plus');
-                        }
-                        else{
-                            //primary
-                            $update_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'minus');
-                        }
-                        \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->update(['quantity'=>$update_quantity]);
-                    }
-
-                }
-                $present_current_balance = \App\Models\DistributionHouse::where('id',$house_id)->first(['current_balance']);
+    function previous_calculation($house_id,$previous_value,$total_amount,$stock){
+        foreach ($previous_value as $key => $value){
+            $present_quantity = \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->first(['quantity']);
+            if(!empty($present_quantity)){
+                $present_quantity = $present_quantity->toArray();
                 if(!$stock){
-                    //secondary house balance back
-                    calculate_house_current_balance($house_id,$present_current_balance['current_balance'],$total_amount,'plus');
+                    //secondary
+                    $update_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'plus');
                 }
                 else{
-                    //prevoius order total
-                    //********************************************************
-                    //primary house balance back
-                    calculate_house_current_balance($house_id,$present_current_balance['current_balance'],$total_amount,'plus');
-
+                    //primary
+                    $update_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'minus');
                 }
+                \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->update(['quantity'=>$update_quantity]);
+            }
 
+        }
+        return true;
+    }
+
+    if(!function_exists('stock_update')){
+        function stock_update($house_id,$present_value=[],$total_amount=0,$previous_value=[],$previous_total=0,$stock=false){
+//            //stock release
+            if(count($previous_value)>0){
+                previous_calculation($house_id,$previous_value,$previous_total,$stock);
             }
             //update quantity
             foreach ($present_value as $key=>$value){
@@ -230,26 +222,28 @@
                     //$present_sku_quantity = sku_pack_quantity($key,(float)$present_quantity['quantity']);
                     if(!$stock){
                         //secondary
-//                        dd($key,(float)$present_quantity['quantity'],$value,calculate_case($key,(float)$present_quantity['quantity'],$value,'minus'));
-                        $update_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'minus');
+                        if(sku_pack_quantity($key,(float)$present_quantity['quantity']) >= sku_pack_quantity($key,$value)){
+                            $update_sku_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'minus');
+                        }
+                        else{
+                            return false;
+                        }
                     }
                     else{
                         //primary
-                        $update_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'plus');
+                        $update_sku_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'plus');
                     }
-                    \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->update(['quantity'=>$update_quantity]);
+                    \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->update(['quantity'=>$update_sku_quantity]);
                 }
 
             }
             $present_current_balance = \App\Models\DistributionHouse::where('id',$house_id)->first(['current_balance']);
-            if(!$stock){
-                //secondary house balance deduct
-                calculate_house_current_balance($house_id,$present_current_balance['current_balance'],$total_amount,'minus');
+            if($stock) {
+                calculate_house_current_balance($house_id, $present_current_balance['current_balance'], $total_amount, 'minus');
+                return true;
             }
-            else{
-                calculate_house_current_balance($house_id,$present_current_balance['current_balance'],$total_amount,'minus');
-            }
-            return true;
+            return false;
+
         }
     }
 
@@ -438,7 +432,8 @@ if(!function_exists('sku_pack_quantity')){
         $path=resource_path().'/schemas/sku.json';
         $data=\Illuminate\Support\Facades\File::get($path);
         $skues= json_decode($data,true);
-        return ($pack*$skues[$sku]['size'])+ $unit;
+        $result=$pack*$skues[$sku]['size'];
+        return $result + $unit;
 
     }
 }
@@ -484,7 +479,7 @@ if(!function_exists('calculate_case')){
 
         $remainder  = fmod($result,$skues[$sku]['size']);
         $without_remainder = $result - $remainder;
-        return (float)($without_remainder/$skues[$sku]['size'].'.'.abs($remainder));
+        return $without_remainder/$skues[$sku]['size'].'.'.$remainder;
 
 
     }

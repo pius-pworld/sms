@@ -29,8 +29,6 @@ class SmsInboxesController extends Controller
 
     function __construct()
     {
-
-        //dd(sku_pack_quantity('tp',1.1),get_sku_price('tp',false));
         $this->sms = new Sms();
     }
 
@@ -336,9 +334,6 @@ class SmsInboxesController extends Controller
             return $sale_information;
         }
         $sale_information=[];
-        if(!getPreviousSale($aso_id,$order_date,$route_id)->isEmpty()){
-            rejectPreviousSale($aso_id,$order_date,$sale_information,$route_id);
-        }
 
         $sale_information['order'] = [
             'aso_id'=> $aso_id,
@@ -537,10 +532,22 @@ class SmsInboxesController extends Controller
                     "created_by" =>1
                 ];
             }
+
+            if(!getPreviousSale($sale_information['order']['aso_id'],
+                $sale_information['order']['order_date'],$sale_information['order']['sale_route_id'])->isEmpty()){
+                rejectPreviousSale($sale_information['order']['aso_id'],$sale_information['order']['order_date'],
+                    $sale_information,$sale_information['order']['sale_route_id']);
+            }
             //modify stock
-            modify_stock($sale_information['order']['aso_id'],$sale_information['order_details'],isset($sale_information['update']) && $sale_information['update'] ? $sale_information['previous_data']: []);
+            if(!modify_stock($sale_information['order']['aso_id'],$sale_information['order_details'],isset($sale_information['update']) && $sale_information['update'] ? $sale_information['previous_data']: [])){
+                $sale_information['status'] = false;
+                $sale_information['message'] = "No stock available for request SKUES!!";
+                $sale_information['additional'] = $parseData['additional'];
+                $sale_information['identifier'] = $parseData['identifier'];
+                return $sale_information;
+            }
             if (Sale::insertSale($sale_information['order'], $sale_information['order_details'])) {
-                SmsInbox::find($id)->update(['sms_status' => 'Processed']);
+                //SmsInbox::find($id)->update(['sms_status' => 'Processed']);
 
                 return redirect()->route('sms_inboxes.sms_inbox.index')
                     ->with('success_message', 'Sale successfully placed!');
