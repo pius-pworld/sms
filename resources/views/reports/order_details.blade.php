@@ -116,7 +116,7 @@
                                                 }
 
 
-                                                echo '<td class="request_quantity">'.floor($convertArrayOrder[$key]->quantity).'</td>';
+                                                echo '<td class="request_quantity">'.$convertArrayOrder[$key]->quantity.'</td>';
                                                 echo '<td>
                                                             <input type="hidden" name="short_name[]" value="'.$convertArrayOrder[$key]->short_name.'">
                                                             <input type="hidden" name="price['.$convertArrayOrder[$key]->short_name.']" value="'.$convertArrayOrder[$key]->price.'">
@@ -126,8 +126,8 @@
                                                                 style="width: 100px;"
                                                                 name="quantity['.$convertArrayOrder[$key]->short_name.']"
                                                                 type="number"
-                                                                oldValue="'.floor($convertArrayOrder[$key]->quantity).'"
-                                                                value="'.floor($convertArrayOrder[$key]->quantity).'"></td>';
+                                                                oldValue="'.$convertArrayOrder[$key]->quantity.'"
+                                                                value="'.$convertArrayOrder[$key]->quantity.'"></td>';
                                                 echo '<td style="text-align: right" class="price_rate">'.$convertArrayOrder[$key]->price.'</td>';
                                                 echo '<td style="text-align: right" class="sub_total">'.($convertArrayOrder[$key]->price*$convertArrayOrder[$key]->quantity).'</td>';
                                                 echo '</tr>';
