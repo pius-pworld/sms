@@ -57,20 +57,21 @@ class HomeController extends Controller {
         if (isset($query->total)) {
             return $query->total.'/'.$outlet->total;
         } else {
-            return 0;
+            return '0/'.$outlet->total;
         }
     }
 
     public function dashboardSuccessfullCall() {
         $query = Order::selectRaw('sum(total_no_of_memo) as total')
+            ->selectRaw('sum(visited_outlet) as vo_total')
             ->where('order_status', 'Processed')
             ->where(DB::raw('DATE_FORMAT(created_at,"%Y-%m-%d")'),date('Y-m-d'))
             ->whereIn('route_id',$this->routes)
             ->first();
         if (isset($query->total)) {
-            return $query->total;
+            return $query->total.'/'.$query->vo_total;
         } else {
-            return 0;
+            return '0/'.(($query->vo_total)?$query->vo_total:0);
         }
     }
 

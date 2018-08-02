@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use reportsHelper;
 use Symfony\Component\Console\Helper\Helper;
+use App\Models\Menu;
+use App\Models\User;
 
 //use Carbon\Carbon;
 
@@ -296,6 +298,7 @@ class ReportsController extends Controller
 
 
     public function houseStock(Request $request){
+//        debug(Auth::user(),1);
         $data['ajaxUrl'] = URL::to('house-stock-search');
         $data['view'] = 'house_stock_ajax';
         $data['header_level'] = 'House Wise Stock';

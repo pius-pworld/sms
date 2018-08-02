@@ -21,7 +21,7 @@
 
       {{-------------------------------------------------------------------------------------------------------}}
       <div class="row">
-        <div class="" style="background: #f00;margin-left: 29px;text-align: center;color: #fff;font-weight: bold;padding: 5px 0;border-radius: 5px; font-size: 20px;box-shadow: 0 3px 5px 0 #000"> Productivity Summary Of - {{date('F j, Y')}}</div>
+        <div class="" style="background: #EA6045;margin-left: 29px;text-align: center;color: #fff;font-weight: bold;padding: 5px 0;border-radius: 5px; font-size: 20px;box-shadow: 6px 2px 3px 0 #000"> Productivity Summary Of - {{date('F j, Y')}}</div>
         <div class="col-lg-9">
           <div class="col-md-4">
             <div class="widget target-outlet">

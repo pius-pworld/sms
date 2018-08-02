@@ -37,7 +37,7 @@ class Reports extends Model
                 $selected_skue=array_values($cat_val);
                 $selected_skues=array_flatten($selected_skue);
                 foreach ($selected_skues as $key => $value){
-                    $data=Stocks::where('distributions_house_id',$house_value)->where('short_name',$value)->first()->toArray();
+                    $data=Stocks::where('distributions_house_id',$house_value)->where('short_name',$value)->first();
                     if(!empty($data)){
                         $sku_quantity[] = $data['quantity'];
                     }

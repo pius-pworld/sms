@@ -316,12 +316,36 @@ if(!function_exists('repoStructure')){
 
 if(!function_exists('searchAreaOption')){
     function searchAreaOption($data = array()){
-        $options = array('zone'=>1,'region'=>1,'territory'=>1,'house'=>1,'route'=>1,'category'=>1,'brand'=>1,'sku'=>1,'month'=>1,'daterange'=>1);
+        $all_options = array('zone'=>1,'region'=>1,'territory'=>1,'house'=>1,'route'=>1,'category'=>1,'brand'=>1,'sku'=>1,'month'=>1,'daterange'=>1);
+        $options = userWiseOptionRemove($all_options);
         foreach($data as $val)
         {
             unset($options[$val]);
         }
         $options['show'] = (in_array('show',$data)?1:0);
+        return $options;
+    }
+}
+
+if(!function_exists('userWiseOptionRemove')){
+    function userWiseOptionRemove($options){
+        $user_type = Auth::user()->user_type;
+        if($user_type == 'zone')
+        {
+            unset($options['zone']);
+        }
+        else if($user_type == 'region')
+        {
+            unset($options['zone']);
+            unset($options['region']);
+        }
+        else if($user_type == 'territory')
+        {
+            unset($options['zone']);
+            unset($options['region']);
+            unset($options['territory']);
+        }
+
         return $options;
     }
 }
