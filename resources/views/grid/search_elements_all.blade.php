@@ -61,3 +61,11 @@
     @endif
 
 </div>
+
+
+<script>
+$(document).on('change','select',function(){
+    var val = $(this).val();
+    alert(val);
+});
+</script>
