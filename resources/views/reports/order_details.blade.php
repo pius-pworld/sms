@@ -104,6 +104,7 @@
                                             foreach($v as $vk=>$vv)
                                             {
                                                 $convertArrayOrder = collect($orders)->toArray();
+//                                                debug($convertArrayOrder,1);
                                                 $key = array_search($vk, array_column($convertArrayOrder, 'short_name'));
                                                 $grand_total += ($convertArrayOrder[$key]->quantity*$convertArrayOrder[$key]->price);
                                                 if($sl == 0)
@@ -116,10 +117,10 @@
                                                 }
 
 
-                                                echo '<td class="request_quantity">'.$convertArrayOrder[$key]->quantity.'</td>';
+                                                echo '<td class="request_quantity">'.($key!==false? $convertArrayOrder[$key]->quantity : 0).'</td>';
                                                 echo '<td>
-                                                            <input type="hidden" name="short_name[]" value="'.$convertArrayOrder[$key]->short_name.'">
-                                                            <input type="hidden" name="price['.$convertArrayOrder[$key]->short_name.']" value="'.$convertArrayOrder[$key]->price.'">
+                                                            <input type="hidden" name="short_name[]" value="'.($key!==false? $convertArrayOrder[$key]->short_name : 0).'">
+                                                            <input type="hidden" name="price['.($key!==false? $convertArrayOrder[$key]->short_name : 0).']" value="'.$convertArrayOrder[$key]->price.'">
                                                             <input
                                                                 '.(($orders_info->order_status != 'Pending')?"readonly":"").'
                                                                 class="order_quantity"
