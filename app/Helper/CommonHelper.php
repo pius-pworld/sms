@@ -195,15 +195,20 @@
                 $present_quantity = $present_quantity->toArray();
                 if(!$stock){
                     //secondary
-                    $update_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'plus');
+                    $update_quantity = calculate_case($key,$present_quantity['quantity'],$value,'plus');
                 }
                 else{
                     //primary
-                    $update_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'minus');
+                    $update_quantity = calculate_case($key,$present_quantity['quantity'],$value,'minus');
                 }
                 \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->update(['quantity'=>$update_quantity]);
             }
 
+        }
+        if($stock) {
+            $present_current_balance = \App\Models\DistributionHouse::where('id',$house_id)->first(['current_balance']);
+            calculate_house_current_balance($house_id, $present_current_balance['current_balance'], $total_amount, 'plus');
+            return true;
         }
         return true;
     }
@@ -222,8 +227,8 @@
                     //$present_sku_quantity = sku_pack_quantity($key,(float)$present_quantity['quantity']);
                     if(!$stock){
                         //secondary
-                        if(sku_pack_quantity($key,(float)$present_quantity['quantity']) >= sku_pack_quantity($key,$value)){
-                            $update_sku_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'minus');
+                        if(sku_pack_quantity($key,$present_quantity['quantity']) >= sku_pack_quantity($key,$value)){
+                            $update_sku_quantity = calculate_case($key,$present_quantity['quantity'],$value,'minus');
                         }
                         else{
                             return false;
@@ -231,7 +236,7 @@
                     }
                     else{
                         //primary
-                        $update_sku_quantity = calculate_case($key,(float)$present_quantity['quantity'],$value,'plus');
+                        $update_sku_quantity = calculate_case($key,$present_quantity['quantity'],$value,'plus');
                     }
                     \App\Models\Stocks::where('distributions_house_id',$house_id)->where('short_name',$key)->update(['quantity'=>$update_sku_quantity]);
                 }
@@ -452,6 +457,10 @@ if(!function_exists('sku_details_generate')){
 
 if(!function_exists('sku_pack_quantity')){
     function sku_pack_quantity($sku,$quantity){
+        if(empty($sku) || empty($quantity) || $quantity < 0){
+            return 0;
+        }
+        $quantity = number_format($quantity,2);
         list($pack,$unit) = strstr($quantity,'.') ? explode('.',$quantity) : [$quantity,0];
         $path=resource_path().'/schemas/sku.json';
         $data=\Illuminate\Support\Facades\File::get($path);

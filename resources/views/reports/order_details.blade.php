@@ -106,7 +106,11 @@
                                                 $convertArrayOrder = collect($orders)->toArray();
 //                                                debug($convertArrayOrder,1);
                                                 $key = array_search($vk, array_column($convertArrayOrder, 'short_name'));
-                                                $grand_total += ($convertArrayOrder[$key]->quantity*$convertArrayOrder[$key]->price);
+                                                $sub_total =  sku_pack_quantity(($key!==false ? $convertArrayOrder[$key]->short_name: ''),
+                                                        ($key!==false ? $convertArrayOrder[$key]->quantity: 0)) * get_sku_price($vk);
+
+                                                $grand_total += $sub_total;
+                                                //$grand_total += ($convertArrayOrder[$key]->quantity*$convertArrayOrder[$key]->price);
                                                 if($sl == 0)
                                                 {
                                                     echo '<tr><td rowspan="'.count($v).'" style="text-align: left; vertical-align: middle;">'.$k.'</td><td>'.$vv.'</td>';
@@ -119,29 +123,31 @@
 
                                                 echo '<td class="request_quantity">'.($key!==false? $convertArrayOrder[$key]->quantity : 0).'</td>';
                                                 echo '<td>
-                                                            <input type="hidden" name="short_name[]" value="'.($key!==false? $convertArrayOrder[$key]->short_name : 0).'">
-                                                            <input type="hidden" name="price['.($key!==false? $convertArrayOrder[$key]->short_name : 0).']" value="'.$convertArrayOrder[$key]->price.'">
+                                                            <input type="hidden" name="short_name[]" value="'.$vk.'">
+                                                            <input type="hidden" name="price['.$vk.']" value="'.get_sku_price($vk).'">
                                                             <input
                                                                 '.(($orders_info->order_status != 'Pending')?"readonly":"").'
                                                                 class="order_quantity"
                                                                 style="width: 100px;"
-                                                                name="quantity['.$convertArrayOrder[$key]->short_name.']"
-                                                                type="number"
-                                                                oldValue="'.$convertArrayOrder[$key]->quantity.'"
-                                                                value="'.$convertArrayOrder[$key]->quantity.'"></td>';
-                                                echo '<td style="text-align: right" class="price_rate">'.$convertArrayOrder[$key]->price.'</td>';
-                                                echo '<td style="text-align: right" class="sub_total">'.($convertArrayOrder[$key]->price*$convertArrayOrder[$key]->quantity).'</td>';
+                                                                name="quantity['.($key!==false ? $convertArrayOrder[$key]->short_name:$vk).']"
+                                                                type="text"
+                                                                oldValue="'.($key!==false ? $convertArrayOrder[$key]->quantity : 0).'"
+                                                                value="'.($key!==false ? $convertArrayOrder[$key]->quantity : 0).'"></td>';
+                                                echo '<td style="text-align: right" class="price_rate">'.get_sku_price($vk).'</td>';
+                                                echo '<td style="text-align: right" class="sub_total">'.($key!==false ? (number_format($sub_total,2)) : 0).'</td>';
                                                 echo '</tr>';
                                                 $sl++;
                                             }
                                         }
                                     ?>
                                         <tr>
+                                            <th></th>
+                                            <th>&nbsp;</th>
+                                            <th></th>
+                                            <th></th>
+                                            {{--<th class="total_quantity">{{$orders_info->order_total_sku}}</th>--}}
+                                            {{--<th class="total_order_quantity">{{$orders_info->order_total_sku}}</th>--}}
                                             <th style="text-align: right">Total</th>
-                                            <th>&nbsp;</th>
-                                            <th class="total_quantity">{{$orders_info->order_total_sku}}</th>
-                                            <th class="total_order_quantity">{{$orders_info->order_total_sku}}</th>
-                                            <th>&nbsp;</th>
                                             <th class="grand_total" style="text-align: right">
                                                 {{number_format($grand_total,2)}}
                                             </th>
@@ -150,7 +156,7 @@
                                 </table>
                             </div>
                             <div class="col-lg-12 text-right">
-                                @if($orders_info->order_status == 'Pending')
+                                @if(in_array($orders_info->order_status,['Pending','Processed']))
                                     <input class="btn btn-primary" type="submit" value="Process">
                                 @endif
                             </div>
@@ -165,51 +171,72 @@
             </div>
         </div>
         <script>
-            $(document).on('input','.order_quantity',function () {
-                var order_quentity = $(this).val();
-                var oldValue = parseInt($(this).attr('oldValue'));
-                var request_quantity = parseInt($(this).parent().parent().find('.request_quantity').text());
-                var current_balance = parseInt($('.current_balance').text());
+            $(document).ready(function () {
+                function getPackSizeQuantity($sku,$quantity,output){
+                    $data=$.ajax({
+                        url:'{{URL::to("get-pack-size_quantity")}}',
+                        type:'POST',
+                        async: false,
+                        data:{
+                            "_token": "{{ csrf_token() }}",
+                            'sku':$sku,
+                            'quantity':$quantity
+                        },
+                        success:function (data) {
+                            return output(data);
+                        }
+                    });
+                }
 
-                var rate = parseInt($(this).parent().parent().find('.price_rate').text());
-                var sub_total =order_quentity*rate;
-                $(this).parent().parent().find('.sub_total').text(sub_total);
+                $(document).on('input','.order_quantity',function () {
 
-                var grand_total = 0;
-                var total_order_quantity = 0;
-                $('.order_quantity').each(function(){
-                    var get_sub_total = parseInt($(this).parent().parent().find('.sub_total').text());
-//                    alert(get_sub_total);
-                    var get_total_quantity = parseInt($(this).val());
-                    grand_total = grand_total+get_sub_total;
-                    total_order_quantity = total_order_quantity+get_total_quantity;
-                });
-                $('.grand_total').text(grand_total);
-                $('.total_order_quantity').text(total_order_quantity);
-//
-                var t = $(this);
-                $.ajax({
-                    url:'{{URL::to("check-distribution-balack")}}',
-                    type:'POST',
-                    data:$('#order_details_frm').serialize(),
-                    success:function (data) {
-                        var htm = '<div class="alert alert-danger alert-dismissible">';
+                    var order_quentity = $(this).val();
+                    var oldValue = parseFloat($(this).attr('oldValue'));
+                    var request_quantity = parseFloat($(this).parent().parent().find('.request_quantity').text());
+                    var current_balance = parseFloat($('.current_balance').text());
+
+                    var rate = $(this).parent().parent().find('.price_rate').text();
+                    var sku = $(this).parent().find('input').first().attr('value');
+
+                    var sub_total= 0;
+                    getPackSizeQuantity(sku,order_quentity,function (output) {
+                         sub_total= parseFloat(output*rate).toFixed(2);
+                    });
+                    $(this).parent().parent().find('.sub_total').text(sub_total);
+
+                    var grand_total = 0;
+                    $('.order_quantity').each(function(){
+                        var get_sub_total = parseFloat($(this).parent().parent().find('.sub_total').text());
+                        var get_total_quantity = parseFloat($(this).val());
+                        grand_total = grand_total+get_sub_total;
+                    });
+                    $('.grand_total').text(parseFloat(grand_total).toFixed(2));
+                    var t = $(this);
+                    $.ajax({
+                        url:'{{URL::to("check-distribution-balack")}}',
+                        type:'POST',
+                        data:$('#order_details_frm').serialize(),
+                        success:function (data) {
+                            var htm = '<div class="alert alert-danger alert-dismissible">';
                             htm += '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
 
-                        var current_value = parseInt(data);
-                        if(data > current_balance)
-                        {
-                            htm += 'You have exit the current balance.<br/>';
+                            var current_value = parseFloat(data);
+                            if(data > current_balance)
+                            {
+                                htm += 'You have exit the current balance.<br/>';
+                            }
+                            if(order_quentity > request_quantity)
+                            {
+                                htm += 'You can not exit the request quantity.';
+                            }
+                            htm += '</div>';
+                            $('.showMessage').html(htm);
                         }
-                        if(order_quentity > request_quantity)
-                        {
-                            htm += 'You can not exit the request quantity.';
-                        }
-                        htm += '</div>';
-                        $('.showMessage').html(htm);
-                    }
-                });
+                    });
 
+                });
             });
+
+
         </script>
 @endsection

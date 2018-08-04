@@ -177,11 +177,16 @@ class ReportsController extends Controller
         }
     }
 
+    public function getPackSizeQuanity(Request $request){
+        $post=$request->all();
+        return sku_pack_quantity($post['sku'],$post['quantity']);
+    }
+
     private function getTotalAmount($post){
         $total_order_amount=0;
         foreach($post['quantity'] as $k=>$q)
         {
-            $total_order_amount = $total_order_amount+($q*$post['price'][$k]);
+            $total_order_amount += (sku_pack_quantity($k,$q)*$post['price'][$k]);
         }
         return $total_order_amount;
 
@@ -190,6 +195,7 @@ class ReportsController extends Controller
     public function primary_sales_create(Request $request)
     {
         $post = $request->all();
+//        dd($post['current_balance'],$post['order_da'],$this->getTotalAmount($post),($post['current_balance']+$post['order_da']) - $this->getTotalAmount($post));
 
 
         $salesdata = array(
@@ -207,31 +213,47 @@ class ReportsController extends Controller
             'sale_total_sku'=>array_sum($post['quantity']),
             'created_by'=>Auth::id()
         );
-
-
-        $sales_details_data = array();
-        $sale_id = DB::table('sales')->insertGetId($salesdata);
-        $total_order = 0;
-//        debug($post,1);
-//        debug($post,1);
-        foreach($post['quantity'] as $k=>$q)
-        {
-            $total_order = $total_order+($q*$post['price'][$k]);
-            $sales_details_data['sales_id'] = $sale_id;
-            $sales_details_data['short_name'] = $k;
-            $sales_details_data['quantity'] = $q;
-            $sales_details_data['price'] = $post['price'][$k];
-            $sales_details_data['created_by'] = Auth::id();
-
-            DB::table('sale_details')->insert($sales_details_data);
+        $pervious_data=getPreviousStockByAsoDate($post['asm_rsm_id'],$post['order_date'],0,'Primary');
+        $previous_total=0;
+        $previous_value=[];
+        $da_update = true;
+        if(!empty($pervious_data)){
+            foreach($pervious_data as $key=>$value){
+                $previous_value[$key]=$value;
+                $previous_total +=(sku_pack_quantity($key,$value)*get_sku_price($key));
+            }
+           $da_update = false;
         }
 
+
+
+        $sale_id = DB::table('sales')->insertGetId($salesdata);
+        $sales_details_data =[];
+        $present_value=[];
+        $total_sale_amount = 0;
+        foreach($post['quantity'] as $k=>$q)
+        {
+            if((float)$q>0){
+                $present_value[$k]=$q;
+                $total_sale_amount +=(sku_pack_quantity($k,$q)*$post['price'][$k]);
+                $sales_details_data['sales_id'] = $sale_id;
+                $sales_details_data['short_name'] = $k;
+                $sales_details_data['quantity'] = $q;
+                $sales_details_data['price'] = $post['price'][$k];
+                $sales_details_data['created_by'] = Auth::id();
+                DB::table('sale_details')->insert($sales_details_data);
+            }
+
+        }
+
+
         DB::table('orders')->where('id', $post['order_id'])->update(['order_status' => 'Processed']);
-        DB::table('sales')->where('id', $sale_id)->update(['total_sale_amount' => $total_order]);
+        DB::table('sales')->where('id', $sale_id)->update(['total_sale_amount' => $total_sale_amount]);
+        if($da_update){
+            DB::table('distribution_houses')->where('id', $post['dh_id'])->update(['current_balance' => DB::raw('current_balance + '.$post['order_da'])]);
+        }
 
-        DB::table('distribution_houses')->where('id', $post['dh_id'])->update(['current_balance' => DB::raw('current_balance + '.$post['order_da'])]);
-
-        stock_update($post['dh_id'],$post['quantity'],array(),$total_order,true);
+        stock_update($post['dh_id'],$present_value,$total_sale_amount,$previous_value,$previous_total,true);
 
         return redirect('order-list/primary')->with('success', 'Information has been added.');
     }

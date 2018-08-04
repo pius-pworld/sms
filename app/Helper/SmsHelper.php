@@ -36,15 +36,21 @@ if(!function_exists('rejectPreviousOrder')){
     }
 }
 
-function getPreviousStockByAsoDate($aso_id,$order_date,$route_id){
+function getPreviousStockByAsoDate($aso_id,$order_date,$route_id=0,$order_type="Secondary"){
     $data =DB::table('sales')
          ->select('sale_details.short_name','sale_details.quantity')
-        ->leftJoin('sale_details','sale_details.sales_id','=','sales.id')
-        ->where('sales.aso_id',$aso_id)
-        ->where('sale_route_id',$route_id)
-        ->where('sales.order_date',$order_date)
-        ->where('sales.sale_status','Processed')
-        ->get();
+        ->leftJoin('sale_details','sale_details.sales_id','=','sales.id');
+    if($order_type==="Secondary"){
+        $data=$data->where('sales.aso_id',$aso_id)
+            ->where('sale_route_id',$route_id);
+    }
+    if($order_type==="Primary"){
+        $data=$data->where('sales.asm_rsm_id',$aso_id);
+    }
+    $data=$data ->where('sales.order_date',$order_date)
+            ->where('sales.sale_status','Processed')
+            ->orderBy('sales.id','DESC')
+            ->get();
     $response = [];
     foreach ($data as $value){
         $response[$value->short_name] = $value->quantity;
