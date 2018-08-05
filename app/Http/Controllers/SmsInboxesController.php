@@ -29,6 +29,7 @@ class SmsInboxesController extends Controller
 
     function __construct()
     {
+        //stock_oc(1, 'tp', date('Y-m-d'), 2.2, 2.1, true);
         $this->sms = new Sms();
     }
 

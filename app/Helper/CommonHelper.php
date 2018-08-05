@@ -183,7 +183,7 @@ if (!function_exists('memoStructure')) {
     }
 }
 
-function previous_calculation($house_id, $previous_value, $total_amount, $stock)
+function previous_calculation($house_id, $previous_value, $total_amount, $stock,&$result_append)
 {
     foreach ($previous_value as $key => $value) {
 
@@ -197,8 +197,7 @@ function previous_calculation($house_id, $previous_value, $total_amount, $stock)
             } else {
                 //primary
                 $update_quantity = calculate_case($key, $present_quantity['quantity'], $value, 'minus');
-                stock_oc($house_id, $key, date('Y-m-d'), 2.2,2.1,true);
-                die;
+                $result_append[$key]=$value;
             }
             \App\Models\Stocks::where('distributions_house_id', $house_id)->where('short_name', $key)->update(['quantity' => $update_quantity]);
         }
@@ -218,7 +217,7 @@ if (!function_exists('stock_update')) {
 
 //            //stock release
         if (count($previous_value) > 0) {
-            previous_calculation($house_id, $previous_value, $previous_total, $stock);
+            previous_calculation($house_id, $previous_value, $previous_total, $stock,$previous_value_back);
         }
         //update quantity
         foreach ($present_value as $key => $value) {
@@ -230,13 +229,14 @@ if (!function_exists('stock_update')) {
                     //secondary
                     if (sku_pack_quantity($key, $present_quantity['quantity']) >= sku_pack_quantity($key, $value)) {
                         $update_sku_quantity = calculate_case($key, $present_quantity['quantity'], $value, 'minus');
-                        //stock_oc($house_id, $key, date('Y-m-d'), $present_quantity['quantity'], $value, false);
+                        stock_oc($house_id, $key, date('Y-m-d'), $value, isset($previous_value_back[$key]) ? $previous_value_back[$key] : 0, false);
                     } else {
                         return false;
                     }
                 } else {
                     //primary
                     $update_sku_quantity = calculate_case($key, $present_quantity['quantity'], $value, 'plus');
+                    stock_oc($house_id, $key, date('Y-m-d'), $value, isset($previous_value_back[$key]) ? $previous_value_back[$key] : 0, true);
                 }
                 \App\Models\Stocks::where('distributions_house_id', $house_id)->where('short_name', $key)->update(['quantity' => $update_sku_quantity]);
             }
@@ -274,34 +274,36 @@ if (!function_exists('stock_oc')) {
             $data['date'] = $date;
             \App\Models\Stock_oc::insert($data);
 
+
         }
         else{
            $data=[];
            if($stock){
-               $calculate_quantity=0.0;
                if($previous_quantity > 0){
                    $calculate_quantity = calculate_case($sku, $present_quantity, $previous_quantity, 'minus');
-                   $present_quantity=0.0;
                }
-               $present_calculate_case=calculate_case($sku,$present_quantity,$get_present->lifting,'plus');
-               dd($calculate_quantity);
-               $data['lifting'] = calculate_case($sku,$previous_quantity, $calculate_quantity,'plus');
+               else{
+                   $calculate_quantity = $present_quantity;
+               }
+               $data['lifting'] = calculate_case($sku,$calculate_quantity,$get_present->lifting,'plus');
                $data['closing'] = calculate_case($sku,$get_previous_openning->openning , $data['lifting'],'plus');
-               dd($data,$calculate_quantity);
+
+
                //dd($calculate_quantity,$data['lifting'],$get_previous_openning->openning,calculate_case('tp',$get_previous_openning->openning,$data['lifting']));
            }
 
            else {
-               $calculate_quantity = 0.0;
                if ($previous_quantity > 0) {
-                   $calculate_quantity = calculate_case($sku, $present_quantity, $previous_quantity, 'minus');
+                   $calculate_quantity = calculate_case($sku, $present_quantity, $previous_quantity, 'plus');
                }
-               $data['sale'] = calculate_case($sku, $present_quantity, $calculate_quantity, 'plus');
-               $data['closing'] = calculate_case($sku, $data['openning'], $data['sale'], 'plus');
+               else{
+                   $calculate_quantity = $present_quantity;
+               }
+               $data['sale'] = calculate_case($sku,$calculate_quantity,$get_present->sale,'plus');
+               $data['closing'] = calculate_case($sku,$get_previous_openning->openning , $data['sale'],'plus');
            }
 
            \App\Models\Stock_oc::where('house_id',$house_id)->where('short_name',$sku)->update($data);
-           die('hi');
         }
 
     }
