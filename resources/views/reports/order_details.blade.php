@@ -156,7 +156,7 @@
                                 </table>
                             </div>
                             <div class="col-lg-12 text-right">
-                                @if(in_array($orders_info->order_status,['Pending','Processed']))
+                                @if(in_array($orders_info->order_status,['Pending']))
                                     <input class="btn btn-primary" type="submit" value="Process">
                                 @endif
                             </div>

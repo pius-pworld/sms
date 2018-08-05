@@ -108,8 +108,12 @@ class ReportsController extends Controller
         $data['breadcrumb'] = breadcrumb(array('Reports'=>'sales-list/'.$type,'active'=>ucfirst($type).' Sales Details'));
 
         $data['sales_info'] = DB::table('sales')
-            ->select('sales.*','distribution_houses.current_balance','distribution_houses.market_name','distribution_houses.point_name','distribution_houses.current_balance')
+            ->select('sales.*','orders.order_da','distribution_houses.current_balance','distribution_houses.market_name','distribution_houses.point_name','distribution_houses.current_balance')
             ->leftJoin('distribution_houses','distribution_houses.id','=','sales.dbid')
+            ->leftJoin('orders',function($join){
+                $join->on('orders.aso_id','=','sales.aso_id')
+                    ->on('orders.order_date','=','sales.order_date');
+            })
             ->where('sales.id',$id)->first();
 
 //        debug($data['sales_info'],1);
@@ -142,7 +146,7 @@ class ReportsController extends Controller
             })
             ->leftJoin('brands','brands.id','=','skues.brands_id')->groupBy('sale_details.short_name')->get();
 
-//        debug($data['sales'],1);
+//        debug($data['sales_info'],1);
 
         $data['memo'] = memoStructure();
 
