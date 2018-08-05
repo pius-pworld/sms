@@ -287,9 +287,6 @@ if (!function_exists('stock_oc')) {
                }
                $data['lifting'] = calculate_case($sku,$calculate_quantity,$get_present->lifting,'plus');
                $data['closing'] = calculate_case($sku,$get_previous_openning->openning , $data['lifting'],'plus');
-
-
-               //dd($calculate_quantity,$data['lifting'],$get_previous_openning->openning,calculate_case('tp',$get_previous_openning->openning,$data['lifting']));
            }
 
            else {
