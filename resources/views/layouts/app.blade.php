@@ -90,7 +90,8 @@
     <script type="text/javascript" src="https://cdn.datatables.net/fixedcolumns/3.2.1/js/dataTables.fixedColumns.min.js"></script>
     <script src="{{asset('public/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
 
-
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" type="text/css"/>
 
 
 
@@ -308,6 +309,19 @@
       'autoWidth'   : false
     })
   })
+
+
+//    multiselect dropdown
+    $(document).ready(function() {
+        $('.multiselect').multiselect({
+            buttonWidth: '400px',
+            enableFiltering: true,
+            filterPlaceholder: 'Search',
+            enableCaseInsensitiveFiltering : true,
+            includeSelectAllOption: true,
+            dropRight: true
+        });
+    });
 </script>
 
 </body>

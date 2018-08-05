@@ -53,8 +53,9 @@ function dropdownList($id)
     foreach ($data_info as $value){
         $res[] = collect($value)->toArray();
     }
-    $html = '<select class="form-control '.$dd_info->selector_class.'" name="'.$dd_info->field_name.'[]" '.(($dd_info->multiselect)?'multiple':'').'>';
-    $html .= '<option value="">Select One</option>';
+    //$html = '<select id="'.$dd_info->selector_class.'" class="form-control '.$dd_info->selector_class.(($dd_info->multiselect)?' multiselect':'').'" name="'.$dd_info->field_name.'[]" '.(($dd_info->multiselect)?'multiple':'').'>';
+    $html = '<select id="'.$dd_info->field_id.'" class="form-control '.$dd_info->selector_class.'" name="'.$dd_info->field_name.'[]" '.(($dd_info->multiselect)?'multiple':'').'>';
+
     foreach($res as $k=>$v)
     {
         $html .= '<option value="'.$v[$dd_info->option_id].'">'.$v[$dd_info->option_value].'</option>';
@@ -78,5 +79,50 @@ function dropdownListSingle($id)
     }
     $html .= '</select>';
     return $html;
+}
+
+
+
+function get_zones()
+{
+    $query = DB::table('distribution_houses')
+        ->select('zones.id','zones.zone_name as name')
+        ->leftJoin('zones','zones.id','=','distribution_houses.zones_id')
+        ->get()->toArray();
+    return $query;
+}
+function get_regions()
+{
+    $query = DB::table('distribution_houses')
+        ->select('regions.id','regions.region_name as name','distribution_houses.zones_id')
+        ->leftJoin('regions','regions.id','=','distribution_houses.regions_id')
+        ->groupBy('distribution_houses.regions_id')
+        ->get()->toArray();
+    return $query;
+}
+function get_territories()
+{
+    $query = DB::table('distribution_houses')
+        ->select('territories.id','territories.territory_name as name','distribution_houses.regions_id')
+        ->leftJoin('territories','territories.id','=','distribution_houses.territories_id')
+        ->groupBy('distribution_houses.territories_id')
+        ->get()->toArray();
+    return $query;
+}
+function get_house()
+{
+    $query = DB::table('distribution_houses')
+        ->select('id','point_name as name','distribution_houses.territories_id')
+        ->get()->toArray();
+    return $query;
+}
+function get_aso()
+{
+    $query = DB::table('routes')
+        ->select('users.id','users.name','routes.distribution_houses_id')
+        ->leftJoin('users','users.id','=','routes.so_aso_user_id')
+        ->groupBy('routes.so_aso_user_id')
+        ->get()->toArray();
+    return $query;
 }
 ?>

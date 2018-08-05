@@ -10,6 +10,10 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::post('get-allPlaces', 'CommonController@getAllPlaces')->name('captureSms');
+
+
+
 Route::post('sms-capture', 'SmsInboxesController@captureSms')->name('captureSms');
 Route::get                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ('sms-outbox-send','SmsInboxesController@sendOutboxSend')->name('outboxSmsSend');
 Route::get('users', 'Auth\RegisterController@users')->name('users');
