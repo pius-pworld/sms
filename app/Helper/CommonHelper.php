@@ -255,7 +255,7 @@ if (!function_exists('stock_update')) {
 if (!function_exists('stock_oc')) {
     function stock_oc($house_id, $sku, $date, $present_quantity, $previous_quantity = 0, $stock = true)
     {
-        $get_previous_openning = \App\Models\Stock_oc::where('house_id', $house_id)->where('short_name', $sku)->where('date', $date)->first(['openning']);
+        $get_previous_openning = \App\Models\Stock_oc::where('house_id', $house_id)->where('short_name', $sku)->whereDate('date','<', '')->first(['openning']);
         if (is_null($get_previous_openning)) {
             $get_previous_openning = \App\Models\Stocks::where('distributions_house_id', $house_id)->where('short_name', $sku)->first(['openning']);
         }
