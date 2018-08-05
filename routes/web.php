@@ -73,6 +73,7 @@ Route::get('order-list/{type?}','ReportsController@order_list');
 Route::post('orderListAjax/{type?}','ReportsController@order_list_ajax');
 Route::post('check-distribution-balack','ReportsController@check_distribution_balack');
 Route::get('primary-order-details/{type}/{id}','ReportsController@primary_order_details');
+Route::post('get-pack-size_quantity','ReportsController@getPackSizeQuanity');
 Route::post('primary-sales-create','ReportsController@primary_sales_create');
 Route::post('update-secondary-order','ReportsController@updateSecondaryOrder');
 

@@ -29,6 +29,7 @@ class SmsInboxesController extends Controller
 
     function __construct()
     {
+        //stock_oc(1, 'tp', date('Y-m-d'), 2.2, 2.1, true);
         $this->sms = new Sms();
     }
 
@@ -205,9 +206,10 @@ class SmsInboxesController extends Controller
                 }
             }
             if($type===PRIMARY){
-//                $total = $total + (int)$value;
-                if($value > 0){
-                    $calculate_total_amount = $calculate_total_amount+($value*(int)get_house_price_by_sku($key));
+                $total_quantity_unit=sku_pack_quantity($key,$value);
+                if($total_quantity_unit > 0){
+                    $calculate_total_amount = $calculate_total_amount+($total_quantity_unit*get_sku_price($key));
+                    $total++;
                 }
             }
             if ($type === ORDER) {
@@ -390,33 +392,20 @@ class SmsInboxesController extends Controller
 
         Order::where('asm_rsm_id',$asm_rms_id)->where('order_date',$order_date)->where('order_status','Pending')->where('order_type','Primary')->where('created_at','>',Carbon::now()->subHours(48)->toDateTimeString())->update(['order_status'=>'Rejected']);
 
-        if ($total === (int)$primary_order_total_sku) {
-            $primary_order_information['order'] = [
-                'asm_rsm_id'=> $asm_rms_id,
-                'dbid'=>$dbid,
-                'order_date'=>$order_date,
-                'requester_name' => $get_information->name,
-                'requester_phone' => $get_information->mobile,
-//                'dh_phone' => $get_information->dhname,
-//                'dh_name' => $get_information->dhphone,
-//                'tso_name' => $get_information->tsoname,
-//                'tso_phone' => $get_information->tsophone,
-                'order_type'=>'Primary',
-                'order_total_sku' => $primary_order_total_sku,
-                'order_amount'    => $primary_order_total,
-                'order_da'    =>$da,
-                'created_by' => Auth::Id()
-            ];
-            $primary_order_information['status'] = true;
-            return $primary_order_information;
-        }
-        else{
-            $primary_order_information['status'] = false;
-            $primary_order_information['message'] = "Invalid Primary Order Total SKU !!";
-            $primary_order_information['additional'] = $extra_data['additional'];
-            $primary_order_information['identifier'] = $extra_data['identifier'];
-            return $primary_order_information;
-        }
+        $primary_order_information['order'] = [
+            'asm_rsm_id'=> $asm_rms_id,
+            'dbid'=>$dbid,
+            'order_date'=>$order_date,
+            'requester_name' => $get_information->name,
+            'requester_phone' => $get_information->mobile,
+            'order_type'=>'Primary',
+            'order_total_sku' => $primary_order_total_sku,
+            'order_amount'    => $primary_order_total,
+            'order_da'    =>$da,
+            'created_by' => Auth::Id()
+        ];
+        $primary_order_information['status'] = true;
+        return $primary_order_information;
 
     }
 
@@ -527,11 +516,12 @@ class SmsInboxesController extends Controller
             foreach ($parseData['data'] as $key => $value){
                 $sale_information['order_details'][] =[
                     "short_name" => $key,
-                    "quantity"   => (float)explode(',',$value)[0],
+                    "quantity"   => (float)$value,
                     "price"      => get_sku_price($key,false),
                     "created_by" =>1
                 ];
             }
+            dd($sale_information);
 
             if(!getPreviousSale($sale_information['order']['aso_id'],
                 $sale_information['order']['order_date'],$sale_information['order']['sale_route_id'])->isEmpty()){
@@ -547,7 +537,7 @@ class SmsInboxesController extends Controller
                 return $sale_information;
             }
             if (Sale::insertSale($sale_information['order'], $sale_information['order_details'])) {
-                //SmsInbox::find($id)->update(['sms_status' => 'Processed']);
+                SmsInbox::find($id)->update(['sms_status' => 'Processed']);
 
                 return redirect()->route('sms_inboxes.sms_inbox.index')
                     ->with('success_message', 'Sale successfully placed!');
@@ -573,12 +563,11 @@ class SmsInboxesController extends Controller
             foreach ($parseData['data'] as $key => $value){
                 $primary_information['order_details'][] =[
                     "short_name" => $key,
-                    "quantity"   => (int)$value,
-                    "price"      => get_house_price_by_sku($key),
+                    "quantity"   => (float)$value,
+                    "price"      =>  get_sku_price($key),
                     "created_by" => Auth::id()
                 ];
             }
-
             if (Order::insertOrder($primary_information['order'], $primary_information['order_details'])) {
                 SmsInbox::find($id)->update(['sms_status' => 'Processed']);
 
