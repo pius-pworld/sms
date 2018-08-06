@@ -94,6 +94,7 @@ Route::post('order-vs-sale-primary-date-wise-search/{house_id}','ReportsControll
 //Reports
 Route::get('house-stock','ReportsController@houseStock');
 Route::post('house-stock-search','ReportsController@houseStockSearch');
+Route::get('house-stock-memo/{house_id}','ReportsController@houseStockMemo');
 
 Route::get('house-lifting','ReportsController@houseLifting');
 Route::post('house-lifting-search','ReportsController@houseLiftingSearch');

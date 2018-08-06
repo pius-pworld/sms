@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 //use App\Models\Ordering;
 use App\Models\DistributionHouse;
 use App\Models\Reports;
+use App\Models\Stocks;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
@@ -322,7 +323,7 @@ class ReportsController extends Controller
         return view('reports.current_stock_ajax',$data);
     }
 
-
+    //House Stock
     public function houseStock(Request $request){
 //        debug(Auth::user(),1);
         $data['ajaxUrl'] = URL::to('house-stock-search');
@@ -337,7 +338,7 @@ class ReportsController extends Controller
         $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'House Wise Stock'));
         return view('reports.main',$data);
     }
-
+    //House Stock Search
     public function houseStockSearch(Request $request){
 
         $data['ajaxUrl'] = URL::to('house-stock-search');
@@ -367,9 +368,17 @@ class ReportsController extends Controller
         $selected_houses =array_filter($selected_houses);
 
         $data['house_stock_list'] = Reports::getHouseStockInfo($selected_houses,$memo);
-
+//        dd($data['house_stock_list']);
 
         return view('reports.ajax.house_stock_ajax',$data);
+
+    }
+    //House Stock Memo
+    public function houseStockMemo($house_id){
+        $data['house_info'] = DistributionHouse::where('id',$house_id)->first();
+        $data['stocks'] = Stocks::where('distributions_house_id',$house_id)->get(['short_name','quantity'])->toArray();
+        $data['memo'] = memoStructure();
+        return view('reports.memo.house_stock',$data);
 
     }
 

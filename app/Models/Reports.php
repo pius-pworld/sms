@@ -27,7 +27,7 @@ class Reports extends Model
         $result=$query->get()->toArray();
         return $result;
     }
-
+    //House Stock list
     public static function getHouseStockInfo($ids,$selected_memo){
         $house_stock_list=[];
         foreach ($ids as $house_key=>$house_value){
@@ -40,13 +40,15 @@ class Reports extends Model
                     $data=Stocks::where('distributions_house_id',$house_value)->where('short_name',$value)->first();
                     if(!empty($data)){
                         $sku_quantity[] = $data['quantity'];
+                    }else{
+                        $sku_quantity[] =0.0;
                     }
 
                 }
             }
-
             $house_stock_list[$house['point_name']]['data']=$sku_quantity;
-            $house_stock_list[$house['point_name']]['current_balance']=$house['current_balance'];
+            $house_stock_list[$house['point_name']]['current_balance']=number_format($house['current_balance'],2);
+            $house_stock_list[$house['point_name']]['house_id']=$house_value;
 
         }
         return $house_stock_list;
