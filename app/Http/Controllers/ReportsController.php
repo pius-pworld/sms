@@ -433,6 +433,59 @@ class ReportsController extends Controller
 
     }
 
+    public function houseLiftingFormat(Request $request){
+        $data['ajaxUrl'] = URL::to('house-lifting-format-search');
+        $data['view'] = 'house_lifting_format_ajax';
+        $data['header_level'] = ' House Wise Lifting';
+        $data['searching_options'] = 'grid.search_elements_all';
+        $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange','month'));
+        $memo = repoStructure();
+        $data['level'] = 2;
+        $data['level_col_data'] =['Requested','Delivery'];
+        $data['memo_structure']= $memo;
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'House Wise Lifting'));
+        return view('reports.main',$data);
+    }
+
+    public function houseLiftingFormatSearch(Request $request){
+        $data['ajaxUrl'] = URL::to('house-lifting-search');
+        $data['searching_options'] = 'grid.search_elements_all';
+
+        //request data
+        $post= $request->all();
+        unset($post['_token']);
+        $request_data = filter_array($post);
+
+        //memeo structure
+        $categorie_ids =array_key_exists('category_id',$request_data) ? $request_data['category_id'] : [];
+        $brand_ids =array_key_exists('brands_id',$request_data) ? $request_data['brands_id'] : [];
+        $sku_ids =array_key_exists('skues_id',$request_data) ? $request_data['skues_id'] : [];
+
+        $data['memo_structure']= repoStructure($categorie_ids,$brand_ids,$sku_ids);
+        $data['level'] = 1;
+        $data['level_col_data'] =[];
+
+
+        //Requested Information
+        $zone_ids=array_key_exists('zones_id',$request_data) ? $request_data['zones_id'] : [];
+        $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
+        $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
+        $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
+        $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+        $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
+        $selected_houses =array_filter($selected_houses);
+
+
+
+        $data['house_lifting_list'] = Reports::getHouseLiftingFormat($selected_houses, $data['memo_structure']);
+        //dd($data['house_lifting_list']);
+
+
+        return view('reports.ajax.house_lifting_format_ajax',$data);
+
+    }
+
+
     public function houseWisePerformance(Request $request){
         $data['ajaxUrl'] = URL::to('db-wise-performance-search');
         $data['searching_options'] = 'grid.search_elements_all';

@@ -98,6 +98,8 @@ Route::get('house-stock-memo/{house_id}','ReportsController@houseStockMemo');
 
 Route::get('house-lifting','ReportsController@houseLifting');
 Route::post('house-lifting-search','ReportsController@houseLiftingSearch');
+Route::get('house-lifting-format','ReportsController@houseLiftingFormat');
+Route::post('house-lifting-format-search','ReportsController@houseLiftingFormatSearch');
 
 Route::get('db-wise-performance','ReportsController@houseWisePerformance');
 Route::post('db-wise-performance-search','ReportsController@houseWisePerformanceSearch');

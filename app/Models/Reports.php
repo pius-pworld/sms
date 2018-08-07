@@ -133,6 +133,66 @@ class Reports extends Model
         return $house_lifting_list;
     }
 
+    public static function getHouseLiftingFormat($ids, $selected_memo)
+    {
+        $house_lifting_list = [];
+        foreach ($ids as $house_key => $house_value) {
+            $house = DistributionHouse::where('id', $house_value)->first()->toArray();
+            $selected_asm_rsm = User::where('territories_id', $house['territories_id'])->where('user_type', 'territory')->first();
+            $sku_order_info['data'] = [];
+            if (isset($selected_asm_rsm->id)) {
+                $data = $data = DB::table('skues')
+                    ->select(['orders.order_da', 'sales.house_current_balance', 'sales.total_sale_amount', 'brands.brand_name', 'skues.sku_name', 'skues.short_name', 'order_details.quantity as oquantity', 'sale_details.quantity as salequantity'])
+                    ->leftJoin('order_details', 'order_details.short_name', '=', 'skues.short_name')
+                    ->leftJoin('orders', function ($join) use ($selected_asm_rsm, $house_value) {
+                        $join->on('orders.id', '=', 'order_details.orders_id')
+                            ->where('orders.order_status', 'Processed')
+                            ->where('orders.order_type', 'Primary');
+                    })
+                    ->leftJoin('sales', function ($join) {
+                        $join->on('sales.asm_rsm_id', '=', 'orders.asm_rsm_id')
+                            ->on('sales.order_date', '=', 'orders.order_date')
+                            ->where('sales.sale_status', 'Processed');
+                    })
+                    ->leftJoin('sale_details', function ($join) {
+                        $join->on('sale_details.sales_id', '=', 'sales.id')
+                            ->on('sale_details.short_name', '=', 'order_details.short_name');
+                    })
+                    ->leftJoin('brands', 'brands.id', '=', 'skues.brands_id')
+                    ->where('orders.asm_rsm_id', $selected_asm_rsm->id)
+                    ->where('orders.dbid', $house_value)
+                    ->groupBy('skues.short_name')
+                    ->orderBy('orders.id', 'DESC')->get();
+                $json = json_encode($data);
+                $data_result = json_decode($json, true);
+                foreach ($selected_memo as $cat_key => $cat_val) {
+                    $selected_skues = array_flatten($cat_val);
+                    foreach ($selected_skues as $key => $value) {
+                        $index = array_search($value, array_column($data_result, 'short_name'));
+                        if($index !==false){
+                            $sku_order_info['data']['Request'][] =!is_null($data_result[$index]['oquantity']) ? $data_result[$index]['oquantity'] : "N/R";
+
+                            $sku_order_info['data']['Delivery'][] =!is_null($data_result[$index]['salequantity']) ? $data_result[$index]['salequantity'] : "N/P";
+                        }
+                        else{
+                            $sku_order_info['data']['Request'][] ="N/R";
+                            $sku_order_info['data']['Delivery'][] ="N/P";
+
+                        }
+
+
+                    }
+                }
+                $house_lifting_list[$house['point_name']] = $sku_order_info;
+                $additional_info=reset($data_result);
+                $house_lifting_list[$house['point_name']]['additional']['sale_amount'] = $additional_info['total_sale_amount'];
+                $house_lifting_list[$house['point_name']]['additional']['deposit_amount'] = $additional_info['order_da'];
+                $house_lifting_list[$house['point_name']]['additional']['current_balance'] = $additional_info['house_current_balance'];
+            }
+        }
+        return $house_lifting_list;
+    }
+
     public static function get_sale_by_month_house($db_id, $sku_name, $month)
     {
         $date = date_parse($month);
