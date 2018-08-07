@@ -44,7 +44,7 @@ class ReportsController extends Controller
         $data['breadcrumb'] = breadcrumb(array('active'=>ucfirst($type).' Order List'));
         $data['ajaxUrl'] = URL::to('orderListAjax/'.$type);
 //        $data['searching_options'] = 'reports.order_list_search';
-        $data['searching_options'] = 'grid.search_elements_all_single';
+        $data['searching_options'] = 'grid.search_elements_all';
 
 
         $data['orders'] = reportsHelper::order_list_query($type,array(),$this->routes);
@@ -59,7 +59,6 @@ class ReportsController extends Controller
         $data['routes'] = DB::table('orders')
             ->select('route_name')
             ->groupBy('route_name')->get();
-
         return view('reports.order_list',$data);
     }
 
@@ -218,16 +217,17 @@ class ReportsController extends Controller
             'sale_total_sku'=>array_sum($post['quantity']),
             'created_by'=>Auth::id()
         );
-        $pervious_data=getPreviousStockByAsoDate($post['asm_rsm_id'],$post['order_date'],0,'Primary');
+        $pervious_data=getPreviousStockByAsoDate($post['asm_rsm_id'],$post['order_date'],0,$post['dh_id'],'Primary');
         $previous_total=0;
         $previous_value=[];
         $da_update = true;
-        if(!empty($pervious_data)){
-            foreach($pervious_data as $key=>$value){
+        if(!empty($pervious_data['data'])){
+            foreach($pervious_data['data'] as $key=>$value){
                 $previous_value[$key]=$value;
                 $previous_total +=(sku_pack_quantity($key,$value)*get_sku_price($key));
             }
            $da_update = false;
+            DB::table('sales')->where('id', $pervious_data['additional']['sales_id'])->update(['sale_status' => 'Rejected']);
         }
 
 
