@@ -15,7 +15,7 @@
             <div class="col-xs-12">
                 <div class="box">
                     <div>
-                        <button id="cmd">Generate PDF</button>
+                        <button id="cmd">Download PDF</button>
                     </div>
                     <div class="box-body"  id="printDoc" style="padding: 10px 40px;">
                             <div class="row">
