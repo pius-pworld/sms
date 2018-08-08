@@ -30,9 +30,6 @@
 		<div class="row">
         <div class="col-xs-12">
 			<div class="box">
-				<div class="box-header">
-					<h3 class="box-title">Sms Outboxxes</h3>
-				</div>
 				 <div class="btn-group btn-group-sm pull-right" role="group">
 					<a href="{{ route('sms_outboxxes.sms_outboxx.create') }}" class="btn btn-success" title="Create New Sms Outboxx">
 						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
@@ -44,12 +41,21 @@
 					</div>
 				@else
 				<div class="box-body">
-                <table id="example2" class="table table-bordered table-striped">
+                <table id="dataTableId" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                                                    <th>Sms Receiver Number</th>
+                            <th><input class="form-control" id="sms_number" type="text"></th>
+                            <th><input class="form-control" id="sms_content" type="text"></th>
+                            <th><input class="form-control" id="created" type="date"></th>
+                            <th><input class="form-control"  id="sentAt" type="date"></th>
+                            <th id="notificationType"></th>
+                        </tr>
+                        <tr>
+                            <th>Sms Receiver Number</th>
                             <th>Sms Content</th>
-                            <th>Order Type</th>
+                            <th>Created</th>
+                            <th>Sent Time</th>
+                            <th>Notification Type</th>
 
                         <th></th>
                         </tr>
@@ -57,8 +63,10 @@
                     <tbody>
                     @foreach($smsOutboxxes as $smsOutboxx)
                         <tr>
-                                                        <td>{{ $smsOutboxx->sms_receiver_number }}</td>
+                            <td>{{ $smsOutboxx->sms_receiver_number }}</td>
                             <td>{{ $smsOutboxx->sms_content }}</td>
+                            <td>{{ $smsOutboxx->created }}</td>
+                            <td>{{ $smsOutboxx->sent_datetime }}</td>
                             <td>{{ $smsOutboxx->order_type }}</td>
 
                             <td>
@@ -90,13 +98,65 @@
 
             </div>
         </div>
-
-        <div class="panel-footer">
-            {!! $smsOutboxxes->render() !!}
-        </div>
         
         @endif
     
     </div>
     </div>
+        <script>
+            $(document).ready(function(){
+                var table = $('#dataTableId').DataTable({
+                    "lengthChange": false,
+                    initComplete: function () {
+                        this.api().columns(4).every( function () {
+                            var column = this;
+                            var select = $('<select class="form-control"><option value="Select Status"></option></select>')
+                                .appendTo( $("#notificationType").empty() )
+                                .on( 'change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex(
+                                        $(this).val()
+                                    );
+
+                                    column
+                                        .search( val ? '^'+val+'$' : '', true, false )
+                                        .draw();
+                                } );
+
+                            column.data().unique().sort().each( function ( d, j ) {
+                                select.append( '<option value="'+d+'">'+d+'</option>' )
+                            } );
+                        } );
+                    }
+                });
+
+                $('#sms_number').on('keyup change', function(){
+                    table.column(0).search(this.value).draw();
+                });
+
+                $('#sms_content').on('keyup change', function(){
+                    table.column(1).search(this.value).draw();
+                });
+                $('#created').on('keyup change',function(){
+                    table.column(2).search(this.value).draw();
+                });
+                $('#sentAt').on('keyup change',function(){
+                    table.column(3).search(this.value).draw();
+                });
+//                $('#smsContent').on('keyup change', function(){
+//                    table.column(1).search(this.value).draw();
+//                });
+//
+                $(".dataTables_info").hide();
+
+
+
+            });
+        </script>
+        <style>
+            .dataTables_wrapper .dataTables_filter {
+                float: right;
+                text-align: right;
+                visibility: hidden;
+            }
+        </style>
 @endsection
