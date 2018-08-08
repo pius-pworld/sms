@@ -70,7 +70,9 @@ class TargetHelper
 //            debug(DB::getQueryLog(),1);
         }
         $target = json_decode(@$existingTarget->target_value,true);
+
         $result = array('target'=>(($target)?$target[$short_name]:0));
+
         return $result;
     }
 }

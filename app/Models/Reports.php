@@ -56,8 +56,22 @@ class Reports extends Model
         $data = User::where('user_type','market')->whereIn('distribution_house_id',$house_ids)->get()->toArray();
         return $data;
     }
+
+    public static function getRouteInfoHouse($house_ids){
+        $data = Routes::select('routes.*','users.id as uid','users.name as uname','distribution_houses.point_name')
+            ->leftJoin('users','users.id','=','routes.so_aso_user_id')
+            ->leftJoin('distribution_houses','distribution_houses.id','=','routes.distribution_houses_id')
+            ->where('users.user_type','market')->whereIn('routes.distribution_houses_id',$house_ids)->get()->toArray();
+        return $data;
+    }
     public static function getRouteInfoByAso($route_ids){
         $data = User::where('user_type','market')->whereIn('id',$route_ids)->get()->toArray();
+        return $data;
+    }
+    public static function getRouteInfoAso($route_ids){
+        $data = Routes::select('routes.*','users.id as uid','users.name as uname','distribution_houses.point_name')
+            ->leftJoin('users','users.id','=','routes.so_aso_user_id')
+            ->leftJoin('distribution_houses','distribution_houses.id','=','routes.distribution_houses_id')->where('users.user_type','market')->whereIn('routes.id',$route_ids)->get()->toArray();
         return $data;
     }
 
@@ -117,6 +131,18 @@ class Reports extends Model
         }
         return $house_lifting_list;
     }
+
+
+    public static function individual_routes_info($route_id)
+    {
+        $result = DB::table('routes')
+            ->select('routes.routes_code','routes.routes_name','distribution_houses.market_name','distribution_houses.point_name','distribution_houses.propietor_address')
+            ->leftJoin('distribution_houses','distribution_houses.id','=','routes.distribution_houses_id')
+            ->where('routes.id',$route_id)
+            ->first();
+        return $result;
+    }
+
 
     public static  function get_sale_by_month_house($db_id,$sku_name,$month){
         $date = date_parse($month);
@@ -464,6 +490,7 @@ class Reports extends Model
     }
 
     public static function routeWisePerformance($ids,$selected_memo,$month){
+//        debug($ids,1);
         $route_wise_performance=[];
         foreach ($ids as $route_key=>$route_value){
             $get_target = \App\Models\Target::where('target_type','market')->where('type_id',$route_value['id'])->where('target_month',isset($month[0]) ? $month[0]: '')->first();
@@ -492,6 +519,92 @@ class Reports extends Model
 
             $route_wise_performance[$route_value['name']]=$sku_target;
         }
+        return $route_wise_performance;
+    }
+
+
+    public static function routeWisePerformance2($ids,$selected_memo,$month){
+//        debug($ids,1);
+        $route_wise_performance=[];
+        foreach ($ids as $route_key=>$route_value){
+            $route_wise_performance[$route_key]['routes_name'] = $route_value['routes_name'];
+            $route_wise_performance[$route_key]['aso_name'] = $route_value['uname'];
+            $route_wise_performance[$route_key]['db_house'] = $route_value['point_name'];
+            $route_wise_performance[$route_key]['route_id'] = $route_value['id'];
+
+            $get_target = \App\Models\Target::where('target_type','market')->where('type_id',$route_value['uid'])->where('target_month',isset($month[0]) ? $month[0]: '')->first();
+//            debug($get_target,1);
+            $sku_target = [];
+            foreach ($selected_memo as $cat_key=>$cat_val) {
+                $selected_skues = array_flatten($cat_val);
+                $target_value = json_decode($get_target['base_value'], true);
+                foreach ($selected_skues as $key => $value) {
+                    if(!empty($get_target)){
+                        $cumulative_sale= \App\Models\Reports::get_sale_by_month_route($route_value['uid'],$value,isset($month[0]) ? $month[0]: '');
+                        $sku_target[] = [
+                            isset($target_value[$value]) ? $target_value[$value] : 0,
+                            $cumulative_sale,
+                            achievement($target_value[$value],$cumulative_sale)
+                        ];
+                    }
+                    else{
+                        $sku_target[] = [
+                            0, 0, 0
+                        ];
+                    }
+
+                }
+//                debug($sku_target,1);
+
+            }
+
+//            $route_wise_performance[$route_value['routes_name']]=$sku_target;
+            $route_wise_performance[$route_key]['result'] = $sku_target;
+        }
+//        debug($route_wise_performance,1);
+        return $route_wise_performance;
+    }
+
+
+    public static function routeWisePerformance3($ids,$selected_memo,$month){
+//        debug($ids,1);
+        $route_wise_performance=[];
+        foreach ($ids as $route_key=>$route_value){
+            $route_wise_performance[$route_key]['routes_name'] = $route_value['routes_name'];
+            $route_wise_performance[$route_key]['aso_name'] = $route_value['uname'];
+            $route_wise_performance[$route_key]['db_house'] = $route_value['point_name'];
+            $route_wise_performance[$route_key]['route_id'] = $route_value['id'];
+
+            $get_target = \App\Models\Target::where('target_type','market')->where('type_id',$route_value['uid'])->where('target_month',isset($month[0]) ? $month[0]: '')->first();
+            $sku_target = [];
+            foreach ($selected_memo as $cat_key=>$cat_val) {
+                $selected_skues = $cat_val;
+                $target_value = json_decode($get_target['base_value'], true);
+//                debug($selected_skues,1);
+                foreach ($selected_skues as $key => $value) {
+                    if(!empty($get_target)){
+                        $cumulative_sale= \App\Models\Reports::get_sale_by_month_route($route_value['uid'],$value,isset($month[0]) ? $month[0]: '');
+                        $sku_target[$key] = [
+                            isset($target_value[$key]) ? $target_value[$key] : 0,
+                            $cumulative_sale,
+                            achievement($target_value[$key],$cumulative_sale)
+                        ];
+                    }
+                    else{
+                        $sku_target[$key] = [
+                            0, 0, 0
+                        ];
+                    }
+
+                }
+//                debug($sku_target,1);
+
+            }
+
+//            $route_wise_performance[$route_value['routes_name']]=$sku_target;
+            $route_wise_performance[$route_key]['result'] = $sku_target;
+        }
+//        debug($route_wise_performance,1);
         return $route_wise_performance;
     }
 

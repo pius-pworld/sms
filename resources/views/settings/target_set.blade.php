@@ -109,17 +109,17 @@
                             else
                             {
                                 $('.target_set_ajax_data_show').html(data);
-                                $('#d_table').DataTable( {
-                                    scrollY: "calc(100vh - 380px)",
-                                    scrollX: true,
-                                    scrollCollapse: true,
-                                    paging: false,
-                                    searching: false,
-                                    ordering: false,
-                                    fixedColumns: {
-                                        leftColumns: 1
-                                    }
-                                } );
+//                                $('#d_table').DataTable( {
+//                                    scrollY: "calc(100vh - 380px)",
+//                                    scrollX: true,
+//                                    scrollCollapse: true,
+//                                    paging: false,
+//                                    searching: false,
+//                                    ordering: false,
+//                                    fixedColumns: {
+//                                        leftColumns: 1
+//                                    }
+//                                } );
                             }
                             $('.loadingImage').hide();
                         }

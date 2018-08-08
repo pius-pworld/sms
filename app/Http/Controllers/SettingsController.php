@@ -251,6 +251,7 @@ class SettingsController extends Controller
                 ->where('territories_id',Auth::user()->territories_id)
                 ->where('user_type','market')->get();
         }
+//        debug($post['target_type'],1);
         $data['baseData'] = $this->baseData($data['geographies']);
         $data['base'] = $this->totalBaseData($data['baseData']);
         //debug($totalBasedata,1);
@@ -259,7 +260,7 @@ class SettingsController extends Controller
             ->leftJoin('brands', 'brands.id', '=', 'skues.brands_id')
             ->where('skues.is_active',1)
             ->orderBy('brands.ordering')->get();
-
+        //debug($data['skues'],1);
         $data['brands'] = DB::table('skues')
             ->select('brands.brand_name',DB::raw('COUNT(skues.brands_id) as total'))
             ->leftJoin('brands', 'brands.id', '=', 'skues.brands_id')
