@@ -36,16 +36,17 @@ if(!function_exists('rejectPreviousOrder')){
     }
 }
 
-function getPreviousStockByAsoDate($aso_id,$order_date,$route_id=0,$order_type="Secondary"){
+function getPreviousStockByAsoDate($aso_id,$order_date,$route_id=0,$dh_id=0,$order_type="Secondary"){
     $data =DB::table('sales')
-         ->select('sale_details.short_name','sale_details.quantity')
+         ->select('sales.id as sid','sale_details.short_name','sale_details.quantity')
         ->leftJoin('sale_details','sale_details.sales_id','=','sales.id');
     if($order_type==="Secondary"){
         $data=$data->where('sales.aso_id',$aso_id)
             ->where('sale_route_id',$route_id);
     }
     if($order_type==="Primary"){
-        $data=$data->where('sales.asm_rsm_id',$aso_id);
+        $data=$data->where('sales.asm_rsm_id',$aso_id)
+            ->where('sales.dbid',$dh_id);
     }
     $data=$data ->where('sales.order_date',$order_date)
             ->where('sales.sale_status','Processed')
@@ -53,14 +54,18 @@ function getPreviousStockByAsoDate($aso_id,$order_date,$route_id=0,$order_type="
             ->get();
     $response = [];
     foreach ($data as $value){
-        $response[$value->short_name] = $value->quantity;
+        $response['data'][$value->short_name] = $value->quantity;
+    }
+    if($order_type==="Primary") {
+        isset($data[0]) ? $response['additional']['sales_id'] = $data[0]->sid : [];
     }
     return  $response;
 }
 
 if(!function_exists('rejectPreviousSale')){
     function rejectPreviousSale($aso_id,$order_date,&$sale_information,$route_id,$sale_type='Secondary'){
-        $sale_information['previous_data'] = getPreviousStockByAsoDate($aso_id,$order_date,$route_id);
+        $result=getPreviousStockByAsoDate($aso_id,$order_date,$route_id);
+        $sale_information['previous_data'] = $result['data'];
         $sale=\App\Models\Sale::where('aso_id',$aso_id)
             ->where('order_date',$order_date)
             ->where('sale_type',$sale_type)

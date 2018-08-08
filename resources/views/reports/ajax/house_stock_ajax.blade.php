@@ -8,7 +8,7 @@
                      <th colspan="{{ array_sum(array_map("count", $category_value)) * $level }}" style="text-align: center">{{$category_key}}</th>
             @endforeach
         @endif
-        <th rowspan="3" style="vertical-align: middle">Current Balance</th>
+        <th rowspan="3"  align="right">Current Balance</th>
 
     </tr>
     <tr>
@@ -36,11 +36,11 @@
             @if(isset($house_stock_list))
                 @foreach($house_stock_list as $house_key=> $house_value)
                     <tr>
-                        <th>{{$house_key}}</th>
+                        <td><a target="_blank" href="{{URL::to('house-stock-memo/'.$house_stock_list[$house_key]['house_id'])}}">{{$house_key}}</a></td>
                         @foreach($house_value['data'] as $key => $value)
                               <td>{{$value}}</td>
                         @endforeach
-                        <td>{{$house_stock_list[$house_key]['current_balance']}}</td>
+                        <td  align="right">{{$house_stock_list[$house_key]['current_balance']}}</td>
                     </tr>
                  @endforeach
             @endif

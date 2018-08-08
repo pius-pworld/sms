@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\DistributionHouse;
 use App\Models\Reports;
 use App\Models\Routes;
+use App\Models\Stocks;
 use Illuminate\Http\Request;
 use Auth;
 use DB;
@@ -47,6 +48,8 @@ class ReportsController extends Controller
         //$data['searching_options'] = 'grid.search_elements_all_single';
 
         $data['searchAreaOption'] = searchAreaOption(array('show','route','category','brand','sku','month'));
+//        $data['searching_options'] = 'reports.order_list_search';
+        $data['searching_options'] = 'grid.search_elements_all';
 
 
         $data['orders'] = reportsHelper::order_list_query($type,array(),$this->routes);
@@ -61,7 +64,6 @@ class ReportsController extends Controller
         $data['routes'] = DB::table('orders')
             ->select('route_name')
             ->groupBy('route_name')->get();
-
         return view('reports.order_list',$data);
     }
 
@@ -75,7 +77,6 @@ class ReportsController extends Controller
     public function order_list_ajax(Request $request,$type=null)
     {
         $post = $request->all();
-//        debug($post,1);
         $data['type'] = $type;
         $data['orders'] = reportsHelper::order_list_query($type,$post,$this->routes);
 
@@ -223,16 +224,17 @@ class ReportsController extends Controller
             'sale_total_sku'=>array_sum($post['quantity']),
             'created_by'=>Auth::id()
         );
-        $pervious_data=getPreviousStockByAsoDate($post['asm_rsm_id'],$post['order_date'],0,'Primary');
+        $pervious_data=getPreviousStockByAsoDate($post['asm_rsm_id'],$post['order_date'],0,$post['dh_id'],'Primary');
         $previous_total=0;
         $previous_value=[];
         $da_update = true;
-        if(!empty($pervious_data)){
-            foreach($pervious_data as $key=>$value){
+        if(!empty($pervious_data['data'])){
+            foreach($pervious_data['data'] as $key=>$value){
                 $previous_value[$key]=$value;
                 $previous_total +=(sku_pack_quantity($key,$value)*get_sku_price($key));
             }
            $da_update = false;
+            DB::table('sales')->where('id', $pervious_data['additional']['sales_id'])->update(['sale_status' => 'Rejected']);
         }
 
 
@@ -328,7 +330,7 @@ class ReportsController extends Controller
         return view('reports.current_stock_ajax',$data);
     }
 
-
+    //House Stock
     public function houseStock(Request $request){
 //        debug(Auth::user(),1);
         $data['ajaxUrl'] = URL::to('house-stock-search');
@@ -343,7 +345,7 @@ class ReportsController extends Controller
         $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'House Wise Stock'));
         return view('reports.main',$data);
     }
-
+    //House Stock Search
     public function houseStockSearch(Request $request){
 
         $data['ajaxUrl'] = URL::to('house-stock-search');
@@ -373,9 +375,17 @@ class ReportsController extends Controller
         $selected_houses =array_filter($selected_houses);
 
         $data['house_stock_list'] = Reports::getHouseStockInfo($selected_houses,$memo);
-
+//        dd($data['house_stock_list']);
 
         return view('reports.ajax.house_stock_ajax',$data);
+
+    }
+    //House Stock Memo
+    public function houseStockMemo($house_id){
+        $data['house_info'] = DistributionHouse::where('id',$house_id)->first();
+        $data['stocks'] = Stocks::where('distributions_house_id',$house_id)->get(['short_name','quantity'])->toArray();
+        $data['memo'] = memoStructure();
+        return view('reports.memo.house_stock',$data);
 
     }
 
@@ -429,6 +439,59 @@ class ReportsController extends Controller
         return view('reports.ajax.house_lifting_ajax',$data);
 
     }
+
+    public function houseLiftingFormat(Request $request){
+        $data['ajaxUrl'] = URL::to('house-lifting-format-search');
+        $data['view'] = 'house_lifting_format_ajax';
+        $data['header_level'] = ' House Wise Lifting';
+        $data['searching_options'] = 'grid.search_elements_all';
+        $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange','month'));
+        $memo = repoStructure();
+        $data['level'] = 2;
+        $data['level_col_data'] =['Requested','Delivery'];
+        $data['memo_structure']= $memo;
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'House Wise Lifting'));
+        return view('reports.main',$data);
+    }
+
+    public function houseLiftingFormatSearch(Request $request){
+        $data['ajaxUrl'] = URL::to('house-lifting-search');
+        $data['searching_options'] = 'grid.search_elements_all';
+
+        //request data
+        $post= $request->all();
+        unset($post['_token']);
+        $request_data = filter_array($post);
+
+        //memeo structure
+        $categorie_ids =array_key_exists('category_id',$request_data) ? $request_data['category_id'] : [];
+        $brand_ids =array_key_exists('brands_id',$request_data) ? $request_data['brands_id'] : [];
+        $sku_ids =array_key_exists('skues_id',$request_data) ? $request_data['skues_id'] : [];
+
+        $data['memo_structure']= repoStructure($categorie_ids,$brand_ids,$sku_ids);
+        $data['level'] = 1;
+        $data['level_col_data'] =[];
+
+
+        //Requested Information
+        $zone_ids=array_key_exists('zones_id',$request_data) ? $request_data['zones_id'] : [];
+        $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
+        $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
+        $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
+        $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+        $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
+        $selected_houses =array_filter($selected_houses);
+
+
+
+        $data['house_lifting_list'] = Reports::getHouseLiftingFormat($selected_houses, $data['memo_structure']);
+        //dd($data['house_lifting_list']);
+
+
+        return view('reports.ajax.house_lifting_format_ajax',$data);
+
+    }
+
 
     public function houseWisePerformance(Request $request){
         $data['ajaxUrl'] = URL::to('db-wise-performance-search');
