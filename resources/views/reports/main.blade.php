@@ -16,7 +16,7 @@
             <div class="col-xs-12">
                 <div class="box">
                     <div class="box-header" style="overflow: hidden">
-                        <span class="box-title" style="float: left;">Stock List</span>
+                        {{--<span class="box-title" style="float: left;">Stock List</span>--}}
                         <span class="advanchedSearchToggle" style="float: right;">
                             <button
                                     type="button"

@@ -389,6 +389,48 @@ class ReportsController extends Controller
 
     }
 
+    public function saleConciliation(Request $request){
+        $data['ajaxUrl'] = URL::to('monthly-sale-reconciliation-search');
+        $data['view'] = 'sale_reconciliation_ajax';
+        $data['header_level'] = 'Monthly Sale And Reconciliation';
+        $data['searching_options'] = 'grid.search_elements_all';
+        $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange','month'));
+        $data['memo_structure']= repoStructure();
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'Monthly Sale And Reconciliation'));
+        return view('reports.main',$data);
+    }
+
+    public function saleConciliationSearch(Request $request){
+        $data['ajaxUrl'] = URL::to('monthly-sale-reconciliation-search');
+        $data['view'] = 'sale_reconciliation_ajax';
+        $post= $request->all();
+        unset($post['_token']);
+        $request_data = filter_array($post);
+        //Memo
+        $categorie_ids =array_key_exists('category_id',$request_data) ? $request_data['category_id'] : [];
+        $brand_ids =array_key_exists('brands_id',$request_data) ? $request_data['brands_id'] : [];
+        $sku_ids =array_key_exists('skues_id',$request_data) ? $request_data['skues_id'] : [];
+
+        $data['memo_structure']= repoStructure($categorie_ids,$brand_ids,$sku_ids);
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'Monthly Sale And Reconciliation'));
+
+
+        //Requested Information
+        $zone_ids=array_key_exists('zones_id',$request_data) ? $request_data['zones_id'] : [];
+        $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
+        $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
+        $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
+        $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+        $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
+        $selected_houses =array_filter($selected_houses);
+
+        $data['monthly_sale_reconciliation'] = Reports::getMonthlySaleReconciliation($selected_houses, $data['memo_structure']);
+
+        return view('reports.ajax.sale_reconciliation_ajax',$data);
+
+    }
+
+
     public function houseLifting(Request $request){
         $data['ajaxUrl'] = URL::to('house-lifting-search');
         $data['view'] = 'house_lifting_ajax';

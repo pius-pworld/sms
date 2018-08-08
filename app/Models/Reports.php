@@ -58,6 +58,42 @@ class Reports extends Model
         return $house_stock_list;
     }
 
+    public static function getMonthlySaleReconciliation($selected_houses,$selected_memo){
+        $data = $data = DB::table('skues')
+            ->select('skues.short_name','order_details.quantity as ','sale_details.quantity')
+            ->leftJoin('order_details', 'order_details.short_name', '=', 'skues.short_name')
+            ->leftJoin('orders', function ($join)  {
+                $join->on('orders.id', '=', 'order_details.orders_id')
+                    ->where('orders.order_status', 'Processed')
+                    ->whereIn('orders.order_type', ['Primary','Secondary']);
+            })
+            ->leftJoin('sales', function ($join) {
+                $join->on('sales.asm_rsm_id', '=', 'orders.asm_rsm_id')
+                    ->on('sales.order_date', '=', 'orders.order_date')
+                    ->where('sales.sale_status', 'Processed');
+            })
+            ->leftJoin('sale_details', function ($join) {
+                $join->on('sale_details.sales_id', '=', 'sales.id')
+                    ->on('sale_details.short_name', '=', 'order_details.short_name');
+            })
+            ->leftJoin('brands', 'brands.id', '=', 'skues.brands_id')
+            ->whereIn('orders.dbid', $selected_houses)
+            ->groupBy('skues.short_name')
+            ->orderBy('orders.id', 'DESC')->toSql();
+        dd($data);
+
+
+//        return [
+//           "tp"=>[
+//                "opening_stock"=> 1,
+//                "lifting"      => 2,
+//                "sales"        => 3,
+//                "closing"      => 100
+//           ]
+//        ];
+
+    }
+
     public static function getRouteInfoByHouse($house_ids)
     {
         $data = User::where('user_type', 'market')->whereIn('distribution_house_id', $house_ids)->get()->toArray();

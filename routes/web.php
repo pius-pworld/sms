@@ -101,6 +101,10 @@ Route::post('house-lifting-search','ReportsController@houseLiftingSearch');
 Route::get('house-lifting-format','ReportsController@houseLiftingFormat');
 Route::post('house-lifting-format-search','ReportsController@houseLiftingFormatSearch');
 
+Route::get('monthly-sale-reconciliation','ReportsController@saleConciliation');
+
+Route::post('monthly-sale-reconciliation-search','ReportsController@saleConciliationSearch');
+
 Route::get('db-wise-performance','ReportsController@houseWisePerformance');
 Route::post('db-wise-performance-search','ReportsController@houseWisePerformanceSearch');
 
