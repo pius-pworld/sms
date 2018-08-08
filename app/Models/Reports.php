@@ -51,6 +51,7 @@ class Reports extends Model
             }
 
             $house_stock_list[$house['point_name']]['data']=$sku_quantity;
+            $house_stock_list[$house['point_name']]['house_id']=$house_value;
             $house_stock_list[$house['point_name']]['current_balance']=$house['current_balance'];
 
         }
