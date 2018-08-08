@@ -36,15 +36,10 @@
         <li class="active">SMS Inboxes</li>
       </ol>
     </section>
-	
-	
-	
+
 		<div class="row">
         <div class="col-xs-12">
 			<div class="box">
-				<div class="box-header">
-					<h3 class="box-title">SMS Inboxes</h3>
-				</div>
 				 <div class="btn-group btn-group-sm pull-right" role="group">
 					<a href="{{ route('sms_inboxes.sms_inbox.create') }}" class="btn btn-success" title="Create New Sms Inbox">
 						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
