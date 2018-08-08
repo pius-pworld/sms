@@ -23,7 +23,7 @@ function myConfiguration()
         fixedColumns:   {
             leftColumns: 1
         },
-        rowsGroup: [0],
+        rowsGroup: [0,34,35,36],
         bPaginate: true,
         dom: 'Bfrtip',
         responsive: true,
