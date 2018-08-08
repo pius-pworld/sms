@@ -96,6 +96,39 @@ function generateDataTables($sql = [], $columns = [], $search = [], $data_id_fie
     }
 }
 
+
+function getGeographySearchData($post)
+{
+//    debug($post,1);
+    if(isset($post['aso_id']))
+    {
+        return $post['aso_id'];
+    }
+    else if(isset($post['id']))
+    {
+        return $post['id'];
+    }
+    else if(isset($post['territories_id']))
+    {
+        return $post['territories_id'];
+    }
+    else if(isset($post['regions_id']))
+    {
+        return $post['regions_id'];
+    }
+    else if(isset($post['zones_id']))
+    {
+        return $post['zones_id'];
+    }
+    else
+    {
+        return [];
+    }
+
+}
+
+
+
 function getSearchDataAll($post)
 {
     $geography = array(
@@ -367,6 +400,7 @@ if (!function_exists('searchAreaOption')) {
     function searchAreaOption($data = array())
     {
         $all_options = array('zone' => 1, 'region' => 1, 'territory' => 1, 'house' => 1, 'route' => 1, 'category' => 1, 'brand' => 1, 'sku' => 1, 'month' => 1, 'daterange' => 1);
+
         $options = userWiseOptionRemove($all_options);
         foreach ($data as $val) {
             unset($options[$val]);

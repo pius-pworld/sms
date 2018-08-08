@@ -37,7 +37,7 @@
                 $existingTarget = targetHelper::totalExistingJsonValue($type,$skue->short_name,$target_month);
             }
 
-            //debug($base,1);
+//            debug($base,1);
 
             ?>
             <td style="text-align: center">
@@ -67,17 +67,23 @@
     </tr>
     </thead>
     <tbody>
+
     @foreach($geographies as $geography)
         <tr>
             <th>
                 <input type="hidden" name="geography_id[]" value="{{$geography->id}}">
                 <?php echo str_replace(' ','&nbsp;',$geography->gname); ?>
             </th>
+
             @foreach($skues as $skue)
                 <?php
                     $existing = targetHelper::getTargetJsonValue($type,$geography->id,$target_month,$existingValue);
-                    $existingTarget = targetHelper::totalExistingJsonValue($type,$skue->id,$target_month);
+//                debug($skue,1);
+                    //$existingTarget = targetHelper::totalExistingJsonValue($type,$skue->id,$target_month);
+                    $existingTarget = targetHelper::totalExistingJsonValue($type,$skue->short_name,$target_month);
+
                 ?>
+                <?php //debug($base,1); ?>
                 <td style="text-align: center">
                     <input
                             name="base_distribute[<?php echo $geography->id; ?>][<?php echo $skue->brands_id; ?>][<?php echo $skue->short_name; ?>]"

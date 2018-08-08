@@ -317,7 +317,7 @@
 //    multiselect dropdown
     $(document).ready(function() {
         $('.multiselect').multiselect({
-            buttonWidth: '400px',
+            buttonWidth: '100%',
             enableFiltering: true,
             filterPlaceholder: 'Search',
             enableCaseInsensitiveFiltering : true,

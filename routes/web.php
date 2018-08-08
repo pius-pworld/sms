@@ -108,6 +108,10 @@ Route::post('db-wise-performance-search','ReportsController@houseWisePerformance
 Route::get('route-wise-performence-by-category','ReportsController@routeWisePerformenceByCategory');
 Route::post('route-wise-performence-by-category-ajax','ReportsController@routeWisePerformenceByCategoryAjax');
 
+Route::get('route-wise-performence-category','ReportsController@routeWisePerformenceCategory');
+Route::get('individual-route-performance/{route_id}/{selected_months}','ReportsController@individualRoutePerformance');
+Route::post('route-wise-performence-category-ajax','ReportsController@routeWisePerformenceCategoryAjax');
+
 Route::get('strike-rate','ReportsController@strikeRateByCategory');
 Route::post('strike-rate-search','ReportsController@strikeRateByCategoryAjax');
 

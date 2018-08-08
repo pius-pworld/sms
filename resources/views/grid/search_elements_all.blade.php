@@ -108,7 +108,7 @@ $(function () {
 //            console.log(privilegeObj);
 
             $('#zones_id').multiselect({
-                buttonWidth: '400px',
+                buttonWidth: '100%',
                 includeSelectAllOption: true,
                 enableFiltering: true,
                 enableCaseInsensitiveFiltering: true,
@@ -134,7 +134,7 @@ $(function () {
             });
 
             $('#regions_id').multiselect({
-                buttonWidth: '400px',
+                buttonWidth: '100%',
                 includeSelectAllOption: true,
                 enableFiltering: true,
                 enableCaseInsensitiveFiltering: true,
@@ -160,7 +160,7 @@ $(function () {
             });
 
             $('#territories_id').multiselect({
-                buttonWidth: '400px',
+                buttonWidth: '100%',
                 includeSelectAllOption: true,
                 enableFiltering: true,
                 enableCaseInsensitiveFiltering: true,
@@ -186,7 +186,7 @@ $(function () {
             });
 
             $('#house_id').multiselect({
-                buttonWidth: '400px',
+                buttonWidth: '100%',
                 includeSelectAllOption: true,
                 enableFiltering: true,
                 enableCaseInsensitiveFiltering: true,
@@ -214,7 +214,7 @@ $(function () {
 
 
             $('#aso_id').multiselect({
-                buttonWidth: '400px',
+                buttonWidth: '100%',
                 includeSelectAllOption: true,
                 enableFiltering: true,
                 enableCaseInsensitiveFiltering: true

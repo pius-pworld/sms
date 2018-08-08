@@ -16,11 +16,10 @@ class ReportsHelper
     {
         $houses = Routes::whereIn('id',$routes)->groupBy('distribution_houses_id')->get(['distribution_houses_id'])->toArray();
         $selected_house = array_column($houses,'distribution_houses_id');
-//        dd($selected_house);
         if($post)
         {
-            $searchValue = getSearchDataAll($post);
-            $dateselect = explode(' - ', $post['created_at']);
+            $searchValue = getGeographySearchData($post);
+            $dateselect = explode(' - ', $post['created_at'][0]);
         }
         $query = DB::table('orders');
         $query->select('orders.*','distribution_houses.current_balance as dhcb','distribution_houses.opening_balance','distribution_houses.point_name');
@@ -32,7 +31,8 @@ class ReportsHelper
 
         if($post)
         {
-            $query->whereIn('orders.dbid',$searchValue['house_id']);
+            //$query->whereIn('orders.dbid',$searchValue['house_id']);
+            $query->whereIn('orders.dbid',$searchValue);
 //            $query->whereIn('orders_details.short_name',$searchValue);
             if($post['created_at'])
             {
@@ -51,8 +51,8 @@ class ReportsHelper
     {
         if($post)
         {
-            $searchValue = getSearchDataAll($post);
-            $dateselect = explode(' - ', $post['created_at']);
+            $searchValue = getGeographySearchData($post);
+            $dateselect = explode(' - ', $post['created_at'][0]);
         }
         $query = DB::table('sales');
         $query->select('sales.*');
@@ -75,8 +75,7 @@ class ReportsHelper
 
         if($post)
         {
-            $query->whereIn('sales.dbid',$searchValue['house_id']);
-//            $query->whereIn('orders_details.short_name',$searchValue);
+            $query->whereIn('sales.dbid',$searchValue);
             if($post['created_at'])
             {
                 $query->where('sales.order_date','>=',date('Y-m-d',strtotime(str_replace('/','-',$dateselect[0]))));
@@ -85,7 +84,6 @@ class ReportsHelper
         }
 
         $result = $query->whereNotIn('sale_status',['Rejected'])->get();
-//        debug($result,1);
         return $result;
     }
 

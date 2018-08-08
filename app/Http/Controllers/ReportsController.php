@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 //use App\Models\Ordering;
 use App\Models\DistributionHouse;
 use App\Models\Reports;
+use App\Models\Routes;
 use App\Models\Stocks;
 use Illuminate\Http\Request;
 use Auth;
@@ -43,6 +44,10 @@ class ReportsController extends Controller
         }
         $data['breadcrumb'] = breadcrumb(array('active'=>ucfirst($type).' Order List'));
         $data['ajaxUrl'] = URL::to('orderListAjax/'.$type);
+        $data['searching_options'] = 'grid.search_elements_all';
+        //$data['searching_options'] = 'grid.search_elements_all_single';
+
+        $data['searchAreaOption'] = searchAreaOption(array('show','route','category','brand','sku','month'));
 //        $data['searching_options'] = 'reports.order_list_search';
         $data['searching_options'] = 'grid.search_elements_all';
 
@@ -84,7 +89,9 @@ class ReportsController extends Controller
         $data['type'] = $type;
         $data['ajaxUrl'] = URL::to('salesListAjax/'.$type);
 //        $data['searching_options'] = 'reports.sales_list_search';
-        $data['searching_options'] = 'grid.search_elements_all_single';
+//        $data['searching_options'] = 'grid.search_elements_all_single';
+        $data['searching_options'] = 'grid.search_elements_all';
+        $data['searchAreaOption'] = searchAreaOption(array('show','route','category','brand','sku','month'));
         $data['breadcrumb'] = breadcrumb(array('active'=>ucfirst($type).' Sales List'));
 
         //$data['sales'] = DB::table('sales')->get();
@@ -585,6 +592,89 @@ class ReportsController extends Controller
         return view('reports.ajax.route_wise_performence_by_category_ajax',$data);
 
     }
+
+
+
+
+    public function routeWisePerformenceCategory(){
+        $data['ajaxUrl'] = URL::to('route-wise-performence-category-ajax');
+        $data['searching_options'] = 'grid.search_elements_all';
+        $data['view'] = 'route_wise_performence_category_ajax';
+        $data['header_level'] = 'Route Wise Performence By Category';
+        $data['searchAreaOption'] = searchAreaOption(array('show','daterange'));
+        $memo = repoStructure();
+        $data['memo_structure']= $memo;
+        $data['level'] = 3;
+        $data['level_col_data'] =['Target','Sale','Ach%'];
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'Route Wise Performence By Category'));
+        return view('reports.main',$data);
+    }
+
+    public function routeWisePerformenceCategoryAjax(Request $request)
+    {
+        $data['ajaxUrl'] = URL::to('route-wise-performence-by-category-ajax');
+        $data['searching_options'] = 'grid.search_elements_all';
+
+        //request data
+        $post= $request->all();
+        unset($post['_token']);
+        $request_data = filter_array($post);
+        $asouserid = (isset($request_data['aso_id']))?$request_data['aso_id']:[];
+        $get_route_id = Routes::whereIn('so_aso_user_id',$asouserid)->get()->toArray();
+
+//        debug(array_column($route_id,'id'),1);
+        //memeo structure
+        $categorie_ids =array_key_exists('category_id',$request_data) ? $request_data['category_id'] : [];
+        $brand_ids =array_key_exists('brands_id',$request_data) ? $request_data['brands_id'] : [];
+        $sku_ids =array_key_exists('skues_id',$request_data) ? $request_data['skues_id'] : [];
+
+        $data['memo_structure']= repoStructure($categorie_ids,$brand_ids,$sku_ids);
+        $data['level'] = 3;
+        $data['level_col_data'] =['Target','Sales','Ach%'];
+
+        $zone_ids=array_key_exists('zones_id',$request_data) ? $request_data['zones_id'] : [];
+        $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
+        $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
+        $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
+        $route_ids = array_column($get_route_id,'id');
+        $selected_months=array_key_exists('month',$request_data) ? $request_data['month'] : [];
+//        debug(json_encode($selected_months),1);
+        //$data['selectedMonths'] = urlencode($selected_months);
+        $data['selectedMonths'] = urlencode(serialize($selected_months));
+//        debug(unserialize($data['selectedMonths']),1);
+        if(count($route_ids) == 0 ){
+//            debug('d',1);
+            $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+            $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
+            $selected_houses =array_filter($selected_houses);
+            $selected_route=Reports::getRouteInfoHouse($selected_houses);
+        }else{
+            $selected_route=Reports::getRouteInfoAso($route_ids);
+        }
+        $data['route_wise_performance'] = Reports::routeWisePerformance2($selected_route, $data['memo_structure'],$selected_months);
+//        debug($data['route_wise_performance'],1);
+        return view('reports.ajax.route_wise_performence_category_ajax',$data);
+
+    }
+
+    public function individualRoutePerformance($route_id,$month)
+    {
+//        debug(unserialize(urldecode($month)),1);
+        $data['header_level'] = 'Route Wise Performence By Category';
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'Route Wise Performence Individual'));
+        $data['routeInfo'] = Reports::individual_routes_info($route_id);
+        $data['memu_structure'] = memoStructure();
+//        dd($data['memu_structure']);
+        $route_ids[0]['id']=$route_id;
+        $route_ids[0]['name']=$data['routeInfo']->routes_name;
+        $selected_months=unserialize(urldecode($month));
+        $selected_route=Reports::getRouteInfoAso($route_ids);
+        $data['route_wise_performance'] = Reports::routeWisePerformance3($selected_route, $data['memu_structure'],$selected_months);
+//        debug($data['route_wise_performance'],1);
+        return view('reports.route_wise_performance_individual',$data);
+    }
+
+
     public function strikeRateByCategory(Request $request){
         $data['ajaxUrl'] = URL::to('strike-rate-search');
         $data['searching_options'] = 'grid.search_elements_all';

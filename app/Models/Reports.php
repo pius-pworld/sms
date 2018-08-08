@@ -49,9 +49,9 @@ class Reports extends Model
 
                 }
             }
-            $house_stock_list[$house['point_name']]['data'] = $sku_quantity;
-            $house_stock_list[$house['point_name']]['current_balance'] = number_format($house['current_balance'], 2);
-            $house_stock_list[$house['point_name']]['house_id'] = $house_value;
+
+            $house_stock_list[$house['point_name']]['data']=$sku_quantity;
+            $house_stock_list[$house['point_name']]['current_balance']=$house['current_balance'];
 
         }
         return $house_stock_list;
@@ -63,9 +63,21 @@ class Reports extends Model
         return $data;
     }
 
-    public static function getRouteInfoByAso($route_ids)
-    {
-        $data = User::where('user_type', 'market')->whereIn('id', $route_ids)->get()->toArray();
+    public static function getRouteInfoHouse($house_ids){
+        $data = Routes::select('routes.*','users.id as uid','users.name as uname','distribution_houses.point_name')
+            ->leftJoin('users','users.id','=','routes.so_aso_user_id')
+            ->leftJoin('distribution_houses','distribution_houses.id','=','routes.distribution_houses_id')
+            ->where('users.user_type','market')->whereIn('routes.distribution_houses_id',$house_ids)->get()->toArray();
+        return $data;
+    }
+    public static function getRouteInfoByAso($route_ids){
+        $data = User::where('user_type','market')->whereIn('id',$route_ids)->get()->toArray();
+        return $data;
+    }
+    public static function getRouteInfoAso($route_ids){
+        $data = Routes::select('routes.*','users.id as uid','users.name as uname','distribution_houses.point_name')
+            ->leftJoin('users','users.id','=','routes.so_aso_user_id')
+            ->leftJoin('distribution_houses','distribution_houses.id','=','routes.distribution_houses_id')->where('users.user_type','market')->whereIn('routes.id',$route_ids)->get()->toArray();
         return $data;
     }
 
@@ -193,8 +205,20 @@ class Reports extends Model
         return $house_lifting_list;
     }
 
-    public static function get_sale_by_month_house($db_id, $sku_name, $month)
+
+
+    public static function individual_routes_info($route_id)
     {
+        $result = DB::table('routes')
+            ->select('routes.routes_code','routes.routes_name','distribution_houses.market_name','distribution_houses.point_name','distribution_houses.propietor_address')
+            ->leftJoin('distribution_houses','distribution_houses.id','=','routes.distribution_houses_id')
+            ->where('routes.id',$route_id)
+            ->first();
+        return $result;
+    }
+
+
+    public static  function get_sale_by_month_house($db_id,$sku_name,$month){
         $date = date_parse($month);
         $data = DB::table('sales')
             ->select('sales.id', 'sale_details.quantity')
@@ -546,24 +570,25 @@ class Reports extends Model
         return $db_house_wise_performance;
     }
 
-    public static function routeWisePerformance($ids, $selected_memo, $month)
-    {
-        $route_wise_performance = [];
-        foreach ($ids as $route_key => $route_value) {
-            $get_target = \App\Models\Target::where('target_type', 'market')->where('type_id', $route_value['id'])->where('target_month', isset($month[0]) ? $month[0] : '')->first();
+    public static function routeWisePerformance($ids,$selected_memo,$month){
+//        debug($ids,1);
+        $route_wise_performance=[];
+        foreach ($ids as $route_key=>$route_value){
+            $get_target = \App\Models\Target::where('target_type','market')->where('type_id',$route_value['id'])->where('target_month',isset($month[0]) ? $month[0]: '')->first();
             $sku_target = [];
-            foreach ($selected_memo as $cat_key => $cat_val) {
+            foreach ($selected_memo as $cat_key=>$cat_val) {
                 $selected_skues = array_flatten($cat_val);
                 $target_value = json_decode($get_target['base_value'], true);
                 foreach ($selected_skues as $key => $value) {
-                    if (!empty($get_target)) {
-                        $cumulative_sale = \App\Models\Reports::get_sale_by_month_route($route_value['id'], $value, isset($month[0]) ? $month[0] : '');
+                    if(!empty($get_target)){
+                        $cumulative_sale= \App\Models\Reports::get_sale_by_month_route($route_value['id'],$value,isset($month[0]) ? $month[0]: '');
                         $sku_target[] = [
                             isset($target_value[$value]) ? $target_value[$value] : 0,
                             $cumulative_sale,
-                            achievement($target_value[$value], $cumulative_sale)
+                            achievement($target_value[$value],$cumulative_sale)
                         ];
-                    } else {
+                    }
+                    else{
                         $sku_target[] = [
                             0, 0, 0
                         ];
@@ -573,65 +598,151 @@ class Reports extends Model
 
             }
 
-            $route_wise_performance[$route_value['name']] = $sku_target;
+            $route_wise_performance[$route_value['name']]=$sku_target;
         }
         return $route_wise_performance;
     }
 
-    public static function routeWiseStrikeRate($ids, $selected_memo, $date_range)
-    {
-        $route_wise_strike_rate = [];
-        foreach ($ids as $route_key => $route_value) {
+
+    public static function routeWisePerformance2($ids,$selected_memo,$month){
+//        debug($ids,1);
+        $route_wise_performance=[];
+        foreach ($ids as $route_key=>$route_value){
+            $route_wise_performance[$route_key]['routes_name'] = $route_value['routes_name'];
+            $route_wise_performance[$route_key]['aso_name'] = $route_value['uname'];
+            $route_wise_performance[$route_key]['db_house'] = $route_value['point_name'];
+            $route_wise_performance[$route_key]['route_id'] = $route_value['id'];
+
+            $get_target = \App\Models\Target::where('target_type','market')->where('type_id',$route_value['uid'])->where('target_month',isset($month[0]) ? $month[0]: '')->first();
+//            debug($get_target,1);
+            $sku_target = [];
+            foreach ($selected_memo as $cat_key=>$cat_val) {
+                $selected_skues = array_flatten($cat_val);
+                $target_value = json_decode($get_target['base_value'], true);
+                foreach ($selected_skues as $key => $value) {
+                    if(!empty($get_target)){
+                        $cumulative_sale= \App\Models\Reports::get_sale_by_month_route($route_value['uid'],$value,isset($month[0]) ? $month[0]: '');
+                        $sku_target[] = [
+                            isset($target_value[$value]) ? $target_value[$value] : 0,
+                            $cumulative_sale,
+                            achievement($target_value[$value],$cumulative_sale)
+                        ];
+                    }
+                    else{
+                        $sku_target[] = [
+                            0, 0, 0
+                        ];
+                    }
+
+                }
+//                debug($sku_target,1);
+
+            }
+
+//            $route_wise_performance[$route_value['routes_name']]=$sku_target;
+            $route_wise_performance[$route_key]['result'] = $sku_target;
+        }
+//        debug($route_wise_performance,1);
+        return $route_wise_performance;
+    }
+
+
+    public static function routeWisePerformance3($ids,$selected_memo,$month){
+//        debug($ids,1);
+        $route_wise_performance=[];
+        foreach ($ids as $route_key=>$route_value){
+            $route_wise_performance[$route_key]['routes_name'] = $route_value['routes_name'];
+            $route_wise_performance[$route_key]['aso_name'] = $route_value['uname'];
+            $route_wise_performance[$route_key]['db_house'] = $route_value['point_name'];
+            $route_wise_performance[$route_key]['route_id'] = $route_value['id'];
+
+            $get_target = \App\Models\Target::where('target_type','market')->where('type_id',$route_value['uid'])->where('target_month',isset($month[0]) ? $month[0]: '')->first();
+            $sku_target = [];
+            foreach ($selected_memo as $cat_key=>$cat_val) {
+                $selected_skues = $cat_val;
+                $target_value = json_decode($get_target['base_value'], true);
+//                debug($selected_skues,1);
+                foreach ($selected_skues as $key => $value) {
+                    if(!empty($get_target)){
+                        $cumulative_sale= \App\Models\Reports::get_sale_by_month_route($route_value['uid'],$value,isset($month[0]) ? $month[0]: '');
+                        $sku_target[$key] = [
+                            isset($target_value[$key]) ? $target_value[$key] : 0,
+                            $cumulative_sale,
+                            achievement($target_value[$key],$cumulative_sale)
+                        ];
+                    }
+                    else{
+                        $sku_target[$key] = [
+                            0, 0, 0
+                        ];
+                    }
+
+                }
+//                debug($sku_target,1);
+
+            }
+
+//            $route_wise_performance[$route_value['routes_name']]=$sku_target;
+            $route_wise_performance[$route_key]['result'] = $sku_target;
+        }
+//        debug($route_wise_performance,1);
+        return $route_wise_performance;
+    }
+
+    public static function routeWiseStrikeRate($ids,$selected_memo,$date_range){
+        $route_wise_strike_rate=[];
+        foreach ($ids as $route_key=>$route_value){
             $data = DB::table('order_details')
-                ->select('skues.sku_name', 'order_details.short_name', DB::raw('SUM(orders.total_outlet) as total_outlet'), DB::raw('SUM(orders.visited_outlet) as visited_outlet'), 'orders.total_no_of_memo', DB::raw('SUM(order_details.quantity) as order_quantity'), DB::raw('SUM(sale_details.quantity) as  sale_quantity'), DB::raw('SUM(order_details.no_of_memo) as  total_indi_no_of_memo'))
-                ->leftJoin('orders', 'orders.id', '=', 'order_details.orders_id')
-                ->leftJoin('sales', function ($join) {
-                    $join->on('sales.aso_id', '=', 'orders.aso_id')
-                        ->on('sales.order_date', '=', 'orders.order_date');
+                ->select('skues.sku_name','order_details.short_name',DB::raw('SUM(orders.total_outlet) as total_outlet'),DB::raw('SUM(orders.visited_outlet) as visited_outlet'),'orders.total_no_of_memo',DB::raw('SUM(order_details.quantity) as order_quantity'),DB::raw('SUM(sale_details.quantity) as  sale_quantity'),DB::raw('SUM(order_details.no_of_memo) as  total_indi_no_of_memo'))
+                ->leftJoin('orders','orders.id','=','order_details.orders_id')
+                ->leftJoin('sales',function($join){
+                    $join->on('sales.aso_id','=','orders.aso_id')
+                        ->on('sales.order_date','=','orders.order_date');
                 })
-                ->leftJoin('sale_details', function ($join) {
-                    $join->on('sale_details.sales_id', '=', 'sales.id')
-                        ->on('sale_details.short_name', '=', 'order_details.short_name');
+                ->leftJoin('sale_details',function ($join){
+                    $join->on('sale_details.sales_id','=','sales.id')
+                        ->on('sale_details.short_name','=','order_details.short_name');
                 })
-                ->leftJoin('skues', 'skues.short_name', '=', 'order_details.short_name')
-                ->where('orders.order_type', 'Secondary')
-                ->where('orders.aso_id', $route_value['id'])
-                ->whereBetween('orders.order_date', array_map('trim', explode(" - ", $date_range[0])))
+                ->leftJoin('skues','skues.short_name','=','order_details.short_name')
+                ->where('orders.order_type','Secondary')
+                ->where('orders.aso_id',$route_value['id'])
+                ->whereBetween('orders.order_date',array_map('trim', explode(" - ",$date_range[0])))
                 ->groupBy('order_details.short_name')
                 ->orderBy('orders.id', 'DESC');
-            $data = $data->get()->toArray();
-            $sku_gen_value = [];
-            $sku_gen_additional = [];
-            foreach ($selected_memo as $cat_key => $cat_val) {
+            $data=$data->get()->toArray();
+            $sku_gen_value=[];
+            $sku_gen_additional=[];
+            foreach ($selected_memo as $cat_key=>$cat_val) {
                 $selected_skues = array_flatten($cat_val);
                 foreach ($selected_skues as $key => $value) {
-                    $selected_value = array_search($value, array_column($data, 'short_name'));
-                    if ($selected_value != false) {
-                        $sku_gen_value[] = [
-                            productivity($data[$selected_value]->total_indi_no_of_memo, $data[$selected_value]->total_no_of_memo),
-                            avg_per_memo(array_sum(array_column($data, 'total_indi_no_of_memo')), $data[$selected_value]->total_no_of_memo),
-                            volume_per_memo($data[$selected_value]->order_quantity, $data[$selected_value]->total_indi_no_of_memo),
-                            protfolio_volume($data[$selected_value]->order_quantity, $data[$selected_value]->total_no_of_memo),
-                            bounce_call($data[$selected_value]->order_quantity, $data[$selected_value]->sale_quantity)
+                    $selected_value=array_search($value,array_column($data,'short_name'));
+                    if($selected_value!=false){
+                        $sku_gen_value[]=[
+                            productivity($data[$selected_value]->total_indi_no_of_memo,$data[$selected_value]->total_no_of_memo),
+                            avg_per_memo(array_sum (array_column($data,'total_indi_no_of_memo')),$data[$selected_value]->total_no_of_memo),
+                            volume_per_memo($data[$selected_value]->order_quantity,$data[$selected_value]->total_indi_no_of_memo),
+                            protfolio_volume($data[$selected_value]->order_quantity,$data[$selected_value]->total_no_of_memo),
+                            bounce_call($data[$selected_value]->order_quantity,$data[$selected_value]->sale_quantity)
                         ];
-                    } else {
-                        $sku_gen_value[] = [0, 0, 0, 0, 0, 0];
+                    }else{
+                        $sku_gen_value[]=[0,0,0,0,0,0];
                     }
 
                 }
             }
-            $route_wise_strike_rate[$route_value['name']]['data'] = $sku_gen_value;
-            if (count($data) > 0) {
-                $route_wise_strike_rate[$route_value['name']]['additional'] = [
-                    $data[count($data) - 1]->total_outlet,
-                    $data[count($data) - 1]->visited_outlet,
-                    visited_outlet_per($data[count($data) - 1]->visited_outlet, $data[$selected_value]->total_outlet),
-                    $data[count($data) - 1]->total_no_of_memo,
-                    call_productivity($data[count($data) - 1]->total_no_of_memo, $data[$selected_value]->visited_outlet)
+            $route_wise_strike_rate[$route_value['name']]['data']= $sku_gen_value;
+            if(count($data) > 0){
+                $route_wise_strike_rate[$route_value['name']]['additional']=[
+                    $data[count($data)-1]->total_outlet,
+                    $data[count($data)-1]->visited_outlet,
+                    visited_outlet_per($data[count($data)-1]->visited_outlet,$data[$selected_value]->total_outlet),
+                    $data[count($data)-1]->total_no_of_memo,
+                    call_productivity($data[count($data)-1]->total_no_of_memo,$data[$selected_value]->visited_outlet)
                 ];
-            } else {
-                $route_wise_strike_rate[$route_value['name']]['additionaladditional'] = [
-                    0, 0, 0, 0, 0
+            }
+            else{
+                $route_wise_strike_rate[$route_value['name']]['additionaladditional']=[
+                    0,0,0,0,0
                 ];
             }
 
