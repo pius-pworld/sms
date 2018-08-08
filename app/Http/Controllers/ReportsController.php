@@ -375,7 +375,7 @@ class ReportsController extends Controller
         $selected_houses =array_filter($selected_houses);
 
         $data['house_stock_list'] = Reports::getHouseStockInfo($selected_houses,$memo);
-        
+
 
         return view('reports.ajax.house_stock_ajax',$data);
 

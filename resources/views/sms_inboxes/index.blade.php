@@ -62,6 +62,7 @@
                             <th><input  id="senderPhone" class="form-control" type="text"  placeholder="Search Sender Phone"></th>
                             <th><input  id="smsContent" class="form-control" type="text"  placeholder="Search SMS By Text"></th>
                             <th id="smsStatus" ></th>
+                            <th ><input id="datePickerChange" class="form-control" type="date"></th></th>
                         </tr>
                         <tr>
                             <th>Sender</th>
@@ -152,6 +153,9 @@
                 });
                 $('#senderPhone').on('keyup change', function(){
                     table.column(0).search(this.value).draw();
+                });
+                $('#datePickerChange').on('keyup change',function(){
+                    table.column(3).search(this.value).draw();
                 });
                 $('#smsContent').on('keyup change', function(){
                     table.column(1).search(this.value).draw();
