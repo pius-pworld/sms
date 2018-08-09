@@ -44,7 +44,7 @@
                                     <input type="hidden" name="dh_id" value="{{$sales_info->dbid}}">
                                     <input type="hidden" name="dh_name" value="{{$sales_info->dh_name}}">
                                     <input type="hidden" name="dh_phone" value="{{$sales_info->dh_phone}}">
-                                    <input type="hidden" name="order_id" value="{{$sales_info->id}}">
+                                    <input type="hidden" name="order_id" value="{{$sales_info->order_id}}">
                                     <input type="hidden" name="order_date" value="{{$sales_info->order_date}}">
                                     <input type="hidden" name="order_da" value="{{$sales_info->order_da}}">
                                     <input type="hidden" name="current_balance" value="{{$sales_info->current_balance}}">
