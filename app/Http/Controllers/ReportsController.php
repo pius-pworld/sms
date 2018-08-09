@@ -394,7 +394,7 @@ class ReportsController extends Controller
         $data['view'] = 'sale_reconciliation_ajax';
         $data['header_level'] = 'Monthly Sale And Reconciliation';
         $data['searching_options'] = 'grid.search_elements_all';
-        $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange','month'));
+        $data['searchAreaOption'] = searchAreaOption(array('show','route','month'));
         $data['memo_structure']= repoStructure();
         $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'Monthly Sale And Reconciliation'));
         return view('reports.main',$data);
@@ -421,11 +421,11 @@ class ReportsController extends Controller
         $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
         $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
         $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+        $selected_date_range = key_exists('created_at',$request_data) ? $request_data['created_at'] : [];
         $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
         $selected_houses =array_filter($selected_houses);
 
-        $data['monthly_sale_reconciliation'] = Reports::getMonthlySaleReconciliation($selected_houses, $data['memo_structure']);
-
+        $data['monthly_sale_reconciliation'] = Reports::getMonthlySaleReconciliation($selected_houses, $data['memo_structure'],$selected_date_range);
         return view('reports.ajax.sale_reconciliation_ajax',$data);
 
     }

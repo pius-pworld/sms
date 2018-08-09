@@ -606,8 +606,8 @@ if (!function_exists('calculate_case')) {
         }
 
         $remainder = fmod($result, $skues[$sku]['size']);
-        $without_remainder = $result - $remainder;
-        if($remainder > 0 ){
+        $without_remainder =  $result - $remainder;
+        if($remainder >= 0 ){
             return +($without_remainder / $skues[$sku]['size'] . '.' .sprintf("%02d", abs($remainder)));
         }
         else{
