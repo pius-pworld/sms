@@ -1309,6 +1309,57 @@ class ReportsController extends Controller
         return view('reports.ajax.order_vs_sale_primary_ajax',$data);
     }
 
+    public function dailySaleSummary(Request $request){
+        $data['ajaxUrl'] = URL::to('daily-sale-summary-search');
+        $data['view'] = 'daily_sale_summary_ajax';
+        $data['header_level'] = 'Daily Sale Summary';
+        $data['searching_options'] = 'grid.search_elements_all';
+        $data['searchAreaOption'] = searchAreaOption(array('show','route','daterange','month'));
+        $memo = repoStructure();
+        $data['level'] = 0;
+        $data['level_col_data'] =[];
+        $data['memo_structure']= $memo;
+        $data['breadcrumb'] = breadcrumb(array('Reports'=>'','active'=>'Daily Sale Summary'));
+        return view('reports.main',$data);
+    }
+
+    public function dailySaleSummarySearch(Request $request){
+        $data['ajaxUrl'] = URL::to('daily-sale-summary-search');
+        $data['searching_options'] = 'grid.search_elements_all';
+
+        //request data
+        $post= $request->all();
+        unset($post['_token']);
+        $request_data = filter_array($post);
+
+        //memeo structure
+        $categorie_ids =array_key_exists('category_id',$request_data) ? $request_data['category_id'] : [];
+        $brand_ids =array_key_exists('brands_id',$request_data) ? $request_data['brands_id'] : [];
+        $sku_ids =array_key_exists('skues_id',$request_data) ? $request_data['skues_id'] : [];
+
+        $data['memo_structure']= repoStructure($categorie_ids,$brand_ids,$sku_ids);
+        $data['level'] = 1;
+        $data['level_col_data'] =[];
+
+
+        //Requested Information
+        $zone_ids=array_key_exists('zones_id',$request_data) ? $request_data['zones_id'] : [];
+        $region_ids=array_key_exists('regions_id',$request_data) ? $request_data['regions_id'] : [];
+        $territory_ids=array_key_exists('territories_id',$request_data) ? $request_data['territories_id'] : [];
+        $house_ids=array_key_exists('id',$request_data) ? $request_data['id'] : [];
+        $get_info= Reports::getInfo($zone_ids,$region_ids,$territory_ids,$house_ids);
+        $selected_houses=array_unique(array_column($get_info,'distribution_house_id'), SORT_REGULAR);
+        $selected_houses =array_filter($selected_houses);
+
+
+
+        $data['daily_sale_summary'] = Reports::dailySaleSummary($selected_houses, $data['memo_structure']);
+        //dd($data['house_lifting_list']);
+
+
+        return view('reports.ajax.daily_sale_summary_ajax',$data);
+    }
+
 
 
 }

@@ -251,6 +251,22 @@ class Reports extends Model
         return $house_lifting_list;
     }
 
+    public static function dailySaleSummary($ids, $selected_memo){
+         return [
+              '2018-3-3'=>[
+                   'data'=>[
+                       'RDT'=>[0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+                       'Order'=>[0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+                       'Sales'=>[0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+                       'Cum Ach%'=>[0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]
+                   ],
+                  'additional'=>[
+                      'aso_name'=>'Test'
+                  ]
+              ]
+         ];
+    }
+
 
     public static function individual_routes_info($route_id)
     {

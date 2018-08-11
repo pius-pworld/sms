@@ -88,6 +88,9 @@ Route::post('order-vs-sale-primary-search','ReportsController@orderVsSalePrimary
 Route::get('order-vs-sale-primary-date-wise/{house_id}/{post_date}','ReportsController@orderVsSalePrimaryDateWise');
 Route::post('order-vs-sale-primary-date-wise-search/{house_id}','ReportsController@orderVsSalePrimaryDateWiseSearch');
 
+Route::get('daily-sale-summary','ReportsController@dailySaleSummary');
+Route::post('daily-sale-summary-search','ReportsController@dailySaleSummarySearch');
+
 //Route::get('current-stock','ReportsController@currentStock');
 //Route::post('current-stock-search','ReportsController@currentStockSearch');
 
@@ -102,7 +105,6 @@ Route::get('house-lifting-format','ReportsController@houseLiftingFormat');
 Route::post('house-lifting-format-search','ReportsController@houseLiftingFormatSearch');
 
 Route::get('monthly-sale-reconciliation','ReportsController@saleConciliation');
-
 Route::post('monthly-sale-reconciliation-search','ReportsController@saleConciliationSearch');
 
 Route::get('db-wise-performance','ReportsController@houseWisePerformance');
