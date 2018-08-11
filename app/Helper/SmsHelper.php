@@ -38,7 +38,7 @@ if(!function_exists('rejectPreviousOrder')){
 
 function getPreviousStockByAsoDate($aso_id,$order_date,$route_id=0,$dh_id=0,$order_type="Secondary"){
     $data =DB::table('sales')
-         ->select('sales.id as sid','sale_details.short_name','sale_details.quantity')
+         ->select('sales.id as sid','sales.total_sale_amount as sale_total','sale_details.short_name','sale_details.quantity')
         ->leftJoin('sale_details','sale_details.sales_id','=','sales.id');
     if($order_type==="Secondary"){
         $data=$data->where('sales.aso_id',$aso_id)
@@ -58,6 +58,7 @@ function getPreviousStockByAsoDate($aso_id,$order_date,$route_id=0,$dh_id=0,$ord
     }
     if($order_type==="Primary") {
         isset($data[0]) ? $response['additional']['sales_id'] = $data[0]->sid : [];
+        isset($data[0]) ? $response['additional']['sale_total'] = $data[0]->sale_total : [];
     }
     return  $response;
 }

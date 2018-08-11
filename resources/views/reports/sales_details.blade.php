@@ -46,7 +46,7 @@
                                     <input type="hidden" name="dh_phone" value="{{$sales_info->dh_phone}}">
                                     <input type="hidden" name="order_id" value="{{$sales_info->order_id}}">
                                     <input type="hidden" name="order_date" value="{{$sales_info->order_date}}">
-                                    <input type="hidden" name="order_da" value="{{$sales_info->order_da}}">
+                                    <input type="hidden" name="order_da" value="{{in_array($sales_info->sale_status,['Processed']) ? 0 : $sales_info->order_da}}">
                                     <input type="hidden" name="current_balance" value="{{$sales_info->current_balance}}">
                                 </div>
                             </div>

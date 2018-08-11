@@ -234,7 +234,8 @@ class ReportsController extends Controller
                 $previous_total +=(sku_pack_quantity($key,$value)*get_sku_price($key));
             }
            $da_update = false;
-            DB::table('sales')->where('id', $pervious_data['additional']['sales_id'])->update(['sale_status' => 'Rejected']);
+           DB::table('sales')->where('id', $pervious_data['additional']['sales_id'])->update(['sale_status' => 'Rejected']);
+           $salesdata['house_current_balance'] = $salesdata['house_current_balance'] + $pervious_data['additional']['sale_total'];
         }
 
 
