@@ -649,4 +649,22 @@ if (!function_exists('calculate_house_current_balance')) {
     }
 }
 
+if(!function_exists('availableWorkingDates')){
+
+    function availableWorkingDates($begin,$end,$exclude_date){
+        $arr=[];
+        $begin = new \DateTime( $begin);
+        $end = new \DateTime( $end);
+        $end = $end->modify( '+1 day' );
+
+        $interval = new \DateInterval('P1D');
+        $daterange = new \DatePeriod($begin, $interval ,$end);
+
+        foreach($daterange as $date){
+            $arr[]= $date->format("Y-m-d");
+        }
+        return array_diff($arr,$exclude_date);
+    }
+}
+
 ?>

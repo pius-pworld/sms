@@ -29,10 +29,14 @@ class SmsInboxesController extends Controller
 
     function __construct()
     {
+//        $exclude_date =['2018-08-10'];
+//        dd(availableWorkingDates('2018-08-08',date('Y-m-d',strtotime(now())), $exclude_date));
         //dd(sku_pack_quantity('tp', 1.01));
         //stock_oc(1, 'tp', date('Y-m-d'), 2.05, 2.06, true);
         $this->sms = new Sms();
     }
+
+
 
     /**
      * Display a listing of the sms inboxes.
